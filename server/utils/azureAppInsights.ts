@@ -3,9 +3,9 @@ import logger from '../../logger'
 
 initialiseTelemetry({
   serviceName: 'hmpps-transfer-scheduler-ui',
-  serviceVersion: process.env.BUILD_NUMBER || 'unknown',
+  serviceVersion: process.env['BUILD_NUMBER'] || 'unknown',
   connectionString: process.env.APPLICATIONINSIGHTS_CONNECTION_STRING,
-  debug: process.env.DEBUG_TELEMETRY === 'true',
+  debug: process.env['DEBUG_TELEMETRY'] === 'true',
 })
   .addFilter(telemetry.processors.filterSpanWherePath(['/health', '/ping', '/info', '/assets/*', '/favicon.ico']))
   .addModifier(telemetry.processors.enrichSpanNameWithHttpRoute())
