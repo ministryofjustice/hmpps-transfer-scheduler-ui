@@ -1,0 +1,53 @@
+{% extends "partials/layout.njk" %}
+
+{% set fullScreen = true %}
+{% set fullWidth = true %}
+
+{% block innerContent %}
+  <div class="govuk-width-container">
+    <h1 class="govuk-heading-xl govuk-!-margin-bottom-6 govuk-!-margin-top-0">Schedule a transfer for a prisoner</h1>
+  </div>
+  <div class="homepage-card-background">
+    <div class="govuk-width-container">
+      <div class="govuk-grid-row">
+        <div class="govuk-grid-column-full">
+          <div class="card-group govuk-grid-row">
+
+            {% if user | hasPermission('MANAGE') %}
+            <div class="govuk-grid-column-one-third card-group__item">
+                <div class="card card--clickable">
+                  <h2 class="govuk-heading-m card__heading">
+                    <a class="govuk-link govuk-link--no-visited-state card__link" href="/search-prisoner/add-transfer">Schedule a transfer</a>
+                  </h2>
+                  <p class="govuk-body card__description">Transfer a prisoner from this prison to another one.</p>
+                </div>
+              </div>
+            {% endif %}
+
+            <div class="govuk-grid-column-one-third card-group__item">
+              <div class="card card--clickable">
+                <h2 class="govuk-heading-m card__heading">
+                  <a class="govuk-link govuk-link--no-visited-state card__link" href="/transfers">
+                    {% if user | hasPermission('MANAGE') %}
+                      Plan a transfer
+                    {% else %}
+                      Plan a transfer
+                    {% endif %}
+                  </a>
+                </h2>
+                <p class="govuk-body card__description">
+                  {% if user | hasPermission('MANAGE') %}
+                    View and update planned transfers.
+                  {% else %}
+                    View planned transfers.
+                  {% endif %}
+                </p>
+              </div>
+            </div>
+
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+{% endblock %}

@@ -5,15 +5,23 @@ generic-service:
   replicaCount: 2
 
   ingress:
-    host: transfer-scheduler-ui-preprod.hmpps.service.justice.gov.uk
+    host: transfer-scheduler-preprod.hmpps.service.justice.gov.uk
 
   env:
     INGRESS_URL: "https://transfer-scheduler-ui-preprod.hmpps.service.justice.gov.uk"
     HMPPS_AUTH_URL: "https://sign-in-preprod.hmpps.service.justice.gov.uk/auth"
     TOKEN_VERIFICATION_API_URL: "https://token-verification-api-preprod.prison.service.justice.gov.uk"
-    EXAMPLE_API_URL: 'https://template-kotlin-preprod.hmpps.service.justice.gov.uk'
+    COMPONENT_API_URL: "https://frontend-components-preprod.hmpps.service.justice.gov.uk" # used by hmpps-connect-dps-components module
+    PRISON_API_URL: "https://prison-api-preprod.prison.service.justice.gov.uk" # used by hmpps-connect-dps-components module
+    PRISONER_SEARCH_API_URL: "https://prisoner-search-preprod.prison.service.justice.gov.uk"
+    PRISON_REGISTER_API_URL: "https://prison-register-preprod.hmpps.service.justice.gov.uk"
+    TRANSFER_SCHEDULER_API_URL: "https://transfer-scheduler-api-preprod.hmpps.service.justice.gov.uk"
+    DPS_HOME_PAGE_URL: "https://digital-preprod.prison.service.justice.gov.uk"
+    PRISONER_PROFILE_URL: "https://prisoner-preprod.digital.prison.service.justice.gov.uk"
     ENVIRONMENT_NAME: PRE-PRODUCTION
+    SENTRY_ENVIRONMENT: PRE-PRODUCTION
     AUDIT_ENABLED: "false"
 
 generic-prometheus-alerts:
   alertSeverity: move-and-improve-alerts-non-prod
+  businessHoursOnly: true
