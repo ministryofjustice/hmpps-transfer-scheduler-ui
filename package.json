@@ -64,6 +64,8 @@
     "zod": "4.4.3"
   },
   "devDependencies": {
+    "@emnapi/core": "1.11.0",
+    "@emnapi/runtime": "1.11.0",
     "@jgoz/esbuild-plugin-typecheck": "^4.0.4",
     "@ministryofjustice/eslint-config-hmpps": "^1.0.3",
     "@ministryofjustice/frontend-types": "2.0.0",
