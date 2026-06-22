@@ -20,7 +20,7 @@ generic-service:
     PRISONER_PROFILE_URL: "https://prisoner-preprod.digital.prison.service.justice.gov.uk"
     ENVIRONMENT_NAME: PRE-PRODUCTION
     SENTRY_ENVIRONMENT: PRE-PRODUCTION
-    AUDIT_ENABLED: "false"
+    AUDIT_ENABLED: "true"
 
 generic-prometheus-alerts:
   alertSeverity: move-and-improve-alerts-non-prod
