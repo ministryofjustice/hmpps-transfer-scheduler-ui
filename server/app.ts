@@ -26,6 +26,7 @@ import config from './config'
 import PrisonerImageRoutes from './routes/prisonerImageRoutes'
 import { handleApiError } from './middleware/validation/handleApiError'
 import sentryMiddleware from './middleware/sentryMiddleware'
+import { AuthorisedRoles } from './middleware/permissions/populateUserPermissions'
 
 export default function createApp(services: Services): express.Application {
   const app = express()
@@ -60,7 +61,7 @@ export default function createApp(services: Services): express.Application {
     },
   )
 
-  app.use(authorisationMiddleware([])) // TODO: add required roles, eg AuthorisedRoles.TRANSFER_SCHEDULER_RW, AuthorisedRoles.TRANSFER_SCHEDULER_RO
+  app.use(authorisationMiddleware([AuthorisedRoles.TRANSFER_SCHEDULER_RW, AuthorisedRoles.TRANSFER_SCHEDULER_RO]))
   app.use(setUpCsrf())
   app.use(setUpCurrentUser())
 
