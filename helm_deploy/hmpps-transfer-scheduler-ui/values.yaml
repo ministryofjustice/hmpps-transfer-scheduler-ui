@@ -49,6 +49,9 @@ generic-service:
       AUTH_CODE_CLIENT_SECRET: 'AUTH_CODE_CLIENT_SECRET'
     hmpps-transfer-scheduler-ui-session-secret:
       SESSION_SECRET: 'SESSION_SECRET'
+    hmpps-transfer-scheduler-ui-sentry:
+      SENTRY_DSN: "SENTRY_DSN"
+      SENTRY_LOADER_SCRIPT_ID: "SENTRY_LOADER_SCRIPT_ID"
     elasticache-redis:
       REDIS_HOST: 'primary_endpoint_address'
       REDIS_AUTH_TOKEN: 'auth_token'
