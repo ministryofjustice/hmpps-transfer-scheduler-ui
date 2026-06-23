@@ -14,37 +14,60 @@
           <div class="card-group govuk-grid-row">
 
             {% if user | hasPermission('MANAGE') %}
-            <div class="govuk-grid-column-one-third card-group__item">
+              <div class="govuk-grid-column-one-third card-group__item">
                 <div class="card card--clickable">
                   <h2 class="govuk-heading-m card__heading">
-                    <a class="govuk-link govuk-link--no-visited-state card__link" href="/search-prisoner/add-transfer">Schedule a transfer</a>
+                    <a class="govuk-link govuk-link--no-visited-state card__link" href="/search-prisoner/schedule-a-transfer">Schedule a transfer</a>
                   </h2>
                   <p class="govuk-body card__description">Transfer a prisoner from this prison to another one.</p>
                 </div>
               </div>
-            {% endif %}
 
-            <div class="govuk-grid-column-one-third card-group__item">
-              <div class="card card--clickable">
-                <h2 class="govuk-heading-m card__heading">
-                  <a class="govuk-link govuk-link--no-visited-state card__link" href="/transfers">
-                    {% if user | hasPermission('MANAGE') %}
-                      Plan a transfer
-                    {% else %}
-                      Plan a transfer
-                    {% endif %}
-                  </a>
-                </h2>
-                <p class="govuk-body card__description">
-                  {% if user | hasPermission('MANAGE') %}
-                    View and update planned transfers.
-                  {% else %}
-                    View planned transfers.
-                  {% endif %}
-                </p>
+              <div class="govuk-grid-column-one-third card-group__item">
+                <div class="card card--clickable">
+                  <h2 class="govuk-heading-m card__heading">
+                    <a class="govuk-link govuk-link--no-visited-state card__link" href="/search-prisoner/plan-a-transfer">Plan a transfer</a>
+                  </h2>
+                  <p class="govuk-body card__description">Create a new transfer plan for a prisoner.</p>
+                </div>
               </div>
-            </div>
 
+              <div class="govuk-grid-column-one-third card-group__item">
+                <div class="card card--clickable">
+                  <h2 class="govuk-heading-m card__heading">
+                    <a class="govuk-link govuk-link--no-visited-state card__link" href="/scheduled-transfers">Manage scheduled transfers</a>
+                  </h2>
+                  <p class="govuk-body card__description">View, update and cancel scheduled transfers.</p>
+                </div>
+              </div>
+
+              <div class="govuk-grid-column-one-third card-group__item">
+                <div class="card card--clickable">
+                  <h2 class="govuk-heading-m card__heading">
+                    <a class="govuk-link govuk-link--no-visited-state card__link" href="/planned-transfers">Manage planned transfers</a>
+                  </h2>
+                  <p class="govuk-body card__description">View, update and cancel planned  transfers. Move prisoners from plans to transfers.</p>
+                </div>
+              </div>
+            {% else %}
+              <div class="govuk-grid-column-one-third card-group__item">
+                <div class="card card--clickable">
+                  <h2 class="govuk-heading-m card__heading">
+                    <a class="govuk-link govuk-link--no-visited-state card__link" href="/scheduled-transfers">Manage scheduled transfers</a>
+                  </h2>
+                  <p class="govuk-body card__description">View scheduled transfers.</p>
+                </div>
+              </div>
+
+              <div class="govuk-grid-column-one-third card-group__item">
+                <div class="card card--clickable">
+                  <h2 class="govuk-heading-m card__heading">
+                    <a class="govuk-link govuk-link--no-visited-state card__link" href="/planned-transfers">Manage planned transfers</a>
+                  </h2>
+                  <p class="govuk-body card__description">View planned  transfers.</p>
+                </div>
+              </div>
+            {% endif %}
           </div>
         </div>
       </div>

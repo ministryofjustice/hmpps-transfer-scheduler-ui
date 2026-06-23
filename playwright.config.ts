@@ -12,11 +12,12 @@ import { defineConfig, devices } from '@playwright/test'
  */
 export default defineConfig({
   outputDir: './test_results/playwright/test-output',
-  testDir: './integration_tests/specs',
+  testDir: '',
+  testMatch: /.*spec.ts/,
   /* Maximum time one test can run for. (millis) */
-  timeout: 3 * 60 * 1000,
+  timeout: process.env.CI ? 3 * 60 * 1000 : 30 * 1000,
   /* Maximum time test suite can run for. (millis) */
-  globalTimeout: 60 * 60 * 1000,
+  globalTimeout: process.env.CI ? 60 * 60 * 1000 : 10 * 60 * 1000,
   /* Run tests in files in parallel */
   fullyParallel: false,
   /* Ensure tests run consecutively due to inability to share wiremock instance */
