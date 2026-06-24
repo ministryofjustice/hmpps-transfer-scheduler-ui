@@ -1,6 +1,6 @@
 import { BaseTestPage } from '../../integration_tests/pages/baseTestPage'
 
-export class CourtAppearancesHomepage extends BaseTestPage {
+export class Homepage extends BaseTestPage {
   async verifyContent() {
     return this.verify({
       pageUrl: /localhost:3007\/?$/,
