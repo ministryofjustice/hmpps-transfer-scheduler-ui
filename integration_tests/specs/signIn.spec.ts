@@ -44,8 +44,7 @@ test.describe('SignIn', () => {
     await expect(page.getByRole('heading')).toHaveText('Sign in')
   })
 
-  // TODO: enable user session clear test after authorisation check is in place
-  test.skip('Token verification failure clears user session', async ({ page }) => {
+  test('Token verification failure clears user session', async ({ page }) => {
     await login(page)
     await expect(page.getByRole('heading', { name: 'Sign in' })).not.toBeAttached()
 

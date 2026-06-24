@@ -39,14 +39,7 @@ export const stubComponents = () => {
           },
           services: [
             {
-              id: 'csipUI',
-              heading: 'CSIP',
-              description: 'View and manage the Challenge, Support and Intervention Plan (CSIP) caseload.',
-              href: 'https://csip-dev.hmpps.service.justice.gov.uk',
-              navEnabled: true,
-            },
-            {
-              id: 'external-movements',
+              id: 'transfer-scheduler',
             },
           ],
         },

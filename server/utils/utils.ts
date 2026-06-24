@@ -49,7 +49,7 @@ export const mergeObjects = <T extends Record<string, unknown>>(destination: T, 
 
 export const prisonerProfileBacklink = (originalUrl: string, personIdentifier: string, suffix: string = '') => {
   const searchParams = new URLSearchParams({
-    service: 'court-appearance-scheduler',
+    service: 'transfer-scheduler',
     redirectPath: `/prisoner/${personIdentifier}${suffix}`,
     returnPath: `/${originalUrl.split('/').slice(1).join('/')}`,
   })
