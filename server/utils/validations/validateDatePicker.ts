@@ -1,0 +1,74 @@
+import { z } from 'zod'
+import { isValid, parseISO, startOfDay, isBefore } from 'date-fns'
+
+export const transformOptionalDate = z
+  .string()
+  .optional()
+  .transform(val => {
+    if (!val) return undefined
+    const parts = val.split(/[-/]/)
+    if (parts[2]?.length !== 4 || !parts[1]?.length || !parts[0]?.length) return undefined
+    return `${parts[2]}-${parts[1].padStart(2, '0')}-${parts[0].padStart(2, '0')}`
+  })
+
+export const validateDateBase = (missingDateErrorMsg: string, invalidDateErrorMsg: string) => {
+  return z
+    .string({ message: missingDateErrorMsg })
+    .min(1, { message: missingDateErrorMsg })
+    .transform(value => value.split(/[-/]/).reverse())
+    .transform(value => {
+      // Prefix month and date with a 0 if needed
+      const month = value[1]?.length === 2 ? value[1] : `0${value[1]}`
+      const date = value[2]?.length === 2 ? value[2] : `0${value[2]}`
+      return `${value[0]}-${month}-${date}T00:00:00Z` // We put a full timestamp on it so it gets parsed as UTC time and the date doesn't get changed due to locale
+    })
+    .transform(date => parseISO(date))
+    .check(ctx => {
+      if (!isValid(ctx.value)) {
+        ctx.issues.push({ code: 'custom', message: invalidDateErrorMsg, input: ctx.value })
+      }
+    })
+}
+
+type DateChecker = (date: Date) => boolean
+
+export const validateTransformDate = (
+  checker: DateChecker | null,
+  missingDateErrorMsg: string,
+  invalidDateErrorMsg: string,
+  checkFailErrorMsg: string = '',
+) => {
+  return validateDateBase(missingDateErrorMsg, invalidDateErrorMsg)
+    .check(ctx => {
+      if (checker && !checker(ctx.value)) {
+        ctx.issues.push({ code: 'custom', message: checkFailErrorMsg, input: ctx.value })
+      }
+    })
+    .transform(date => date.toISOString().substring(0, 10))
+}
+
+export const validateTransformOptionalDate = (invalidDateErrorMsg: string) =>
+  z
+    .string()
+    .optional()
+    .transform((val, ctx) => {
+      if (!val) return null
+      if (!val.length) return null
+
+      const date = parseISO(
+        `${val
+          .split('/')
+          .reverse()
+          .map(part => part.padStart(2, '0'))
+          .join('-')}T00:00:00Z`,
+      )
+      if (!isValid(date)) {
+        ctx.issues.push({ code: 'custom', message: invalidDateErrorMsg, input: ctx.value })
+        return z.NEVER
+      }
+      return date.toISOString().substring(0, 10)
+    })
+
+export const getMinDateChecker = (minDate: Date) => (date: Date) => !isBefore(startOfDay(date), startOfDay(minDate))
+
+export const checkTodayOrFuture = getMinDateChecker(new Date())
