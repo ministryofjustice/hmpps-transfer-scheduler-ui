@@ -11,6 +11,10 @@ export class Breadcrumbs {
         text: 'Digital Prison Services',
         href: res.locals.digitalPrisonServicesUrl,
       },
+      {
+        text: 'External movements',
+        href: res.locals.externalMovementsUrl,
+      },
     ]
   }
 

@@ -8,8 +8,11 @@ import breadcrumbs from '../middleware/history/breadcrumbs'
 import { historyMiddleware } from '../middleware/history/historyMiddleware'
 import populateValidationErrors from '../middleware/validation/populateValidationErrors'
 import { FLASH_KEY__SUCCESS_BANNER } from '../utils/constants'
+import { requirePermissions } from '../middleware/permissions/requirePermissions'
+import { UserPermissionLevel } from '../interfaces/hmppsUser'
+import { SearchPrisonerRoutes } from './search-prisoner/routes'
 
-export default function routes(_services: Services): Router {
+export default function routes(services: Services): Router {
   const { router, get } = BaseRouter()
 
   router.use(populateUserPermissions)
@@ -18,8 +21,13 @@ export default function routes(_services: Services): Router {
     historyMiddleware(() => [
       {
         matcher: /^\/$/,
-        text: 'Schedule a transfer',
+        text: 'Transfers',
         alias: Page.HOMEPAGE,
+      },
+      {
+        matcher: /^\/search-prisoner\//,
+        text: 'Search prisoner',
+        alias: Page.SEARCH_PRISONER,
       },
     ]),
   )
@@ -39,6 +47,8 @@ export default function routes(_services: Services): Router {
       showBreadcrumbs: true,
     })
   })
+
+  router.use('/search-prisoner', requirePermissions(UserPermissionLevel.MANAGE), SearchPrisonerRoutes(services))
 
   return router
 }

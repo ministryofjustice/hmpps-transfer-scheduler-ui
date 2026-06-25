@@ -105,7 +105,7 @@ describe('historyMiddleware', () => {
 
     expect(next).toHaveBeenCalled()
 
-    expect(res.locals.breadcrumbs.items.slice(1)).toEqual([
+    expect(res.locals.breadcrumbs.items.slice(2)).toEqual([
       {
         alias: 'HOMEPAGE',
         href: `/key-worker?history=${historyToBase64(['/key-worker'], true)}`,
@@ -190,7 +190,7 @@ describe('historyMiddleware', () => {
     req.query = { history: historyToBase64(history) }
 
     middleware(req, res as Response, next)
-    expect(res.locals.breadcrumbs.items.slice(1)).toEqual([
+    expect(res.locals.breadcrumbs.items.slice(2)).toEqual([
       {
         alias: 'HOMEPAGE',
         href: `/key-worker?history=${historyToBase64(['/key-worker'], true)}`,

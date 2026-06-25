@@ -60,6 +60,7 @@ export default function nunjucksSetup(app: express.Express): void {
   app.use((_req, res, next) => {
     res.locals.digitalPrisonServicesUrl = config.serviceUrls.digitalPrison
     res.locals.prisonerProfileUrl = config.serviceUrls.prisonerProfile
+    res.locals.externalMovementsUrl = config.serviceUrls.externalMovements
     return next()
   })
 
