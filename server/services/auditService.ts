@@ -3,6 +3,8 @@ import HmppsAuditClient, { AuditEvent } from '../data/hmppsAuditClient'
 export enum Page {
   HOMEPAGE = 'HOMEPAGE',
   SEARCH_PRISONER = 'SEARCH_PRISONER',
+  SCHEDULE_TRANSFER = 'SCHEDULE_TRANSFER',
+  MANAGE_TRANSFER = 'MANAGE_TRANSFER',
 }
 
 export interface PageViewEventDetails {

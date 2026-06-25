@@ -15,6 +15,7 @@ export type JourneyData = {
   journeyCompleted?: boolean
   b64History?: string | undefined
   stateGuard?: boolean
+  scheduleTransfer?: ScheduleTransferJourney
 }
 
 type CodedDescription = {
@@ -22,3 +23,16 @@ type CodedDescription = {
   description: string
   hintText?: string
 }
+
+type ScheduleTransferJourney = {
+  backUrl: string
+  historyQuery: string
+} & Partial<{
+  startDate: string
+  startTime: string
+  destination: CodedDescription
+  reason: CodedDescription
+  logistics: CodedDescription
+  comments: string | null
+  result: components['schemas']['ReferenceId']
+}>
