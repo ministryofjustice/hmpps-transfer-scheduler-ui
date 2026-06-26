@@ -41,18 +41,14 @@ export default class PrisonRegisterService {
     const cached = await this.cache.get(cacheKey)
     if (cached) return cached
 
-    try {
-      const prisons = (await this.apiClient.withContext(context).get<Prison[]>({ path: `/prisons` })).map(
-        ({ prisonId, prisonName }) => ({
-          code: prisonId,
-          description: prisonName,
-        }),
-      )
+    const prisons = (await this.apiClient.withContext(context).get<Prison[]>({ path: `/prisons` })).map(
+      ({ prisonId, prisonName }) => ({
+        code: prisonId,
+        description: prisonName,
+      }),
+    )
 
-      await this.cache.set(cacheKey, prisons, this.CACHE_TIMEOUT)
-      return prisons
-    } catch {
-      return null
-    }
+    await this.cache.set(cacheKey, prisons, this.CACHE_TIMEOUT)
+    return prisons
   }
 }
