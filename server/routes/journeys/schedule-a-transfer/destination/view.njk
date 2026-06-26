@@ -1,0 +1,34 @@
+{% extends "partials/layout.njk" %}
+{% from "govuk/components/select/macro.njk" import govukSelect %}
+{% from "govuk/components/button/macro.njk" import govukButton %}
+
+{% set pageTitle = 'Enter the prison this prisoner is being transferred to - Schedule a transfer' %}
+
+{% block meta %}
+  <meta name="autocompleteElements" content="destination"/>
+{% endblock %}
+
+{% block innerContent %}
+  <div class="govuk-width-container">
+    <span class="govuk-caption-l">Schedule a transfer</span>
+
+    <form method="post">
+      <input type="hidden" name="_csrf" value="{{ csrfToken }}" />
+
+      {{ govukSelect({
+        id: "destination",
+        name: "destination",
+        label: { text: "Enter the prison this prisoner is being transferred to", classes: "govuk-label--l", isPageHeading: true },
+        hint: { text: "Start typing a prison name" },
+        items: prisons | fromCodedDescription | addSelectValue('') | setSelectedValue(destination),
+        errorMessage: validationErrors | findError('destination')
+      }) }}
+
+      {{ govukButton({
+        classes: 'govuk-!-margin-top-6',
+        text: "Continue",
+        preventDoubleClick: true
+      }) }}
+    </form>
+  </div>
+{% endblock %}

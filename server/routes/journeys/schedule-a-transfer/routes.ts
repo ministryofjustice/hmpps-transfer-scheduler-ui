@@ -6,6 +6,7 @@ import preventNavigationToExpiredJourneys from '../../../middleware/journey/prev
 import journeyStateGuard from '../../../middleware/journey/journeyStateGuard'
 import redirectCheckAnswersMiddleware from '../../../middleware/journey/redirectCheckAnswersMiddleware'
 import { ScheduleTransferDateTimeRoutes } from './date-and-time/routes'
+import { ScheduleTransferDestinationRoutes } from './destination/routes'
 
 export const ScheduleTransferRoutes = (services: Services) => {
   const { router, get } = BaseRouter()
@@ -46,6 +47,7 @@ export const ScheduleTransferRoutes = (services: Services) => {
   )
 
   router.use('/date-and-time', ScheduleTransferDateTimeRoutes())
+  router.use('/destination', ScheduleTransferDestinationRoutes(services))
 
   return router
 }

@@ -24,6 +24,7 @@
     "clean": "rm -rf dist test_results",
     "rebuild": "npm run clean && npm run setup && npm run build",
     "setup": "npm ci && hmpps-npm-script-run-allowlist",
+    "swagger": "npx openapi-typescript https://transfer-scheduler-api-dev.hmpps.service.justice.gov.uk/v3/api-docs > ./server/@types/transferSchedulerApi/index.d.ts && eslint --fix \"./server/@types/transferSchedulerApi/index.d.ts\"",
     "todo-reminder": "grep -r -n --color=always --include=\"*.ts\" \"// TODO:.*\" ./server ./integration_tests || true"
   },
   "engines": {
