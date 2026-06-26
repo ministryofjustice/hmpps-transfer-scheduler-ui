@@ -9,6 +9,7 @@ import { ScheduleTransferDateTimeRoutes } from './date-and-time/routes'
 import { ScheduleTransferDestinationRoutes } from './destination/routes'
 import { ScheduleTransferReasonRoutes } from './reason/routes'
 import { ScheduleTransferLogisticsRoutes } from './logistics/routes'
+import { ScheduleTransferCommentsRoutes } from './comments/routes'
 
 export const ScheduleTransferRoutes = (services: Services) => {
   const { router, get } = BaseRouter()
@@ -52,6 +53,7 @@ export const ScheduleTransferRoutes = (services: Services) => {
   router.use('/destination', ScheduleTransferDestinationRoutes(services))
   router.use('/reason', ScheduleTransferReasonRoutes(services))
   router.use('/logistics', ScheduleTransferLogisticsRoutes(services))
+  router.use('/comments', ScheduleTransferCommentsRoutes())
 
   return router
 }
