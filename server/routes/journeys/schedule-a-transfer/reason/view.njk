@@ -1,0 +1,34 @@
+{% extends "partials/layout.njk" %}
+{% from "govuk/components/select/macro.njk" import govukSelect %}
+{% from "govuk/components/button/macro.njk" import govukButton %}
+
+{% set pageTitle = 'Enter a reason for this transfer - Schedule a transfer' %}
+
+{% block meta %}
+  <meta name="autocompleteElements" content="reason"/>
+{% endblock %}
+
+{% block innerContent %}
+  <div class="govuk-width-container">
+    <span class="govuk-caption-l">Schedule a transfer</span>
+
+    <form method="post">
+      <input type="hidden" name="_csrf" value="{{ csrfToken }}" />
+
+      {{ govukSelect({
+        id: "reason",
+        name: "reason",
+        label: { text: "Enter a reason for this transfer", classes: "govuk-label--l", isPageHeading: true },
+        hint: { text: "Start typing a reason" },
+        items: reasons | fromCodedDescription | addSelectValue('') | setSelectedValue(reason),
+        errorMessage: validationErrors | findError('reason')
+      }) }}
+
+      {{ govukButton({
+        classes: 'govuk-!-margin-top-6',
+        text: "Continue",
+        preventDoubleClick: true
+      }) }}
+    </form>
+  </div>
+{% endblock %}

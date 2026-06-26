@@ -1,5 +1,5 @@
 import type { SuperAgentRequest } from 'superagent'
-import { stubFor } from './wiremock'
+import { stubFor, successStub } from './wiremock'
 
 export const stubTransferSchedulerPing = (httpStatus = 200): SuperAgentRequest =>
   stubFor({
@@ -11,5 +11,23 @@ export const stubTransferSchedulerPing = (httpStatus = 200): SuperAgentRequest =
       status: httpStatus,
       headers: { 'Content-Type': 'application/json;charset=UTF-8' },
       jsonBody: { status: httpStatus === 200 ? 'UP' : 'DOWN' },
+    },
+  })
+
+export const stubGetReasons = () =>
+  successStub({
+    method: 'GET',
+    urlPattern: '/transfer-scheduler-api/reference-data/transfer-reason',
+    response: {
+      items: [
+        {
+          code: 'R1',
+          description: 'Reason One',
+        },
+        {
+          code: 'R2',
+          description: 'Reason Two',
+        },
+      ],
     },
   })
