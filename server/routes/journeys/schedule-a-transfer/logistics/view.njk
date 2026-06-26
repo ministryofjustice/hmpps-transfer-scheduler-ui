@@ -1,0 +1,33 @@
+{% extends "partials/layout.njk" %}
+{% from "govuk/components/select/macro.njk" import govukSelect %}
+{% from "govuk/components/button/macro.njk" import govukButton %}
+
+{% set pageTitle = 'What type of escorted transfer is this - Schedule a transfer' %}
+
+{% block meta %}
+  <meta name="autocompleteElements" content="logistics"/>
+{% endblock %}
+
+{% block innerContent %}
+  <div class="govuk-width-container">
+    <span class="govuk-caption-l">Schedule a transfer</span>
+
+    <form method="post">
+      <input type="hidden" name="_csrf" value="{{ csrfToken }}" />
+
+      {{ govukSelect({
+        id: "logistics",
+        name: "logistics",
+        label: { text: "What type of escorted transfer is this?", classes: "govuk-label--l", isPageHeading: true },
+        items: options | fromCodedDescription | addSelectValue('') | setSelectedValue(logistics),
+        errorMessage: validationErrors | findError('logistics')
+      }) }}
+
+      {{ govukButton({
+        classes: 'govuk-!-margin-top-6',
+        text: "Continue",
+        preventDoubleClick: true
+      }) }}
+    </form>
+  </div>
+{% endblock %}

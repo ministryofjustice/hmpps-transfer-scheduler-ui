@@ -31,3 +31,21 @@ export const stubGetReasons = () =>
       ],
     },
   })
+
+export const stubGetLogistics = () =>
+  successStub({
+    method: 'GET',
+    urlPattern: '/transfer-scheduler-api/reference-data/transfer-logistics',
+    response: {
+      items: [
+        {
+          code: 'L1',
+          description: 'Logistics One',
+        },
+        {
+          code: 'L2',
+          description: 'Logistics Two',
+        },
+      ],
+    },
+  })
