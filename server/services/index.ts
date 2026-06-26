@@ -10,6 +10,7 @@ import CacheInterface from '../data/cache/cacheInterface'
 import InMemoryCache from '../data/cache/inMemoryCache'
 import RedisCache from '../data/cache/redisCache'
 import { populatePrisonerDetails } from '../middleware/populatePrisonerDetails'
+import PrisonRegisterService from './apis/prisonRegisterService'
 
 export const services = () => {
   const { applicationInfo, hmppsAuditClient, hmppsAuthClient } = dataAccess()
@@ -30,6 +31,7 @@ export const services = () => {
     applicationInfo,
     auditService: new AuditService(hmppsAuditClient),
     prisonApiService: new PrisonApiService(hmppsAuthClient),
+    prisonRegisterService: new PrisonRegisterService(hmppsAuthClient, cacheStore),
     prisonerSearchService,
     cacheStore,
     populatePrisonerMiddleware: populatePrisonerDetails(prisonPermissionsService),

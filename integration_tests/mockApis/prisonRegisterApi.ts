@@ -1,4 +1,4 @@
-import { stubFor } from './wiremock'
+import { stubFor, successStub } from './wiremock'
 
 export const stubPrisonRegisterApiHealth = () =>
   stubFor({
@@ -11,4 +11,20 @@ export const stubPrisonRegisterApiHealth = () =>
       headers: { 'Content-Type': 'application/json;charset=UTF-8' },
       jsonBody: { status: 'UP' },
     },
+  })
+
+export const stubGetPrisons = () =>
+  successStub({
+    method: 'GET',
+    urlPattern: '/prison-register-api/prisons',
+    response: [
+      {
+        prisonId: 'P1',
+        prisonName: 'Prison One',
+      },
+      {
+        prisonId: 'P2',
+        prisonName: 'Prison Two',
+      },
+    ],
   })
