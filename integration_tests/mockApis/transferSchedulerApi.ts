@@ -1,5 +1,7 @@
 import type { SuperAgentRequest } from 'superagent'
 import { stubFor, successStub } from './wiremock'
+import { components } from '../../server/@types/transferSchedulerApi'
+import { testTransfer } from '../data/testData'
 
 export const stubTransferSchedulerPing = (httpStatus = 200): SuperAgentRequest =>
   stubFor({
@@ -48,4 +50,14 @@ export const stubGetLogistics = () =>
         },
       ],
     },
+  })
+
+export const stubPostScheduledTransfer = (
+  prisonNumber: string,
+  result: components['schemas']['Transfer'] = testTransfer,
+) =>
+  successStub({
+    method: 'POST',
+    urlPattern: `/transfer-scheduler-api/transfers/${prisonNumber}`,
+    response: result,
   })

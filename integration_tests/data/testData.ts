@@ -1,3 +1,5 @@
+import { components } from '../../server/@types/transferSchedulerApi'
+
 export const testPrisonerDetails = {
   prisonerNumber: 'A9965EA',
   bookingId: '1223167',
@@ -46,4 +48,15 @@ export const testPrisonerDetails = {
   phoneNumbers: [],
   identifiers: [],
   allConvictedOffences: [],
+}
+
+export const testTransfer: components['schemas']['Transfer'] = {
+  id: 'transfer-id',
+  destination: { code: 'P1', name: 'Prison One' },
+  logistics: { code: 'L1', description: 'Logistics One' },
+  person: { identifier: testPrisonerDetails.prisonerNumber },
+  prison: { code: 'LEI', name: 'Leeds' },
+  reason: { code: 'R1', description: 'Reason One' },
+  schedule: { start: '2001-01-01T09:15:00', comments: 'Lorem ipsum' },
+  status: { code: '', description: '' },
 }

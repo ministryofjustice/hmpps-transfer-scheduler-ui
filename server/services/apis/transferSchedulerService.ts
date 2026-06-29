@@ -37,4 +37,14 @@ export default class TransferSchedulerService {
         .get<components['schemas']['ReferenceDataResponse']>({ path: `/reference-data/${domain}` })
     ).items
   }
+
+  postScheduledTransfer(
+    context: ApiRequestContext,
+    prisonNumber: string,
+    request: components['schemas']['CreateTransferRequest'],
+  ) {
+    return this.apiClient
+      .withContext(context)
+      .post<components['schemas']['Transfer']>({ path: `/transfers/${prisonNumber}`, data: request })
+  }
 }
