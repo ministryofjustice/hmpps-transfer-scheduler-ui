@@ -1,6 +1,6 @@
 import { Request, Response } from 'express'
 
-export class ScheduleTransferConfirmationController0 {
+export class ScheduleTransferConfirmationController {
   GET = async (req: Request, res: Response) => {
     req.journeyData.journeyCompleted = true
 
