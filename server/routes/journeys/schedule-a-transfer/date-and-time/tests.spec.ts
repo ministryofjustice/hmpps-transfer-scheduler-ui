@@ -49,9 +49,9 @@ test.describe('/schedule-a-transfer/date-and-time', () => {
 
     // verify validation error
     await testPage.clickContinue()
-    await testPage.link('Enter or select a date').click()
+    await testPage.link('Enter or select a transfer date').click()
     await expect(testPage.dateField()).toBeFocused()
-    await testPage.link('Enter a time').click()
+    await testPage.link('Enter a transfer time').click()
     await expect(testPage.hourField()).toBeFocused()
 
     await testPage.dateField().fill('1/1/1999')
@@ -61,14 +61,30 @@ test.describe('/schedule-a-transfer/date-and-time', () => {
 
     await testPage.link('Transfer date must be today or in the future').click()
     await expect(testPage.dateField()).toBeFocused()
-    await testPage.link('Hour must be between 00 and 23').click()
+    await testPage.link('Transfer hour must be between 00 and 23').click()
     await expect(testPage.hourField()).toBeFocused()
-    await testPage.link('Minute must be between 00 and 59').click()
+    await testPage.link('Transfer minute must be between 00 and 59').click()
     await expect(testPage.minuteField()).toBeFocused()
 
-    // verify next page routing
+    await testPage.dateField().fill('1999-1-1')
+    await testPage.clickContinue()
+    await testPage.link('Enter the transfer date in the correct format, for example, 17/5/2024').click()
+    await expect(testPage.dateField()).toBeFocused()
+
+    await testPage.dateField().fill('32/2/2001')
+    await testPage.clickContinue()
+    await testPage.link('Enter a real date for the transfer date').click()
+    await expect(testPage.dateField()).toBeFocused()
+
     const today = formatInputDate(new Date().toISOString())!
     await testPage.dateField().fill(today)
+    await testPage.hourField().fill('0')
+    await testPage.minuteField().fill('0')
+    await testPage.clickContinue()
+    await testPage.link('Start time must be in the future').click()
+    await expect(testPage.hourField()).toBeFocused()
+
+    // verify next page routing
     await testPage.hourField().fill('23')
     await testPage.minuteField().fill('59')
     await testPage.clickContinue()

@@ -1,5 +1,6 @@
 import { z } from 'zod'
 import { $ZodSuperRefineIssue } from 'zod/v4/core'
+import { isToday } from 'date-fns'
 import { createSchema } from '../../../../middleware/validation/validationMiddleware'
 import { checkTodayOrFuture, validateTransformDate } from '../../../../utils/validations/validateDatePicker'
 import { parseHour, parseMinute } from '../../../../utils/validations/validateTime'
@@ -11,8 +12,7 @@ export const schema = createSchema({
 }).transform(({ startDate, startTimeHour, startTimeMinute }, ctx) => {
   const parsedStartDate = validateTransformDate(
     checkTodayOrFuture,
-    'Enter or select a date',
-    'Enter or select a valid date',
+    'transfer date',
     'Transfer date must be today or in the future',
   ).safeParse(startDate)
 
@@ -26,7 +26,7 @@ export const schema = createSchema({
   if (!startTimeHour?.length) {
     ctx.addIssue({
       code: 'custom',
-      message: 'Enter a time',
+      message: 'Enter a transfer time',
       path: ['startTimeHour'],
     })
     if (!startTimeMinute?.length) {
@@ -36,7 +36,7 @@ export const schema = createSchema({
   } else if (!startTimeMinute?.length) {
     ctx.addIssue({
       code: 'custom',
-      message: 'Enter a time',
+      message: 'Enter a transfer time',
       path: ['startTimeMinute'],
     })
   }
@@ -44,19 +44,33 @@ export const schema = createSchema({
   if (parsedHour?.error) {
     ctx.addIssue({
       code: 'custom',
-      message: 'Hour must be between 00 and 23',
+      message: 'Transfer hour must be between 00 and 23',
       path: ['startTimeHour'],
     })
   }
   if (parsedMinute?.error) {
     ctx.addIssue({
       code: 'custom',
-      message: 'Minute must be between 00 and 59',
+      message: 'Transfer minute must be between 00 and 59',
       path: ['startTimeMinute'],
     })
   }
 
   if (parsedStartDate?.success && parsedHour?.success && parsedMinute?.success) {
+    if (
+      isToday(new Date(parsedStartDate.data)) &&
+      `${parsedHour.data}:${parsedMinute.data}` <= new Date().toLocaleTimeString('en-GB').substring(0, 5)
+    ) {
+      ctx.addIssue({
+        code: 'custom',
+        message: 'Start time must be in the future',
+        path: ['startTimeHour'],
+      })
+      // empty error message to highlight both input fields with error
+      ctx.addIssue({ code: 'custom', message: '', path: ['startTime'] })
+      return z.NEVER
+    }
+
     return {
       startDate: parsedStartDate.data,
       startTimeHour: parsedHour.data,

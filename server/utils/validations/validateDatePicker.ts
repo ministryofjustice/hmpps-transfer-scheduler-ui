@@ -1,22 +1,22 @@
 import { z } from 'zod'
 import { isValid, parseISO, startOfDay, isBefore } from 'date-fns'
+import { addArticle } from '../formatUtils'
 
-export const transformOptionalDate = z
-  .string()
-  .optional()
-  .transform(val => {
-    if (!val) return undefined
-    const parts = val.split(/[-/]/)
-    if (parts[2]?.length !== 4 || !parts[1]?.length || !parts[0]?.length) return undefined
-    return `${parts[2]}-${parts[1].padStart(2, '0')}-${parts[0].padStart(2, '0')}`
-  })
-
-export const validateDateBase = (missingDateErrorMsg: string, invalidDateErrorMsg: string) => {
+export const validateDateBase = (dateName: string) => {
   return z
-    .string({ message: missingDateErrorMsg })
-    .min(1, { message: missingDateErrorMsg })
+    .string({ message: `Enter or select ${addArticle(dateName)}` })
+    .min(1, { message: `Enter or select ${addArticle(dateName)}` })
     .transform(value => value.split(/[-/]/).reverse())
-    .transform(value => {
+    .transform((value, ctx) => {
+      if (
+        value.length !== 3 ||
+        !/[0-9]{4}/.test(value[0]!) ||
+        !/[0-9]{1,2}/.test(value[1]!) ||
+        !/[0-9]{1,2}/.test(value[2]!)
+      ) {
+        ctx.addIssue({ code: 'custom', message: `Enter the ${dateName} in the correct format, for example, 17/5/2024` })
+        return z.NEVER
+      }
       // Prefix month and date with a 0 if needed
       const month = value[1]?.length === 2 ? value[1] : `0${value[1]}`
       const date = value[2]?.length === 2 ? value[2] : `0${value[2]}`
@@ -25,7 +25,7 @@ export const validateDateBase = (missingDateErrorMsg: string, invalidDateErrorMs
     .transform(date => parseISO(date))
     .check(ctx => {
       if (!isValid(ctx.value)) {
-        ctx.issues.push({ code: 'custom', message: invalidDateErrorMsg, input: ctx.value })
+        ctx.issues.push({ code: 'custom', message: `Enter a real date for the ${dateName}`, input: ctx.value })
       }
     })
 }
@@ -34,11 +34,10 @@ type DateChecker = (date: Date) => boolean
 
 export const validateTransformDate = (
   checker: DateChecker | null,
-  missingDateErrorMsg: string,
-  invalidDateErrorMsg: string,
+  dateName: string,
   checkFailErrorMsg: string = '',
 ) => {
-  return validateDateBase(missingDateErrorMsg, invalidDateErrorMsg)
+  return validateDateBase(dateName)
     .check(ctx => {
       if (checker && !checker(ctx.value)) {
         ctx.issues.push({ code: 'custom', message: checkFailErrorMsg, input: ctx.value })
@@ -46,28 +45,6 @@ export const validateTransformDate = (
     })
     .transform(date => date.toISOString().substring(0, 10))
 }
-
-export const validateTransformOptionalDate = (invalidDateErrorMsg: string) =>
-  z
-    .string()
-    .optional()
-    .transform((val, ctx) => {
-      if (!val) return null
-      if (!val.length) return null
-
-      const date = parseISO(
-        `${val
-          .split('/')
-          .reverse()
-          .map(part => part.padStart(2, '0'))
-          .join('-')}T00:00:00Z`,
-      )
-      if (!isValid(date)) {
-        ctx.issues.push({ code: 'custom', message: invalidDateErrorMsg, input: ctx.value })
-        return z.NEVER
-      }
-      return date.toISOString().substring(0, 10)
-    })
 
 export const getMinDateChecker = (minDate: Date) => (date: Date) => !isBefore(startOfDay(date), startOfDay(minDate))
 

@@ -8,10 +8,13 @@ export class ScheduleTransferDestinationController {
   GET = async (req: Request, res: Response) => {
     const { destination } = req.journeyData.scheduleTransfer!
 
+    const prisons = await this.prisonRegisterService.getPrisons({ res })
+    if (!prisons) throw new Error('Unable to get list of prisons')
+
     res.render('schedule-a-transfer/destination/view', {
       backUrl: 'date-and-time',
       destination: res.locals.formResponses?.['destination'] ?? destination?.code,
-      prisons: await this.prisonRegisterService.getPrisons({ res }),
+      prisons: prisons.filter(({ code }) => code !== res.locals.user.getActiveCaseloadId()),
     })
   }
 

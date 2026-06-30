@@ -58,3 +58,7 @@ export const formatRefDataName = (val: string) => {
   const [firstWord, ...otherWords] = val.split(/\s+/)
   return [lowercaseExceptAcronym(firstWord ?? ''), ...otherWords].join(' ')
 }
+
+export const addArticle = (word: string) => {
+  return word && (['a', 'e', 'i', 'o', 'u', 'A', 'E', 'I', 'O', 'U'].includes(word[0]!) ? 'an ' : 'a ') + word
+}
