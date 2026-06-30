@@ -34,5 +34,5 @@ type ScheduleTransferJourney = {
   reason: CodedDescription
   logistics: CodedDescription
   comments: string | null
-  result: components['schemas']['ReferenceId']
+  result: components['schemas']['Transfer']
 }>

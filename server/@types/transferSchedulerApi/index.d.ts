@@ -4,6 +4,26 @@
  */
 
 export interface paths {
+  '/transfers/{personIdentifier}': {
+    parameters: {
+      query?: never
+      header?: never
+      path?: never
+      cookie?: never
+    }
+    get?: never
+    put?: never
+    /**
+     * @description Requires one of the following roles:
+     *     * ROLE_TRANSFERS__TRANSFER_SCHEDULER_UI
+     */
+    post: operations['initiateTransfer']
+    delete?: never
+    options?: never
+    head?: never
+    patch?: never
+    trace?: never
+  }
   '/reference-data/{domain}': {
     parameters: {
       query?: never
@@ -28,9 +48,65 @@ export interface paths {
 export type webhooks = Record<string, never>
 export interface components {
   schemas: {
+    CreatePlanRequest: {
+      /** Format: date */
+      requestedOn: string
+      priorityCode: string
+      comments?: string | null
+    }
+    CreateScheduleRequest: {
+      /** Format: date-time */
+      start: string
+      comments?: string | null
+    }
+    CreateTransferRequest: {
+      reasonCode: string
+      destinationCode?: string | null
+      logisticsCode?: string | null
+      plan?: components['schemas']['CreatePlanRequest'] | null
+      schedule?: components['schemas']['CreateScheduleRequest'] | null
+      comments?: string | null
+    }
     CodedDescription: {
       code: string
       description: string
+    }
+    Movement: {
+      /** Format: date-time */
+      occurredAt: string
+      comments?: string | null
+    }
+    Person: {
+      identifier: string
+    }
+    Plan: {
+      /** Format: date */
+      requestedOn: string
+      priority: components['schemas']['CodedDescription']
+      comments?: string | null
+    }
+    Prison: {
+      code: string
+      name: string
+    }
+    Schedule: {
+      /** Format: date-time */
+      start: string
+      comments?: string | null
+    }
+    Transfer: {
+      /** Format: uuid */
+      id: string
+      person: components['schemas']['Person']
+      prison: components['schemas']['Prison']
+      status: components['schemas']['CodedDescription']
+      reason: components['schemas']['CodedDescription']
+      destination?: components['schemas']['Prison'] | null
+      logistics?: components['schemas']['CodedDescription'] | null
+      plan?: components['schemas']['Plan'] | null
+      schedule?: components['schemas']['Schedule'] | null
+      movement?: components['schemas']['Movement'] | null
+      comments?: string | null
     }
     ReferenceDataResponse: {
       domain: components['schemas']['CodedDescription']
@@ -45,6 +121,32 @@ export interface components {
 }
 export type $defs = Record<string, never>
 export interface operations {
+  initiateTransfer: {
+    parameters: {
+      query?: never
+      header?: never
+      path: {
+        personIdentifier: string
+      }
+      cookie?: never
+    }
+    requestBody: {
+      content: {
+        'application/json': components['schemas']['CreateTransferRequest']
+      }
+    }
+    responses: {
+      /** @description Created */
+      201: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          '*/*': components['schemas']['Transfer']
+        }
+      }
+    }
+  }
   getDomain: {
     parameters: {
       query?: never

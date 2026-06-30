@@ -1,0 +1,62 @@
+{% extends "partials/layout.njk" %}
+{% from "govuk/components/panel/macro.njk" import govukPanel %}
+{% from "govuk/components/summary-list/macro.njk" import govukSummaryList %}
+
+{% set pageTitle = 'Transfer scheduled' %}
+
+{% block innerContent %}
+  <div class="govuk-width-container">
+    {{ govukPanel({
+      titleText: prisonerDetails | firstNameSpaceLastName + " has been scheduled for a transfer",
+      text: ""
+    }) }}
+
+    {{ govukSummaryList({
+      classes: "govuk-!-margin-bottom-7",
+      rows: [
+        {
+          key: { text: "Date" },
+          value: { text: result.schedule.start | formatDate("d MMMM yyyy") }
+        },
+        {
+          key: { text: "Time" },
+          value: { text: result.schedule.start | formatDate("HH:mm") }
+        },
+        {
+          key: { text: "Destination" },
+          value: { text: result.destination.name  }
+        },
+        {
+          key: { text: "Reason" },
+          value: { text: result.reason.description  }
+        },
+        {
+          key: { text: "Escort details" },
+          value: { text: result.logistics.description  }
+        },
+        {
+          key: { text: "Comments" },
+          value: { text: (result.schedule.comments or 'Not provided') | escape | nl2br }
+        }
+      ]
+    }) }}
+
+    <h2 class="govuk-heading-m">What you can do next</h2>
+
+    <p class="govuk-body">
+      <a class="govuk-link govuk-link--no-visited-state" href="/scheduled-transfers?history={{ historyQuery }}">View and manage transfers</a>
+    </p>
+
+    <p class="govuk-body">
+      <a class="govuk-link govuk-link--no-visited-state" href="/search-prisoner/schedule-a-transfer?history={{ historyQuery }}">Transfer another prisoner</a>
+    </p>
+
+    <p class="govuk-body">
+      <a class="govuk-link govuk-link--no-visited-state" href="/planned-transfers?history={{ historyQuery }}">Manage planned transfers</a>
+    </p>
+
+    <p class="govuk-body">
+      <a class="govuk-link govuk-link--no-visited-state" href="{{ digitalPrisonServicesUrl }}">Return to the DPS homepage</a>
+    </p>
+  </div>
+{% endblock %}
