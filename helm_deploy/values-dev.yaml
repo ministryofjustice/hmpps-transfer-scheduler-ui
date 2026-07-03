@@ -2,8 +2,6 @@
 # Per environment values which override defaults in hmpps-transfer-scheduler-ui/values.yaml
 
 generic-service:
-  replicaCount: 2
-
   ingress:
     host: transfer-scheduler-dev.hmpps.service.justice.gov.uk
 
