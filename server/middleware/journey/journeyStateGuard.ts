@@ -1,10 +1,33 @@
 import type { NextFunction, Request, Response } from 'express'
 import { validate } from 'uuid'
+import { telemetry } from '@ministryofjustice/hmpps-azure-telemetry'
 
 export type JourneyStateGuard = { [pageName: string]: (req: Request) => string | undefined }
 
 export function isMissingValues<T>(obj: T, keys: Array<keyof T>): boolean {
   return keys.some(key => obj?.[key] === undefined)
+}
+
+const recordJourneyGuardFailedEvent = (
+  res: Response,
+  failReason: 'PRISONER_MISSING' | 'INVALID_STATE',
+  flow: string | undefined,
+  requestedPage: string | undefined,
+  redirectTo: string | undefined,
+) => {
+  if (!process.env.APPLICATIONINSIGHTS_CONNECTION_STRING) {
+    return
+  }
+  telemetry.trackEvent('JourneyStateGuardCheckFailed', {
+    failReason,
+    username: res.locals.user.displayName,
+    ...(res.locals.user.activeCaseLoad?.caseLoadId && {
+      activeCaseLoadId: res.locals.user.activeCaseLoad.caseLoadId,
+    }),
+    ...(flow ? { flow } : {}),
+    ...(requestedPage ? { requestedPage } : {}),
+    ...(redirectTo ? { redirectTo } : {}),
+  })
 }
 
 export default function journeyStateGuard(rules: JourneyStateGuard) {
@@ -28,6 +51,7 @@ export default function journeyStateGuard(rules: JourneyStateGuard) {
 
     if (!res.locals.prisonerDetails) {
       // The relevant /start for this journey has not been visited
+      recordJourneyGuardFailedEvent(res, 'PRISONER_MISSING', flow, requestedPage, '/')
       return res.redirect(`/`)
     }
 
@@ -55,6 +79,7 @@ export default function journeyStateGuard(rules: JourneyStateGuard) {
         if (requestedPage === latestValidPage) {
           return next()
         }
+        recordJourneyGuardFailedEvent(res, 'INVALID_STATE', flow, requestedPage, redirectTo)
         return res.redirect(`/${uuid}/${flow}${redirectTo}`)
       }
 
@@ -69,6 +94,7 @@ export default function journeyStateGuard(rules: JourneyStateGuard) {
         if (requestedPage === latestValidPage) {
           return next()
         }
+        recordJourneyGuardFailedEvent(res, 'INVALID_STATE', flow, requestedPage, redirectTo)
         return res.redirect(`/${uuid}/${flow}${redirectTo}`)
       }
       latestValidPage = targetRedirect.startsWith('/') ? targetRedirect.split('/')[1] || '' : targetRedirect
