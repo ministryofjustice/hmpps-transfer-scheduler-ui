@@ -12,6 +12,7 @@ import RedisCache from '../data/cache/redisCache'
 import { populatePrisonerDetails } from '../middleware/populatePrisonerDetails'
 import PrisonRegisterService from './apis/prisonRegisterService'
 import TransferSchedulerService from './apis/transferSchedulerService'
+import { telemetryWrapper } from '../utils/telemetryWrapper'
 
 export const services = () => {
   const { applicationInfo, hmppsAuditClient, hmppsAuthClient } = dataAccess()
@@ -24,6 +25,8 @@ export const services = () => {
     prisonerSearchConfig: config.apis.prisonerSearchApi,
     authenticationClient: hmppsAuthClient,
     logger,
+    // @ts-expect-error cast hmpps-azure-telemetry into applicationinsight telemetry
+    telemetryClient: telemetryWrapper(),
   })
 
   const prisonerSearchService = new PrisonerSearchApiService(hmppsAuthClient, prisonPermissionsService)
