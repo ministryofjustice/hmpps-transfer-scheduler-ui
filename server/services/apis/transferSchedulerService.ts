@@ -47,4 +47,13 @@ export default class TransferSchedulerService {
       .withContext(context)
       .post<components['schemas']['Transfer']>({ path: `/transfers/${prisonNumber}`, data: request })
   }
+
+  searchTransfers(context: ApiRequestContext, request: components['schemas']['TransferPrisonSearchRequest']) {
+    return this.apiClient
+      .withContext({ ...context, readOnly: true })
+      .post<components['schemas']['TransferSearchResponse']>({
+        path: `/search/prisons/${context.res.locals.user.getActiveCaseloadId()}/transfers`,
+        data: request,
+      })
+  }
 }

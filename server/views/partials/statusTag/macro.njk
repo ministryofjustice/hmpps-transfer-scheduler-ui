@@ -1,0 +1,23 @@
+{% macro statusTag(transfer) %}
+  {% set status = transfer.status %}
+  {% switch status.code %}
+  {% case 'PLANNING' %}
+    {% set colour = " govuk-tag--grey" %}
+  {% case 'READY_TO_SCHEDULE' %}
+    {% set colour = "" %}
+  {% case 'SCHEDULED' %}
+    {% set colour = " govuk-tag--yellow" %}
+  {% case 'CANCELLED' %}
+    {% set colour = " govuk-tag--red" %}
+  {% case 'EXPIRED' %}
+    {% set colour = " govuk-tag--purple" %}
+  {% case 'IN_TRANSIT' %}
+    {% set colour = "" %}
+  {% case 'COMPLETED' %}
+    {% set colour = " govuk-tag--green" %}
+  {% default %}
+    {% set colour = '' %}
+  {% endswitch %}
+
+  <strong class='govuk-tag{{ colour }}'>{{ status.description }}</strong>
+{% endmacro %}

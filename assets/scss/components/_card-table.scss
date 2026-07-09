@@ -1,0 +1,50 @@
+.card-table-column {
+  box-sizing: border-box;
+  padding: 0 15px;
+  float: left;
+  margin-top: 15px;
+
+  &__50 {
+    width: 50%;
+  }
+
+  &__45 {
+    width: 45%;
+  }
+
+  &__40 {
+    width: 40%;
+  }
+
+  &__35 {
+    width: 35%;
+  }
+
+  &__30 {
+    width: 30%;
+  }
+
+  &__25 {
+    width: 25%;
+  }
+
+  &__20 {
+    width: 20%;
+  }
+
+  &__15 {
+    width: 15%;
+  }
+
+  &__10 {
+    width: 10%;
+  }
+
+  &__5 {
+    width: 5%;
+  }
+}
+
+.align-right {
+  text-align: right;
+}
