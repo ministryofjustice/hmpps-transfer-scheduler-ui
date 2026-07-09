@@ -117,6 +117,8 @@ export interface components {
     }
     Person: {
       identifier: string
+      firstName: string
+      lastName: string
     }
     Plan: {
       /** Format: date */

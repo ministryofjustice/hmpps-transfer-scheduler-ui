@@ -41,14 +41,22 @@ Parameters:
     </div>
 
     <div class="govuk-grid-row">
-      {% for column in columns %}
-        <div class="card-table-column card-table-column__{{ column.width }}">
-          <strong>{{ column.text }}</strong><br/>
-          {% if row.data[loop.index0].html %}
-            {{ row.data[loop.index0].html | safe }}
-          {% else %}
-            {{ row.data[loop.index0] }}
-          {% endif %}
+      {% set dataIdx = 0 %}
+
+      {% for rowOfColumns in columns %}
+        <div class="card-table-row">
+          {% for column in rowOfColumns %}
+            <div class="card-table-column card-table-column__{{ column.width }}">
+              <strong>{{ column.text }}</strong><br/>
+              {% if row.data[dataIdx].html %}
+                {{ row.data[dataIdx].html | safe }}
+              {% else %}
+                {{ row.data[dataIdx] }}
+              {% endif %}
+            </div>
+
+            {% set dataIdx = dataIdx + 1 %}
+          {% endfor %}
         </div>
       {% endfor %}
     </div>

@@ -208,12 +208,16 @@
 
           {{ cardTable({
             columns: [
-              { text: 'Destination', width: 35 },
-              { text: 'Date', width: 20 },
-              { text: 'Time', width: 45 },
-              { text: 'Reason', width: 35 },
-              { text: 'Escort details', width: 45 },
-              { text: '', width: 20 }
+              [
+                { text: 'Destination', width: 35 },
+                { text: 'Date', width: 20 },
+                { text: 'Time', width: 45 }
+              ],
+              [
+                { text: 'Reason', width: 35 },
+                { text: 'Escort details', width: 45 },
+                { text: '', width: 20 }
+              ]
             ],
             rows: rows
           }) }}
