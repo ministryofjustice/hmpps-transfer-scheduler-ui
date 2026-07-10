@@ -24,6 +24,46 @@ export interface paths {
     patch?: never
     trace?: never
   }
+  '/search/prisons/{prisonCode}/transfers': {
+    parameters: {
+      query?: never
+      header?: never
+      path?: never
+      cookie?: never
+    }
+    get?: never
+    put?: never
+    /**
+     * @description Requires one of the following roles:
+     *     * ROLE_TRANSFERS__TRANSFER_SCHEDULER_UI
+     */
+    post: operations['findTransfersForPrison']
+    delete?: never
+    options?: never
+    head?: never
+    patch?: never
+    trace?: never
+  }
+  '/transfers/{id}': {
+    parameters: {
+      query?: never
+      header?: never
+      path?: never
+      cookie?: never
+    }
+    /**
+     * @description Requires one of the following roles:
+     *     * ROLE_TRANSFERS__TRANSFER_SCHEDULER_UI
+     */
+    get: operations['retrieveTransfer']
+    put?: never
+    post?: never
+    delete?: never
+    options?: never
+    head?: never
+    patch?: never
+    trace?: never
+  }
   '/reference-data/{domain}': {
     parameters: {
       query?: never
@@ -65,7 +105,6 @@ export interface components {
       logisticsCode?: string | null
       plan?: components['schemas']['CreatePlanRequest'] | null
       schedule?: components['schemas']['CreateScheduleRequest'] | null
-      comments?: string | null
     }
     CodedDescription: {
       code: string
@@ -78,6 +117,8 @@ export interface components {
     }
     Person: {
       identifier: string
+      firstName: string
+      lastName: string
     }
     Plan: {
       /** Format: date */
@@ -106,7 +147,41 @@ export interface components {
       plan?: components['schemas']['Plan'] | null
       schedule?: components['schemas']['Schedule'] | null
       movement?: components['schemas']['Movement'] | null
-      comments?: string | null
+    }
+    TransferPrisonSearchRequest: {
+      /** Format: date */
+      start: string
+      /** Format: date */
+      end: string
+      query?: string | null
+      statusCodes?: (
+        | 'PLANNING'
+        | 'READY_TO_SCHEDULE'
+        | 'SCHEDULED'
+        | 'CANCELLED'
+        | 'EXPIRED'
+        | 'IN_TRANSIT'
+        | 'COMPLETED'
+      )[]
+      reasonCodes?: string[]
+      destinationCodes?: string[]
+      logisticsCodes?: string[]
+      /** @enum {string|null} */
+      priorityCode?: '1' | '2' | '3' | null
+      includeTransferred: boolean
+      /** Format: int32 */
+      page: number
+      /** Format: int32 */
+      size: number
+      sort: string
+    }
+    PageMetadata: {
+      /** Format: int64 */
+      totalElements: number
+    }
+    TransferSearchResponse: {
+      content: components['schemas']['Transfer'][]
+      metadata: components['schemas']['PageMetadata']
     }
     ReferenceDataResponse: {
       domain: components['schemas']['CodedDescription']
@@ -138,6 +213,54 @@ export interface operations {
     responses: {
       /** @description Created */
       201: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          '*/*': components['schemas']['Transfer']
+        }
+      }
+    }
+  }
+  findTransfersForPrison: {
+    parameters: {
+      query?: never
+      header?: never
+      path: {
+        prisonCode: string
+      }
+      cookie?: never
+    }
+    requestBody: {
+      content: {
+        'application/json': components['schemas']['TransferPrisonSearchRequest']
+      }
+    }
+    responses: {
+      /** @description OK */
+      200: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          '*/*': components['schemas']['TransferSearchResponse']
+        }
+      }
+    }
+  }
+  retrieveTransfer: {
+    parameters: {
+      query?: never
+      header?: never
+      path: {
+        id: string
+      }
+      cookie?: never
+    }
+    requestBody?: never
+    responses: {
+      /** @description OK */
+      200: {
         headers: {
           [name: string]: unknown
         }

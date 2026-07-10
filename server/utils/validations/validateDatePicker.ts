@@ -46,6 +46,32 @@ export const validateTransformDate = (
     .transform(date => date.toISOString().substring(0, 10))
 }
 
+export const validateTransformOptionalDate = (dateName: string) =>
+  z
+    .string()
+    .optional()
+    .transform((val, ctx) => {
+      if (!val) return null
+      if (!val.length) return null
+
+      const date = parseISO(
+        `${val
+          .split('/')
+          .reverse()
+          .map(part => part.padStart(2, '0'))
+          .join('-')}T00:00:00Z`,
+      )
+      if (!isValid(date)) {
+        ctx.issues.push({
+          code: 'custom',
+          message: `Enter the ${dateName} in the correct format, for example, 17/5/2024`,
+          input: ctx.value,
+        })
+        return z.NEVER
+      }
+      return date.toISOString().substring(0, 10)
+    })
+
 export const getMinDateChecker = (minDate: Date) => (date: Date) => !isBefore(startOfDay(date), startOfDay(minDate))
 
 export const checkTodayOrFuture = getMinDateChecker(new Date())

@@ -54,7 +54,7 @@ export const testTransfer: components['schemas']['Transfer'] = {
   id: 'transfer-id',
   destination: { code: 'P1', name: 'Prison One' },
   logistics: { code: 'L1', description: 'Logistics One' },
-  person: { identifier: testPrisonerDetails.prisonerNumber },
+  person: { identifier: testPrisonerDetails.prisonerNumber, firstName: 'PRISONER-NAME', lastName: 'PRISONER-SURNAME' },
   prison: { code: 'LEI', name: 'Leeds' },
   reason: { code: 'R1', description: 'Reason One' },
   schedule: { start: '2001-01-01T09:15:00', comments: 'Lorem ipsum' },

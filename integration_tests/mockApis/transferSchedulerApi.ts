@@ -61,3 +61,10 @@ export const stubPostScheduledTransfer = (
     urlPattern: `/transfer-scheduler-api/transfers/${prisonNumber}`,
     response: result,
   })
+
+export const stubSearchTransfers = (response: components['schemas']['TransferSearchResponse']) =>
+  successStub({
+    method: 'POST',
+    urlPattern: '/transfer-scheduler-api/search/prisons/LEI/transfers',
+    response,
+  })
