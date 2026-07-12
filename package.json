@@ -32,7 +32,7 @@
     "npm": "^11"
   },
   "dependencies": {
-    "@aws-sdk/client-sqs": "^3.1077.0",
+    "@aws-sdk/client-sqs": "^3.1079.0",
     "@ministryofjustice/frontend": "9.0.0",
     "@ministryofjustice/hmpps-auth-clients": "3.0.0",
     "@ministryofjustice/hmpps-azure-telemetry": "^1.0.2",
@@ -67,8 +67,8 @@
   },
   "devDependencies": {
     "@axe-core/playwright": "4.12.1",
-    "@emnapi/core": "1.11.1",
-    "@emnapi/runtime": "1.11.1",
+    "@emnapi/core": "1.11.2",
+    "@emnapi/runtime": "1.11.2",
     "@jgoz/esbuild-plugin-typecheck": "^4.0.4",
     "@ministryofjustice/eslint-config-hmpps": "^1.0.3",
     "@ministryofjustice/frontend-types": "2.0.0",
@@ -110,7 +110,7 @@
     "typescript": "^5.9.3"
   },
   "overrides": {
-    "@opentelemetry/core": "2.8.0",
+    "@opentelemetry/core": "2.9.0",
     "js-yaml": "4.3.0"
   }
 }
