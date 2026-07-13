@@ -13,6 +13,7 @@ import { populatePrisonerDetails } from '../middleware/populatePrisonerDetails'
 import PrisonRegisterService from './apis/prisonRegisterService'
 import TransferSchedulerService from './apis/transferSchedulerService'
 import { telemetryWrapper } from '../utils/telemetryWrapper'
+import { populateTransfer } from '../middleware/permissions/populateTransfer'
 
 export const services = () => {
   const { applicationInfo, hmppsAuditClient, hmppsAuthClient } = dataAccess()
@@ -30,16 +31,17 @@ export const services = () => {
   })
 
   const prisonerSearchService = new PrisonerSearchApiService(hmppsAuthClient, prisonPermissionsService)
-
+  const transferSchedulerService = new TransferSchedulerService(hmppsAuthClient)
   return {
     applicationInfo,
     auditService: new AuditService(hmppsAuditClient),
     prisonApiService: new PrisonApiService(hmppsAuthClient),
     prisonRegisterService: new PrisonRegisterService(hmppsAuthClient, cacheStore),
-    transferSchedulerService: new TransferSchedulerService(hmppsAuthClient),
+    transferSchedulerService,
     prisonerSearchService,
     cacheStore,
     populatePrisonerMiddleware: populatePrisonerDetails(prisonPermissionsService),
+    populateTransferMiddleware: populateTransfer(transferSchedulerService, prisonerSearchService),
   }
 }
 

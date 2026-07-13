@@ -56,4 +56,28 @@ export default class TransferSchedulerService {
         data: request,
       })
   }
+
+  async getTransfer(context: ApiRequestContext, transferId: string) {
+    try {
+      return await this.apiClient.withContext(context).get<components['schemas']['Transfer']>({
+        path: `/transfers/${transferId}`,
+      })
+    } catch (error) {
+      return this.handleGetError(error)
+    }
+  }
+
+  async getTransferAuditHistory(_context: ApiRequestContext, _transferId: string) {
+    try {
+      return null
+    } catch (error) {
+      return this.handleGetError(error)
+    }
+  }
+
+  private handleGetError = (error: unknown) => {
+    const statusCode = (error as { data?: { status?: number } })?.data?.status
+    if (statusCode && statusCode >= 400 && statusCode <= 499) return null
+    throw error
+  }
 }

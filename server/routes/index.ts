@@ -14,6 +14,7 @@ import { SearchPrisonerRoutes } from './search-prisoner/routes'
 import insertJourneyIdentifier from '../middleware/journey/insertJourneyIdentifier'
 import { JourneyRoutes } from './journeys/routes'
 import { BrowseScheduledTransfersRoutes } from './scheduled-transfers/routes'
+import { ManageTransferRoutes } from './transfers/routes'
 
 export default function routes(services: Services): Router {
   const { router, get } = BaseRouter()
@@ -57,6 +58,7 @@ export default function routes(services: Services): Router {
     requirePermissions(UserPermissionLevel.VIEW_ONLY),
     BrowseScheduledTransfersRoutes(services),
   )
+  router.use('/transfers', requirePermissions(UserPermissionLevel.VIEW_ONLY), ManageTransferRoutes(services))
 
   router.use(insertJourneyIdentifier())
   router.use('/:journeyId', JourneyRoutes(services))

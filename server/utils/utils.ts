@@ -1,6 +1,7 @@
 import { HTTPError } from 'superagent'
 import { CodedDescription } from '../@types/journeys'
 import config from '../config'
+import { components } from '../@types/transferSchedulerApi'
 
 const properCase = (word: string): string =>
   word.length >= 1 ? word[0]!.toUpperCase() + word.toLowerCase().slice(1) : word
@@ -117,3 +118,12 @@ export const getApiUserErrorMessage = (error: HTTPError) => {
     return 'API error'
   }
 }
+
+export const isTransferEditable = (transfer: components['schemas']['Transfer']) =>
+  ['PLANNING', 'READY_TO_SCHEDULE', 'SCHEDULED', 'IN_TRANSIT'].includes(transfer.status.code)
+
+export const isTransferCancellable = (transfer: components['schemas']['Transfer']) =>
+  ['PLANNING', 'READY_TO_SCHEDULE', 'SCHEDULED'].includes(transfer.status.code)
+
+export const isTransferScheduled = (transfer: components['schemas']['Transfer']) =>
+  !!(!['PLANNING', 'READY_TO_SCHEDULE'].includes(transfer.status.code) && transfer.schedule)
