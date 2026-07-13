@@ -2,7 +2,6 @@ import express, { Request, Response, NextFunction } from 'express'
 
 import { getFrontendComponents, retrieveCaseLoadData } from '@ministryofjustice/hmpps-connect-dps-components'
 import * as Sentry from '@sentry/node'
-import './sentry'
 
 import nunjucksSetup from './utils/nunjucksSetup'
 import errorHandler from './errorHandler'
@@ -27,6 +26,7 @@ import PrisonerImageRoutes from './routes/prisonerImageRoutes'
 import { handleApiError } from './middleware/validation/handleApiError'
 import sentryMiddleware from './middleware/sentryMiddleware'
 import { AuthorisedRoles } from './middleware/permissions/populateUserPermissions'
+import addUsernameAndCaseloadToTelemetry from './utils/azureAppInsights'
 
 export default function createApp(services: Services): express.Application {
   const app = express()
@@ -90,6 +90,8 @@ export default function createApp(services: Services): express.Application {
       prisonApiConfig: config.apis.prisonApi,
     }),
   )
+
+  app.use(addUsernameAndCaseloadToTelemetry())
 
   app.use(routes(services))
 
