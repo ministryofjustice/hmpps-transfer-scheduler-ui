@@ -3,6 +3,7 @@
 {% from "govuk/components/tabs/macro.njk" import govukTabs %}
 {% from "govuk/components/button/macro.njk" import govukButton %}
 {% from "partials/auditHistory/macro.njk" import auditHistory %}
+{% from "partials/statusTag/macro.njk" import statusTag %}
 
 {% set fullWidth = true %}
 {% if isScheduled %}
@@ -17,8 +18,7 @@
   <div class="govuk-grid-row">
     <div class="govuk-grid-column-two-thirds">
       <span class="govuk-caption-l">{{ caption }}</span>
-      <h1 class="govuk-heading-l">Manage {{ prisonerDetails | firstNameSpaceLastName | possessiveComma }} {{ 'schedule transfer' if isScheduled else 'planned transfer' }}</h1>
-
+      <h1 class="govuk-heading-l">Manage {{ prisonerDetails | firstNameSpaceLastName | possessiveComma }} {{ 'scheduled transfer' if isScheduled else 'planned transfer' }}</h1>
 
       {% if prisonRegistryError %}
         <div class="moj-api-error govuk-!-margin-bottom-6">
@@ -85,6 +85,10 @@
                 key: { text: "Comments" },
                 value: { text: (transfer.schedule.comments or 'Not provided') | escape | nl2br },
                 actions: { items: [{ href: baseEditUrl + "/comments", text: "Change", visuallyHiddenText: "comments" }] }
+              },
+              {
+                key: { text: 'Status' },
+                value: { html: statusTag(transfer) }
               }
             ] | showChangeLinksIf(user | hasPermission('MANAGE') and editable)
           }) }

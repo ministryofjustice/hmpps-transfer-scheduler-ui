@@ -13,13 +13,13 @@ export class BaseTestPage {
     backUrl,
   }: {
     pageUrl: RegExp
-    title: string
+    title: string | RegExp
     heading: string | RegExp
-    caption?: string
+    caption?: string | RegExp
     backUrl?: RegExp
   }) {
     expect(this.stripHistoryParam(this.page.url())).toMatch(pageUrl)
-    expect(await this.page.title()).toEqual(title)
+    expect(await this.page.title()).toMatch(title)
     await expect(this.page.locator('h1')).toContainText(heading)
     if (caption) {
       await expect(this.page.locator('.govuk-caption-l')).toContainText(caption)
