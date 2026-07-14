@@ -120,7 +120,7 @@ export const getApiUserErrorMessage = (error: HTTPError) => {
 }
 
 export const isTransferEditable = (transfer: components['schemas']['Transfer']) =>
-  ['PLANNING', 'READY_TO_SCHEDULE', 'SCHEDULED', 'IN_TRANSIT'].includes(transfer.status.code)
+  ['PLANNING', 'READY_TO_SCHEDULE', 'SCHEDULED'].includes(transfer.status.code)
 
 export const isTransferCancellable = (transfer: components['schemas']['Transfer']) =>
   ['PLANNING', 'READY_TO_SCHEDULE', 'SCHEDULED'].includes(transfer.status.code)
