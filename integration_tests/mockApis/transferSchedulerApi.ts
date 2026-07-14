@@ -68,3 +68,17 @@ export const stubSearchTransfers = (response: components['schemas']['TransferSea
     urlPattern: '/transfer-scheduler-api/search/prisons/LEI/transfers',
     response,
   })
+
+export const stubGetTransfer = (response: components['schemas']['Transfer'] = testTransfer) =>
+  successStub({
+    method: 'GET',
+    urlPattern: `/transfer-scheduler-api/transfers/${response.id}`,
+    response,
+  })
+
+export const stubGetTransferHistory = (transferId: string, response: components['schemas']['AuditHistory']) =>
+  successStub({
+    method: 'GET',
+    urlPattern: `/transfer-scheduler-api/transfers/${transferId}/history`,
+    response,
+  })

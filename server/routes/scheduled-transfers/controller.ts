@@ -36,7 +36,6 @@ export class BrowseScheduledTransfersController {
           sort: resQuery.validated.sort ?? this.DEFAULT_SORT,
           page: resQuery.validated.page || 1,
           size: this.PAGE_SIZE,
-          includeTransferred: true,
         }
 
         if (resQuery.validated.destination) requestBody.destinationCodes = [resQuery.validated.destination]

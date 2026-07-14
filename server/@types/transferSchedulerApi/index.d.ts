@@ -64,6 +64,26 @@ export interface paths {
     patch?: never
     trace?: never
   }
+  '/transfers/{id}/history': {
+    parameters: {
+      query?: never
+      header?: never
+      path?: never
+      cookie?: never
+    }
+    /**
+     * @description Requires one of the following roles:
+     *     * ROLE_TRANSFERS__TRANSFER_SCHEDULER_UI
+     */
+    get: operations['retrieveHistory']
+    put?: never
+    post?: never
+    delete?: never
+    options?: never
+    head?: never
+    patch?: never
+    trace?: never
+  }
   '/reference-data/{domain}': {
     parameters: {
       query?: never
@@ -168,7 +188,8 @@ export interface components {
       logisticsCodes?: string[]
       /** @enum {string|null} */
       priorityCode?: '1' | '2' | '3' | null
-      includeTransferred: boolean
+      /** @enum {string|null} */
+      stage?: 'PLANNING' | 'SCHEDULED' | null
       /** Format: int32 */
       page: number
       /** Format: int32 */
@@ -182,6 +203,26 @@ export interface components {
     TransferSearchResponse: {
       content: components['schemas']['Transfer'][]
       metadata: components['schemas']['PageMetadata']
+    }
+    AuditHistory: {
+      content: components['schemas']['AuditedAction'][]
+    }
+    AuditedAction: {
+      user: components['schemas']['User']
+      /** Format: date-time */
+      occurredAt: string
+      domainEvents: string[]
+      reason?: string | null
+      changes: components['schemas']['Change'][]
+    }
+    Change: {
+      propertyName: string
+      previous?: (string | number | boolean) | null
+      change?: (string | number | boolean) | null
+    }
+    User: {
+      username: string
+      name: string
     }
     ReferenceDataResponse: {
       domain: components['schemas']['CodedDescription']
@@ -266,6 +307,28 @@ export interface operations {
         }
         content: {
           '*/*': components['schemas']['Transfer']
+        }
+      }
+    }
+  }
+  retrieveHistory: {
+    parameters: {
+      query?: never
+      header?: never
+      path: {
+        id: string
+      }
+      cookie?: never
+    }
+    requestBody?: never
+    responses: {
+      /** @description OK */
+      200: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          '*/*': components['schemas']['AuditHistory']
         }
       }
     }

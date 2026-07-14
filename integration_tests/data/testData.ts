@@ -58,5 +58,5 @@ export const testTransfer: components['schemas']['Transfer'] = {
   prison: { code: 'LEI', name: 'Leeds' },
   reason: { code: 'R1', description: 'Reason One' },
   schedule: { start: '2001-01-01T09:15:00', comments: 'Lorem ipsum' },
-  status: { code: '', description: '' },
+  status: { code: 'SCHEDULED', description: 'Scheduled' },
 }

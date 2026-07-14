@@ -1,5 +1,6 @@
 import { HmppsUser } from '../../interfaces/hmppsUser'
 import { PrisonerDetails, JourneyData } from '../journeys'
+import { components } from '../transferSchedulerApi'
 
 export declare module 'express-session' {
   // Declare that the session will potentially contain these additional fields
@@ -24,6 +25,8 @@ export declare global {
 
       middleware?: {
         prisonerData?: Prisoner
+        transfer?: components['schemas']['Transfer']
+        transferHistory?: components['schemas']['AuditHistory']
       }
     }
 
