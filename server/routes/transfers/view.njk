@@ -2,6 +2,7 @@
 {% from "govuk/components/summary-list/macro.njk" import govukSummaryList %}
 {% from "govuk/components/tabs/macro.njk" import govukTabs %}
 {% from "govuk/components/button/macro.njk" import govukButton %}
+{% from "partials/auditHistory/macro.njk" import auditHistory %}
 
 {% set fullWidth = true %}
 {% if isScheduled %}
@@ -17,6 +18,14 @@
     <div class="govuk-grid-column-two-thirds">
       <span class="govuk-caption-l">{{ caption }}</span>
       <h1 class="govuk-heading-l">Manage {{ prisonerDetails | firstNameSpaceLastName | possessiveComma }} {{ 'schedule transfer' if isScheduled else 'planned transfer' }}</h1>
+
+
+      {% if prisonRegistryError %}
+        <div class="moj-api-error govuk-!-margin-bottom-6">
+          <p>Some information on this page is currently unavailable</p>
+          <p>Unable to retrieve information for prisons. Try again later.</p>
+        </div>
+      {% endif %}
 
       {% set baseEditUrl = "/transfers/start-edit/" + transfer.id %}
 
@@ -83,7 +92,7 @@
           {
             label: "Transfer history",
             id: "transfer-history",
-            panel: { html: '' }
+            panel: { html: auditHistory({ actions: auditedActions, prisonerName: prisonerDetails | firstNameSpaceLastName }) }
           }
         ]
       }) }}

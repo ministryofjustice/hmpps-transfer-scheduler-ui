@@ -67,9 +67,11 @@ export default class TransferSchedulerService {
     }
   }
 
-  async getTransferAuditHistory(_context: ApiRequestContext, _transferId: string) {
+  async getTransferAuditHistory(context: ApiRequestContext, transferId: string) {
     try {
-      return null
+      return await this.apiClient.withContext(context).get<components['schemas']['AuditHistory']>({
+        path: `/transfers/${transferId}/history`,
+      })
     } catch (error) {
       return this.handleGetError(error)
     }
