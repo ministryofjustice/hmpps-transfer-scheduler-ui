@@ -2,7 +2,7 @@ import { initialiseTelemetry, flushTelemetry, telemetry } from '@ministryofjusti
 import { RequestHandler } from 'express'
 import logger from '../../logger'
 
-if (!process.env.APPLICATIONINSIGHTS_CONNECTION_STRING) {
+if (process.env.APPLICATIONINSIGHTS_CONNECTION_STRING) {
   initialiseTelemetry({
     serviceName: 'hmpps-transfer-scheduler-ui',
     serviceVersion: process.env['BUILD_NUMBER'] || 'unknown',
