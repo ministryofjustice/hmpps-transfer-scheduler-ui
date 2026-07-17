@@ -1,5 +1,5 @@
 import { Request, Response } from 'express'
-import { isTransferCancellable, isTransferEditable, isTransferScheduled } from '../../utils/utils'
+import { isTransferCancellable, isTransferEditable } from '../../utils/utils'
 import { parseAuditHistory } from '../../views/partials/auditHistory/parseAuditHistory'
 import PrisonRegisterService from '../../services/apis/prisonRegisterService'
 
@@ -24,7 +24,6 @@ export class ManageTransferController {
       ),
       editable: isTransferEditable(req.middleware!.transfer!),
       cancellable: isTransferCancellable(req.middleware!.transfer!),
-      isScheduled: isTransferScheduled(req.middleware!.transfer!),
       prisonRegistryError,
     })
   }

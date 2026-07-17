@@ -25,6 +25,11 @@ const DOMAIN_EVENT_MAP: { [key: string]: DomainEventText } = {
     heading: 'Scheduled',
     content: 'Transfer scheduled for <prisoner>',
   },
+  'person.transfer.cancelled': {
+    heading: 'Cancelled',
+    content: 'Transfer for <prisoner> cancelled',
+    reasonRequested: true,
+  },
   'person.transfer.moved-to-planning': {
     heading: 'Moved to planning',
     content: 'Transfer moved to the planning stage for <prisoner>',

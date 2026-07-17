@@ -25,7 +25,7 @@ export declare global {
 
       middleware?: {
         prisonerData?: Prisoner
-        transfer?: components['schemas']['Transfer']
+        transfer?: components['schemas']['Transfer'] & { label: 'scheduled transfer' | 'planned transfer' }
         transferHistory?: components['schemas']['AuditHistory']
       }
     }

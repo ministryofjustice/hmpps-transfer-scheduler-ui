@@ -1,0 +1,62 @@
+{% extends "partials/layout.njk" %}
+{% from "govuk/components/button/macro.njk" import govukButton %}
+{% from "govuk/components/warning-text/macro.njk" import govukWarningText %}
+{% from "govuk/components/radios/macro.njk" import govukRadios %}
+{% from "govuk/components/textarea/macro.njk" import govukTextarea %}
+
+{% set pageTitle = 'Are you sure you want to cancel this transfer - Manage ' + transfer.label + 's' %}
+
+{% block innerContent %}
+  <div class="govuk-width-container">
+    <span class="govuk-caption-l">Manage {{ transfer.label }}s</span>
+
+    <form method="post">
+      <input type="hidden" name="_csrf" value="{{ csrfToken }}" />
+
+      {{ govukRadios({
+        name: "confirm",
+        errorMessage: validationErrors | findError('confirm'),
+        fieldset: {
+          legend: {
+            text: 'Are you sure you want to cancel this transfer?',
+            isPageHeading: true,
+            classes: "govuk-fieldset__legend--xl"
+          }
+        },
+        hint: { html: govukWarningText({
+          text: "This action cannot be reversed.",
+          iconFallbackText: "Warning"
+        }) },
+        items: [
+          {
+            value: 'YES',
+            text: "Yes"
+          },
+          {
+            value: 'NO',
+            text: "No"
+          }
+        ]
+      }) }}
+
+      {{ govukTextarea({
+        id: "reason",
+        name: "reason",
+        errorMessage: validationErrors | findError('reason'),
+        label: {
+          text: "Enter a reason for cancelling this transfer (optional)",
+          classes: "govuk-label--m",
+          isPageHeading: false
+        },
+        value: reason
+      }) }}
+
+      <div class="govuk-button-group">
+        {{ govukButton({
+          text: "Confirm",
+          preventDoubleClick: true
+        }) }}
+      </div>
+    </form>
+  </div>
+{% endblock %}

@@ -45,6 +45,7 @@ test.describe('/scheduled-transfers', () => {
             destination: { code: 'P1', name: 'Prison One' },
             reason: { code: 'R1', description: 'Reason One' },
             logistics: { code: 'L1', description: 'Logistics One' },
+            stage: 'SCHEDULED',
           },
         ],
       }),

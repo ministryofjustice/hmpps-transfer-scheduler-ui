@@ -82,3 +82,10 @@ export const stubGetTransferHistory = (transferId: string, response: components[
     urlPattern: `/transfer-scheduler-api/transfers/${transferId}/history`,
     response,
   })
+
+export const stubPutTransfer = (transferId: string, response: components['schemas']['AuditHistory']) =>
+  successStub({
+    method: 'PUT',
+    urlPattern: `/transfer-scheduler-api/transfers/${transferId}`,
+    response,
+  })
