@@ -23,7 +23,10 @@ export const populateTransfer =
       }
 
       req.middleware ??= {}
-      req.middleware.transfer = transfer
+      req.middleware.transfer = {
+        ...transfer,
+        label: transfer.stage === 'SCHEDULED' ? 'scheduled transfer' : 'planned transfer',
+      }
       if (transferHistory) req.middleware.transferHistory = transferHistory
       req.middleware.prisonerData = await prisonerSearchApiService.getPrisonerDetails(
         { res },

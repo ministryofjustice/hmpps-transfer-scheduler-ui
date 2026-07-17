@@ -4,6 +4,30 @@
  */
 
 export interface paths {
+  '/transfers/{id}': {
+    parameters: {
+      query?: never
+      header?: never
+      path?: never
+      cookie?: never
+    }
+    /**
+     * @description Requires one of the following roles:
+     *     * ROLE_TRANSFERS__TRANSFER_SCHEDULER_UI
+     */
+    get: operations['retrieveTransfer']
+    /**
+     * @description Requires one of the following roles:
+     *     * ROLE_TRANSFERS__TRANSFER_SCHEDULER_UI
+     */
+    put: operations['applyActions']
+    post?: never
+    delete?: never
+    options?: never
+    head?: never
+    patch?: never
+    trace?: never
+  }
   '/transfers/{personIdentifier}': {
     parameters: {
       query?: never
@@ -38,26 +62,6 @@ export interface paths {
      *     * ROLE_TRANSFERS__TRANSFER_SCHEDULER_UI
      */
     post: operations['findTransfersForPrison']
-    delete?: never
-    options?: never
-    head?: never
-    patch?: never
-    trace?: never
-  }
-  '/transfers/{id}': {
-    parameters: {
-      query?: never
-      header?: never
-      path?: never
-      cookie?: never
-    }
-    /**
-     * @description Requires one of the following roles:
-     *     * ROLE_TRANSFERS__TRANSFER_SCHEDULER_UI
-     */
-    get: operations['retrieveTransfer']
-    put?: never
-    post?: never
     delete?: never
     options?: never
     head?: never
@@ -108,6 +112,73 @@ export interface paths {
 export type webhooks = Record<string, never>
 export interface components {
   schemas: {
+    ApplyDestination: {
+      type: 'ApplyDestination'
+    } & (Omit<components['schemas']['TransferAction'], 'type'> & {
+      destinationCode: string
+    })
+    ApplyLogistics: {
+      type: 'ApplyLogistics'
+    } & (Omit<components['schemas']['TransferAction'], 'type'> & {
+      logisticsCode?: string | null
+    })
+    ApplyReason: {
+      type: 'ApplyReason'
+    } & (Omit<components['schemas']['TransferAction'], 'type'> & {
+      reasonCode: string
+    })
+    CancelTransfer: {
+      type: 'CancelTransfer'
+    } & Omit<components['schemas']['TransferAction'], 'type'>
+    PlanTransfer: {
+      type: 'PlanTransfer'
+    } & (Omit<components['schemas']['TransferAction'], 'type'> & {
+      /** Format: date */
+      requestedOn: string
+      priorityCode: string
+      comments?: string | null
+    })
+    ScheduleTransfer: {
+      type: 'ScheduleTransfer'
+    } & (Omit<components['schemas']['TransferAction'], 'type'> & {
+      /** Format: date-time */
+      start: string
+      comments?: string | null
+    })
+    TransferAction: {
+      type: string
+    }
+    TransferActions: {
+      actions: (
+        | components['schemas']['ApplyDestination']
+        | components['schemas']['ApplyLogistics']
+        | components['schemas']['ApplyReason']
+        | components['schemas']['CancelTransfer']
+        | components['schemas']['PlanTransfer']
+        | components['schemas']['ScheduleTransfer']
+      )[]
+      reason?: string | null
+    }
+    AuditHistory: {
+      content: components['schemas']['AuditedAction'][]
+    }
+    AuditedAction: {
+      user: components['schemas']['User']
+      /** Format: date-time */
+      occurredAt: string
+      domainEvents: string[]
+      reason?: string | null
+      changes: components['schemas']['Change'][]
+    }
+    Change: {
+      propertyName: string
+      previous?: (string | number | boolean) | null
+      change?: (string | number | boolean) | null
+    }
+    User: {
+      username: string
+      name: string
+    }
     CreatePlanRequest: {
       /** Format: date */
       requestedOn: string
@@ -167,6 +238,8 @@ export interface components {
       plan?: components['schemas']['Plan'] | null
       schedule?: components['schemas']['Schedule'] | null
       movement?: components['schemas']['Movement'] | null
+      /** @enum {string} */
+      stage: 'PLANNING' | 'SCHEDULED'
     }
     TransferPrisonSearchRequest: {
       /** Format: date */
@@ -204,26 +277,6 @@ export interface components {
       content: components['schemas']['Transfer'][]
       metadata: components['schemas']['PageMetadata']
     }
-    AuditHistory: {
-      content: components['schemas']['AuditedAction'][]
-    }
-    AuditedAction: {
-      user: components['schemas']['User']
-      /** Format: date-time */
-      occurredAt: string
-      domainEvents: string[]
-      reason?: string | null
-      changes: components['schemas']['Change'][]
-    }
-    Change: {
-      propertyName: string
-      previous?: (string | number | boolean) | null
-      change?: (string | number | boolean) | null
-    }
-    User: {
-      username: string
-      name: string
-    }
     ReferenceDataResponse: {
       domain: components['schemas']['CodedDescription']
       items: components['schemas']['CodedDescription'][]
@@ -237,10 +290,64 @@ export interface components {
 }
 export type $defs = Record<string, never>
 export interface operations {
-  initiateTransfer: {
+  retrieveTransfer: {
     parameters: {
       query?: never
       header?: never
+      path: {
+        id: string
+      }
+      cookie?: never
+    }
+    requestBody?: never
+    responses: {
+      /** @description OK */
+      200: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          '*/*': components['schemas']['Transfer']
+        }
+      }
+    }
+  }
+  applyActions: {
+    parameters: {
+      query?: never
+      header?: {
+        /** @description Relevant caseload id for the client identity in context e.g. the active caseload id of the logged in user. */
+        CaseloadId?: string
+      }
+      path: {
+        id: string
+      }
+      cookie?: never
+    }
+    requestBody: {
+      content: {
+        'application/json': components['schemas']['TransferActions']
+      }
+    }
+    responses: {
+      /** @description OK */
+      200: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          '*/*': components['schemas']['AuditHistory']
+        }
+      }
+    }
+  }
+  initiateTransfer: {
+    parameters: {
+      query?: never
+      header?: {
+        /** @description Relevant caseload id for the client identity in context e.g. the active caseload id of the logged in user. */
+        CaseloadId?: string
+      }
       path: {
         personIdentifier: string
       }
@@ -285,28 +392,6 @@ export interface operations {
         }
         content: {
           '*/*': components['schemas']['TransferSearchResponse']
-        }
-      }
-    }
-  }
-  retrieveTransfer: {
-    parameters: {
-      query?: never
-      header?: never
-      path: {
-        id: string
-      }
-      cookie?: never
-    }
-    requestBody?: never
-    responses: {
-      /** @description OK */
-      200: {
-        headers: {
-          [name: string]: unknown
-        }
-        content: {
-          '*/*': components['schemas']['Transfer']
         }
       }
     }

@@ -77,6 +77,22 @@ export default class TransferSchedulerService {
     }
   }
 
+  updateTransfer(
+    context: ApiRequestContext,
+    transferId: string,
+    request: components['schemas']['TransferActions']['actions'][0],
+    reason?: string,
+  ) {
+    const data: components['schemas']['TransferActions'] = {
+      actions: [request],
+    }
+    if (reason) data.reason = reason
+    return this.apiClient.withContext(context).put<components['schemas']['AuditHistory']>({
+      path: `/transfers/${transferId}`,
+      data,
+    })
+  }
+
   private handleGetError = (error: unknown) => {
     const statusCode = (error as { data?: { status?: number } })?.data?.status
     if (statusCode && statusCode >= 400 && statusCode <= 499) return null

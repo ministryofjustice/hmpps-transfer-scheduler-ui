@@ -1,0 +1,49 @@
+{% extends "partials/layout.njk" %}
+{% from "govuk/components/panel/macro.njk" import govukPanel %}
+
+{% set pageTitle = 'Change transfer confirmation - Manage ' + transfer.label + 's' %}
+
+{% set EVENT_DESCRIPTION = {
+  'person.transfer.relocated': 'Transfer destination changed',
+  'person.transfer.recategorised': 'Transfer reason changed',
+  'person.transfer.rescheduled': 'Transfer rescheduled',
+  'person.transfer.logistics-changed': 'Transfer logistics changed',
+  'person.transfer.reprioritised': 'Transfer priority changed',
+  'person.transfer.planning-comments-changed': 'Transfer planning comments changed',
+  'person.transfer.schedule-comments-changed': 'Transfer schedule comments changed'
+} %}
+
+{% block innerContent %}
+  <div class="govuk-width-container">
+    {% switch domainEvent %}
+    {% case 'person.transfer.cancelled' %}
+      {{ govukPanel({
+        titleText: "Transfer cancelled for " + prisonerDetails | firstNameSpaceLastName,
+        text: ""
+      }) }}
+
+      <p class="govuk-body">
+        <a class="govuk-link govuk-link--no-visited-state" href="/">Back to Transfers homepage</a>
+      </p>
+    {% default %}
+      {{ govukPanel({
+        titleText: (EVENT_DESCRIPTION[domainEvent] or "Transfer updated") + " for " + prisonerDetails | firstNameSpaceLastName,
+        text: ""
+      }) }}
+
+      <p class="govuk-body">
+        <a class="govuk-link govuk-link--no-visited-state" href="/transfers/{{ transfer.id }}?history={{ historyQuery }}">View this transfer</a>
+      </p>
+    {% endswitch %}
+
+    {% if transfer.stage === 'SCHEDULED' %}
+      <p class="govuk-body">
+        <a class="govuk-link govuk-link--no-visited-state" href="/scheduled-transfers?history={{ historyQuery }}">Back to View and manage scheduled transfers</a>
+      </p>
+    {% else %}
+      <p class="govuk-body">
+        <a class="govuk-link govuk-link--no-visited-state" href="/planned-transfers?history={{ historyQuery }}">Back to View and manage planned transfers</a>
+      </p>
+    {% endif %}
+  </div>
+{% endblock %}

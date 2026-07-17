@@ -124,6 +124,3 @@ export const isTransferEditable = (transfer: components['schemas']['Transfer']) 
 
 export const isTransferCancellable = (transfer: components['schemas']['Transfer']) =>
   ['PLANNING', 'READY_TO_SCHEDULE', 'SCHEDULED'].includes(transfer.status.code)
-
-export const isTransferScheduled = (transfer: components['schemas']['Transfer']) =>
-  !!(!['PLANNING', 'READY_TO_SCHEDULE'].includes(transfer.status.code) && transfer.schedule)
