@@ -4,7 +4,7 @@ import { formatInputDate } from '../../../../utils/dateTimeUtils'
 
 export class PlanTransferDateTimeController {
   GET = async (req: Request, res: Response) => {
-    const { backUrl, startDate, startTime } = req.journeyData.planTransfer!
+    const { startDate, startTime } = req.journeyData.planTransfer!
 
     const [startTimeHour, startTimeMinute] =
       !res.locals.formResponses?.['startTimeHour'] && !res.locals.formResponses?.['startTimeMinute'] && startTime
@@ -12,7 +12,7 @@ export class PlanTransferDateTimeController {
         : []
 
     res.render('plan-a-transfer/date-and-time/view', {
-      backUrl,
+      backUrl: 'priority',
       startDate: res.locals.formResponses?.['startDate'] ?? formatInputDate(startDate),
       startTimeHour: res.locals.formResponses?.['startTimeHour'] ?? startTimeHour,
       startTimeMinute: res.locals.formResponses?.['startTimeMinute'] ?? startTimeMinute,

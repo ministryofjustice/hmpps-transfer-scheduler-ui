@@ -7,6 +7,7 @@ export class PlanTransferDateTimePage extends BaseTestPage {
       title: 'Enter the transfer date and time (optional) - Plan a transfer - DPS',
       caption: 'Plan a transfer',
       heading: 'Enter the transfer date and time (optional)',
+      backUrl: /priority/,
     })
   }
 
