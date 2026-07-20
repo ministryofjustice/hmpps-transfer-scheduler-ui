@@ -16,6 +16,7 @@ export type JourneyData = {
   b64History?: string | undefined
   stateGuard?: boolean
   scheduleTransfer?: ScheduleTransferJourney
+  planTransfer?: PlanTransferJourney
   updateTransfer?: UpdateTransferJourney
 }
 
@@ -29,6 +30,21 @@ type ScheduleTransferJourney = {
   backUrl: string
   historyQuery: string
 } & Partial<{
+  startDate: string
+  startTime: string
+  destination: CodedDescription
+  reason: CodedDescription
+  logistics: CodedDescription
+  comments: string | null
+  result: components['schemas']['Transfer']
+}>
+
+type PlanTransferJourney = {
+  backUrl: string
+  historyQuery: string
+} & Partial<{
+  requestedOn: string
+  priority: CodedDescription
   startDate: string
   startTime: string
   destination: CodedDescription

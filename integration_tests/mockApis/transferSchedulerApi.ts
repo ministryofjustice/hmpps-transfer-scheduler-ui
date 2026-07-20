@@ -52,6 +52,28 @@ export const stubGetLogistics = () =>
     },
   })
 
+export const stubGetPriorities = () =>
+  successStub({
+    method: 'GET',
+    urlPattern: '/transfer-scheduler-api/reference-data/transfer-priority',
+    response: {
+      items: [
+        {
+          code: '1',
+          description: 'High',
+        },
+        {
+          code: '2',
+          description: 'Medium',
+        },
+        {
+          code: '3',
+          description: 'Low',
+        },
+      ],
+    },
+  })
+
 export const stubPostScheduledTransfer = (
   prisonNumber: string,
   result: components['schemas']['Transfer'] = testTransfer,

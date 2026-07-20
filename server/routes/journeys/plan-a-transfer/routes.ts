@@ -5,15 +5,14 @@ import { toPrisonerDetails } from '../../../middleware/populatePrisonerDetails'
 import preventNavigationToExpiredJourneys from '../../../middleware/journey/preventNavigationToExpiredJourneys'
 import journeyStateGuard from '../../../middleware/journey/journeyStateGuard'
 import redirectCheckAnswersMiddleware from '../../../middleware/journey/redirectCheckAnswersMiddleware'
-import { ScheduleTransferDateTimeRoutes } from './date-and-time/routes'
-import { ScheduleTransferDestinationRoutes } from './destination/routes'
-import { ScheduleTransferReasonRoutes } from './reason/routes'
-import { ScheduleTransferLogisticsRoutes } from './logistics/routes'
-import { ScheduleTransferCommentsRoutes } from './comments/routes'
-import { ScheduleTransferCheckAnswersRoutes } from './check-answers/routes'
-import { ScheduleTransferConfirmationRoutes } from './confirmation/routes'
+import { PlanTransferRequestDateRoutes } from './request-date/routes'
+import { PlanTransferReasonRoutes } from './reason/routes'
+import { PlanTransferPriorityRoutes } from './priority/routes'
+import { PlanTransferDateTimeRoutes } from './date-and-time/routes'
+import { PlanTransferDestinationRoutes } from './destination/routes'
+import { PlanTransferLogisticsRoutes } from './logistics/routes'
 
-export const ScheduleTransferRoutes = (services: Services) => {
+export const PlanTransferRoutes = (services: Services) => {
   const { router, get } = BaseRouter()
 
   router.use(redirectCheckAnswersMiddleware([/check-answers/, /confirmation/]))
@@ -25,14 +24,14 @@ export const ScheduleTransferRoutes = (services: Services) => {
       req.journeyData.prisonerDetails = toPrisonerDetails(req.middleware.prisonerData)
 
       const lastLandmark = res.locals.breadcrumbs.last()
-      req.journeyData.scheduleTransfer = {
+      req.journeyData.planTransfer = {
         backUrl:
           lastLandmark && START_ENTRY_PAGES.includes(lastLandmark.alias || '')
             ? lastLandmark.href
             : `${res.locals.prisonerProfileUrl}/prisoner/${req.journeyData.prisonerDetails.prisonerNumber}`,
         historyQuery: encodeURIComponent(String(req.query['history'])),
       }
-      res.redirect('../date-and-time')
+      res.redirect('../request-date')
     } else {
       res.notFound()
     }
@@ -40,7 +39,7 @@ export const ScheduleTransferRoutes = (services: Services) => {
 
   get(
     '*any',
-    Page.SCHEDULE_TRANSFER,
+    Page.PLAN_TRANSFER,
     (req, res, next) => {
       if (req.journeyData.prisonerDetails) {
         res.setAuditDetails.prisonNumber(req.journeyData.prisonerDetails.prisonerNumber)
@@ -51,13 +50,12 @@ export const ScheduleTransferRoutes = (services: Services) => {
     journeyStateGuard({}),
   )
 
-  router.use('/date-and-time', ScheduleTransferDateTimeRoutes())
-  router.use('/destination', ScheduleTransferDestinationRoutes(services))
-  router.use('/reason', ScheduleTransferReasonRoutes(services))
-  router.use('/logistics', ScheduleTransferLogisticsRoutes(services))
-  router.use('/comments', ScheduleTransferCommentsRoutes())
-  router.use('/check-answers', ScheduleTransferCheckAnswersRoutes(services))
-  router.use('/confirmation', ScheduleTransferConfirmationRoutes())
+  router.use('/request-date', PlanTransferRequestDateRoutes())
+  router.use('/reason', PlanTransferReasonRoutes(services))
+  router.use('/priority', PlanTransferPriorityRoutes(services))
+  router.use('/date-and-time', PlanTransferDateTimeRoutes())
+  router.use('/destination', PlanTransferDestinationRoutes(services))
+  router.use('/logistics', PlanTransferLogisticsRoutes(services))
 
   return router
 }

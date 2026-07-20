@@ -1,5 +1,5 @@
 import { z } from 'zod'
-import { isValid, parseISO, startOfDay, isBefore } from 'date-fns'
+import { isValid, parseISO, startOfDay, isBefore, isAfter } from 'date-fns'
 import { addArticle } from '../formatUtils'
 
 export const validateDateBase = (dateName: string) => {
@@ -75,3 +75,7 @@ export const validateTransformOptionalDate = (dateName: string) =>
 export const getMinDateChecker = (minDate: Date) => (date: Date) => !isBefore(startOfDay(date), startOfDay(minDate))
 
 export const checkTodayOrFuture = getMinDateChecker(new Date())
+
+export const getMaxDateChecker = (minDate: Date) => (date: Date) => !isAfter(startOfDay(date), startOfDay(minDate))
+
+export const checkTodayOrPast = getMaxDateChecker(new Date())

@@ -15,3 +15,8 @@ export const validateAndTransformCodedDescription =
     }
     return result
   }
+export const validateAndTransformOptionalCodedDescription =
+  (refData: CodedDescription[] | null, errorMessage: string) => (val: string | undefined, ctx: RefinementCtx) => {
+    if (!val) return null
+    return validateAndTransformCodedDescription(refData, errorMessage)(val, ctx)
+  }

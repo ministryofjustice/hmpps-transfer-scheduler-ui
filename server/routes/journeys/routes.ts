@@ -6,6 +6,7 @@ import { requirePermissions } from '../../middleware/permissions/requirePermissi
 import { UserPermissionLevel } from '../../interfaces/hmppsUser'
 import { ScheduleTransferRoutes } from './schedule-a-transfer/routes'
 import { UpdateTransferRoutes } from './transfers/routes'
+import { PlanTransferRoutes } from './plan-a-transfer/routes'
 
 export const JourneyRoutes = (services: Services) => {
   const router = Router({ mergeParams: true })
@@ -20,6 +21,7 @@ export const JourneyRoutes = (services: Services) => {
   })
 
   router.use('/schedule-a-transfer', requirePermissions(UserPermissionLevel.MANAGE), ScheduleTransferRoutes(services))
+  router.use('/plan-a-transfer', requirePermissions(UserPermissionLevel.MANAGE), PlanTransferRoutes(services))
   router.use('/transfers', requirePermissions(UserPermissionLevel.MANAGE), UpdateTransferRoutes(services))
 
   if (process.env.NODE_ENV === 'e2e-test') {
