@@ -11,6 +11,9 @@ import { PlanTransferPriorityRoutes } from './priority/routes'
 import { PlanTransferDateTimeRoutes } from './date-and-time/routes'
 import { PlanTransferDestinationRoutes } from './destination/routes'
 import { PlanTransferLogisticsRoutes } from './logistics/routes'
+import { PlanTransferCommentsRoutes } from './comments/routes'
+import { PlanTransferCheckAnswersRoutes } from './check-answers/routes'
+import { PlanTransferConfirmationRoutes } from './confirmation/routes'
 
 export const PlanTransferRoutes = (services: Services) => {
   const { router, get } = BaseRouter()
@@ -56,6 +59,9 @@ export const PlanTransferRoutes = (services: Services) => {
   router.use('/date-and-time', PlanTransferDateTimeRoutes())
   router.use('/destination', PlanTransferDestinationRoutes(services))
   router.use('/logistics', PlanTransferLogisticsRoutes(services))
+  router.use('/comments', PlanTransferCommentsRoutes())
+  router.use('/check-answers', PlanTransferCheckAnswersRoutes(services))
+  router.use('/confirmation', PlanTransferConfirmationRoutes())
 
   return router
 }

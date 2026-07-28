@@ -1,0 +1,68 @@
+{% extends "partials/layout.njk" %}
+{% from "govuk/components/panel/macro.njk" import govukPanel %}
+{% from "govuk/components/summary-list/macro.njk" import govukSummaryList %}
+
+{% set pageTitle = 'Transfer planned' %}
+
+{% block innerContent %}
+  <div class="govuk-width-container">
+    {{ govukPanel({
+      titleText: "Transfer planned for " + prisonerDetails | firstNameSpaceLastName,
+      text: ""
+    }) }}
+
+    <p class="govuk-body">To schedule this transfer, visit View and manage planned transfers.</p>
+
+    {{ govukSummaryList({
+      classes: "govuk-!-margin-bottom-7",
+      rows: [
+        {
+          key: { text: "Request received" },
+          value: { text: (result.plan.requestedOn | formatDate("d MMMM yyyy")) }
+        },
+        {
+          key: { text: "Reason" },
+          value: { text: result.reason.description  }
+        },
+        {
+          key: { text: "Priority" },
+          value: { text: result.plan.priority.description  }
+        },
+        {
+          key: { text: "Date and time" },
+          value: { text: (result.schedule.start | formatDate("d MMMM yyyy 'at' HH:mm")) if result.schedule.start else 'Not provided' }
+        },
+        {
+          key: { text: "Destination (optional)" },
+          value: { text: result.destination.name or 'Not provided'  }
+        },
+        {
+          key: { text: "Escort details (optional)" },
+          value: { text: result.logistics.description or 'Not provided' }
+        },
+        {
+          key: { text: "Comments (optional)" },
+          value: { text: (result.schedule.comments or 'Not provided') | escape | nl2br }
+        }
+      ]
+    }) }}
+
+    <h2 class="govuk-heading-m">What you can do next</h2>
+
+    <p class="govuk-body">
+      <a class="govuk-link govuk-link--no-visited-state" href="/transfers/{{ result.id }}?history={{ historyQuery }}">View and manage this planned transfer</a>
+    </p>
+
+    <p class="govuk-body">
+      <a class="govuk-link govuk-link--no-visited-state" href="/scheduled-transfers?history={{ historyQuery }}">View and manage transfers</a>
+    </p>
+
+    <p class="govuk-body">
+      <a class="govuk-link govuk-link--no-visited-state" href="/planned-transfers?history={{ historyQuery }}">View and manage planned transfers</a>
+    </p>
+
+    <p class="govuk-body">
+      <a class="govuk-link govuk-link--no-visited-state" href="{{ digitalPrisonServicesUrl }}">Return to the DPS homepage</a>
+    </p>
+  </div>
+{% endblock %}
