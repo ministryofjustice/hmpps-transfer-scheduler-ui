@@ -1,0 +1,35 @@
+{% extends "partials/layout.njk" %}
+{% from "moj/components/date-picker/macro.njk" import mojDatePicker %}
+{% from "govuk/components/button/macro.njk" import govukButton %}
+
+{% set pageTitle = 'When did you receive the transfer request - Manage transfers' %}
+
+{% block innerContent %}
+  <div class="govuk-width-container">
+    <span class="govuk-caption-l">Manage transfers</span>
+    <form method="post">
+      <input type="hidden" name="_csrf" value="{{ csrfToken }}" />
+      {{ mojDatePicker({
+        id: "requestedOn",
+        name: "requestedOn",
+        label: {
+          text: 'When did you receive the transfer request?',
+          classes: "govuk-fieldset__legend--l",
+          isPageHeading: true
+        },
+        hint: {
+          text: 'For example, 17/5/2024.'
+        },
+        value: requestedOn,
+        errorMessage: validationErrors | findError('requestedOn'),
+        classes: 'hmpps-datepicker--fixed-width govuk-body',
+        maxDate: inputDate()
+      }) }}
+
+      {{ govukButton({
+        text: "Continue",
+        preventDoubleClick: true
+      }) }}
+    </form>
+  </div>
+{% endblock %}

@@ -1,0 +1,67 @@
+{% extends "partials/layout.njk" %}
+{% from "govuk/components/panel/macro.njk" import govukPanel %}
+{% from "govuk/components/summary-list/macro.njk" import govukSummaryList %}
+{% from "partials/statusTag/macro.njk" import statusTag %}
+
+{% set pageTitle = 'Transfer moved to planned transfers' %}
+
+{% block innerContent %}
+  <div class="govuk-width-container">
+    {{ govukPanel({
+      titleText: "Transfer moved for " + prisonerDetails | firstNameSpaceLastName,
+      text: "The transfer has been moved to planned transfers"
+    }) }}
+
+    {{ govukSummaryList({
+      classes: "govuk-!-margin-bottom-7",
+      rows: [
+        {
+          key: { text: "Date" },
+          value: { text: result.schedule.start | formatDate("d MMMM yyyy") }
+        },
+        {
+          key: { text: "Time" },
+          value: { text: result.schedule.start | formatDate("HH:mm") }
+        },
+        {
+          key: { text: "Destination" },
+          value: { text: result.destination.name or 'Not provided'  }
+        },
+        {
+          key: { text: "Reason" },
+          value: { text: result.reason.description  }
+        },
+        {
+          key: { text: "Escort details" },
+          value: { text: result.logistics.description or 'Not provided' }
+        },
+        {
+          key: { text: "Request received" },
+          value: { text: (result.plan.requestedOn | formatDate("d MMMM yyyy")) }
+        },
+        {
+          key: { text: "Priority" },
+          value: { text: result.plan.priority.description  }
+        },
+        {
+          key: { text: "Status" },
+          value: { html: statusTag(result) }
+        }
+      ]
+    }) }}
+
+    <h2 class="govuk-heading-m">What you can do next</h2>
+
+    <p class="govuk-body">
+      <a class="govuk-link govuk-link--no-visited-state" href="/">Back to Transfers homepage</a>
+    </p>
+
+    <p class="govuk-body">
+      <a class="govuk-link govuk-link--no-visited-state" href="/planned-transfers?history={{ historyQuery }}">View planned transfers</a>
+    </p>
+
+    <p class="govuk-body">
+      <a class="govuk-link govuk-link--no-visited-state" href="{{ digitalPrisonServicesUrl }}">Return to the DPS homepage</a>
+    </p>
+  </div>
+{% endblock %}
