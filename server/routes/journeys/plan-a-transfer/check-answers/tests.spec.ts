@@ -74,10 +74,10 @@ test.describe('/plan-a-transfer/check-answers', () => {
     await testPage.verifyLink('Change escort details', /logistics/)
     await testPage.verifyLink('Change comments', /comments/)
 
-    await expect(testPage.button('Confirm and save')).toBeVisible()
+    await expect(testPage.button('Confirm plan')).toBeVisible()
 
     // verify next page routing
-    await testPage.clickButton('Confirm and save')
+    await testPage.clickButton('Confirm plan')
     expect(page.url()).toMatch(/\/plan-a-transfer\/confirmation/)
   })
 })

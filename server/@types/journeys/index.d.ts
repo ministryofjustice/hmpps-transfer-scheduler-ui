@@ -18,6 +18,7 @@ export type JourneyData = {
   scheduleTransfer?: ScheduleTransferJourney
   planTransfer?: PlanTransferJourney
   updateTransfer?: UpdateTransferJourney
+  moveTransferToPlanning?: MoveTransferToPlanningJourney
 }
 
 type CodedDescription = {
@@ -60,4 +61,14 @@ type UpdateTransferJourney = {
   transfer: components['schemas']['Transfer'] & { label: 'scheduled transfer' | 'planned transfer' }
 } & Partial<{
   result: components['schemas']['AuditHistory']
+}>
+
+type MoveTransferToPlanningJourney = {
+  backUrl: string
+  historyQuery: string
+  transfer: components['schemas']['Transfer'] & { label: 'scheduled transfer' | 'planned transfer' }
+} & Partial<{
+  requestedOn: string
+  priority: CodedDescription
+  result: components['schemas']['Transfer']
 }>

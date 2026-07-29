@@ -37,7 +37,7 @@
           {{ govukButton({
             classes: "govuk-button--secondary",
             text: "Move to planned transfers",
-            href: baseEditUrl + "/revert",
+            href: "/transfers/start-move-to-planning/" + transfer.id,
             preventDoubleClick: true
           }) }}
         {% endif %}
