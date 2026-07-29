@@ -1,0 +1,124 @@
+{% extends "partials/layout.njk" %}
+{% from "govuk/components/button/macro.njk" import govukButton %}
+{% from "govuk/components/summary-list/macro.njk" import govukSummaryList %}
+
+{% set pageTitle = 'Check your answers - Plan a transfer' %}
+
+{% block innerContent %}
+  <div class="govuk-width-container">
+    <span class="govuk-caption-l">Plan a transfer</span>
+    <h1 class="govuk-heading-l govuk-!-margin-bottom-7">Check your answers</h1>
+
+    {{ govukSummaryList({
+      classes: "govuk-!-margin-bottom-7",
+      rows: [
+        {
+          key: { text: "Request received" },
+          value: { text: requestedOn | formatDate("d MMMM yyyy") },
+          actions: {
+          items: [
+            {
+              href: "request-date",
+              text: "Change",
+              visuallyHiddenText: "request date",
+              classes: "govuk-link--no-visited-state"
+            }
+          ]
+        }
+        },
+        {
+          key: { text: "Reason" },
+          value: { text: reason.description  },
+          actions: {
+          items: [
+            {
+              href: 'reason',
+              text: "Change",
+              visuallyHiddenText: "reason",
+              classes: "govuk-link--no-visited-state"
+            }
+          ]
+        }
+        },
+        {
+          key: { text: "Priority" },
+          value: { text: priority.description  },
+          actions: {
+          items: [
+            {
+              href: 'priority',
+              text: "Change",
+              visuallyHiddenText: "priority",
+              classes: "govuk-link--no-visited-state"
+            }
+          ]
+        }
+        },
+        {
+          key: { text: "Date and time" },
+          value: { text: (startDate | formatDate("d MMMM yyyy") + ' at ' + startTime) if startDate and startTime else 'Not provided' },
+          actions: {
+          items: [
+            {
+              href: "date-and-time",
+              text: "Change",
+              visuallyHiddenText: "date and time",
+              classes: "govuk-link--no-visited-state"
+            }
+          ]
+        }
+        },
+        {
+          key: { text: "Destination (optional)" },
+          value: { text: destination.description or 'Not provided'  },
+          actions: {
+          items: [
+            {
+              href: 'destination',
+              text: "Change",
+              visuallyHiddenText: "destination",
+              classes: "govuk-link--no-visited-state"
+            }
+          ]
+        }
+        },
+        {
+          key: { text: "Escort details (optional)" },
+          value: { text: logistics.description or 'Not provided'  },
+          actions: {
+          items: [
+            {
+              href: 'logistics',
+              text: "Change",
+              visuallyHiddenText: "escort details",
+              classes: "govuk-link--no-visited-state"
+            }
+          ]
+        }
+        },
+        {
+          key: { text: "Comments (optional)" },
+          value: { text: (comments or 'Not provided') | escape | nl2br },
+          actions: {
+          items: [
+            {
+              href: "comments",
+              text: "Change",
+              visuallyHiddenText: "comments",
+              classes: "govuk-link--no-visited-state"
+            }
+          ]
+        }
+        }
+      ]
+    }) }}
+
+    <form method="post">
+      <input type="hidden" name="_csrf" value="{{ csrfToken }}" />
+      {{ govukButton({
+        text: "Confirm and save",
+        preventDoubleClick: true
+      }) }}
+    </form>
+  </div>
+{% endblock %}
