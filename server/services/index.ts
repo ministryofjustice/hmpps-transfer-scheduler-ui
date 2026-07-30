@@ -1,4 +1,5 @@
 import { PermissionsService } from '@ministryofjustice/hmpps-prison-permissions-lib'
+import { telemetry } from '@ministryofjustice/hmpps-azure-telemetry'
 import { dataAccess } from '../data'
 import AuditService from './auditService'
 import PrisonApiService from './apis/prisonApiService'
@@ -12,7 +13,6 @@ import RedisCache from '../data/cache/redisCache'
 import { populatePrisonerDetails } from '../middleware/populatePrisonerDetails'
 import PrisonRegisterService from './apis/prisonRegisterService'
 import TransferSchedulerService from './apis/transferSchedulerService'
-import { telemetryWrapper } from '../utils/telemetryWrapper'
 import { populateTransfer } from '../middleware/permissions/populateTransfer'
 
 export const services = () => {
@@ -26,8 +26,7 @@ export const services = () => {
     prisonerSearchConfig: config.apis.prisonerSearchApi,
     authenticationClient: hmppsAuthClient,
     logger,
-    // @ts-expect-error cast hmpps-azure-telemetry into applicationinsight telemetry
-    telemetryClient: telemetryWrapper(),
+    telemetryClient: telemetry,
   })
 
   const prisonerSearchService = new PrisonerSearchApiService(hmppsAuthClient, prisonPermissionsService)
