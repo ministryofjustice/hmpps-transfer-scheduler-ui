@@ -29,17 +29,10 @@ export const testTemplates: components['schemas']['TemplateGroupTemplates'] = {
   },
   templates: [
     {
-      id: 'template-1',
-      code: 'ROTL_LIC1',
-      name: 'ROTL 18 licence document',
-      description: 'ROTL licence',
-      variableDomains: ['PRISON', 'PERSON', 'TEMPORARY_ABSENCE'],
-    },
-    {
-      id: 'template-2',
-      code: 'LISP_3',
-      name: 'LISP 3',
-      description: 'ROTL licence',
+      id: 'checklist-template-id',
+      code: 'TAP_TXCHKL_V1_1',
+      name: 'Transfer Checklist',
+      description: '',
       variableDomains: ['PRISON', 'PERSON'],
     },
   ],

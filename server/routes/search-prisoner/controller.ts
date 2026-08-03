@@ -17,7 +17,7 @@ export class SearchPrisonerController {
     },
   ) {}
 
-  GET = async (req: Request, res: Response) => {
+  private GET_BASE = async (req: Request, res: Response, actionUrl?: string) => {
     const resQuery = res.locals['query'] as ResQuerySchemaType
 
     let searchResponse: Prisoner[] = []
@@ -32,7 +32,7 @@ export class SearchPrisonerController {
 
     res.render('search-prisoner/view', {
       caption: this.configs.caption,
-      action: this.configs.action,
+      action: { ...this.configs.action, ...(actionUrl ? { url: actionUrl } : {}) },
       showBreadcrumbs: true,
       searchTerm: resQuery?.searchTerm,
       results: searchResponse.length
@@ -45,40 +45,18 @@ export class SearchPrisonerController {
     })
   }
 
-  GET_GENERATE_CHECKLIST = async (req: Request, res: Response) => {
-    const resQuery = res.locals['query'] as ResQuerySchemaType
+  GET = async (req: Request, res: Response) => this.GET_BASE(req, res)
 
-    let searchResponse: Prisoner[] = []
-
-    try {
-      if (resQuery?.validated?.searchTerm) {
-        searchResponse = await this.prisonerSearchApiService.searchPrisoner({ res }, resQuery.validated.searchTerm)
-      }
-    } catch (e) {
-      processApiError(e as HTTPError, req, false)
-    }
-
-    res.render('search-prisoner/view', {
-      caption: this.configs.caption,
-      action: {
-        ...this.configs.action,
-        url: `${config.serviceUrls.documentGeneration}/download-document/${req.middleware?.documentTemplateId}?${new URLSearchParams(
-          {
-            prisonId: res.locals.user.getActiveCaseloadId()!,
-            returnTo: config.ingressUrl,
-            backTo: config.ingressUrl + req.originalUrl,
-          },
-        ).toString()}&prisonNumber=`,
-      },
-      showBreadcrumbs: true,
-      searchTerm: resQuery?.searchTerm,
-      results: searchResponse.length
-        ? searchResponse.map(prisoner => ({
-            ...prisoner,
-            backLink: prisonerProfileBacklink(req.originalUrl, prisoner.prisonerNumber),
-          }))
-        : [],
-      validationErrors: res.locals['validationErrors'] ?? getValidationErrors(req),
-    })
-  }
+  GET_GENERATE_CHECKLIST = async (req: Request, res: Response) =>
+    this.GET_BASE(
+      req,
+      res,
+      `${config.serviceUrls.documentGeneration}/download-document/${req.middleware?.documentTemplateId}?${new URLSearchParams(
+        {
+          prisonId: res.locals.user.getActiveCaseloadId()!,
+          returnTo: config.ingressUrl,
+          backTo: config.ingressUrl + req.originalUrl,
+        },
+      ).toString()}&prisonNumber=`,
+    )
 }

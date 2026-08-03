@@ -4,6 +4,8 @@ import { SearchPrisonerController } from './controller'
 import { validateOnGET } from '../../middleware/validation/validationMiddleware'
 import { schema } from './schema'
 import { Page } from '../../services/auditService'
+import { requirePermissions } from '../../middleware/permissions/requirePermissions'
+import { UserPermissionLevel } from '../../interfaces/hmppsUser'
 
 export const SearchPrisonerRoutes = ({ prisonerSearchService, populateDocumentTemplateMiddleware }: Services) => {
   const { router, get } = BaseRouter()
@@ -11,6 +13,7 @@ export const SearchPrisonerRoutes = ({ prisonerSearchService, populateDocumentTe
   get(
     '/schedule-a-transfer',
     Page.SEARCH_PRISONER,
+    requirePermissions(UserPermissionLevel.MANAGE),
     validateOnGET(schema, 'searchTerm'),
     new SearchPrisonerController(prisonerSearchService, {
       caption: 'Schedule a transfer',
@@ -24,6 +27,7 @@ export const SearchPrisonerRoutes = ({ prisonerSearchService, populateDocumentTe
   get(
     '/plan-a-transfer',
     Page.SEARCH_PRISONER,
+    requirePermissions(UserPermissionLevel.MANAGE),
     validateOnGET(schema, 'searchTerm'),
     new SearchPrisonerController(prisonerSearchService, {
       caption: 'Plan a transfer',

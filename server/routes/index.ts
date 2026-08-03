@@ -52,7 +52,7 @@ export default function routes(services: Services): Router {
     })
   })
 
-  router.use('/search-prisoner', requirePermissions(UserPermissionLevel.MANAGE), SearchPrisonerRoutes(services))
+  router.use('/search-prisoner', requirePermissions(UserPermissionLevel.VIEW_ONLY), SearchPrisonerRoutes(services))
   router.use(
     '/scheduled-transfers',
     requirePermissions(UserPermissionLevel.VIEW_ONLY),
