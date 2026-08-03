@@ -6,17 +6,18 @@ import { prisonerProfileBacklink } from '../../utils/utils'
 import Prisoner from '../../services/apis/model/prisoner'
 import { processApiError } from '../../middleware/validation/handleApiError'
 import { getValidationErrors } from '../../middleware/validation/populateValidationErrors'
+import config from '../../config'
 
 export class SearchPrisonerController {
   constructor(
     readonly prisonerSearchApiService: PrisonerSearchApiService,
-    readonly config: {
+    readonly configs: {
       caption: string
       action: { label: string; url: string }
     },
   ) {}
 
-  GET = async (req: Request, res: Response) => {
+  private GET_BASE = async (req: Request, res: Response, actionUrl?: string) => {
     const resQuery = res.locals['query'] as ResQuerySchemaType
 
     let searchResponse: Prisoner[] = []
@@ -30,8 +31,8 @@ export class SearchPrisonerController {
     }
 
     res.render('search-prisoner/view', {
-      caption: this.config.caption,
-      action: this.config.action,
+      caption: this.configs.caption,
+      action: { ...this.configs.action, ...(actionUrl ? { url: actionUrl } : {}) },
       showBreadcrumbs: true,
       searchTerm: resQuery?.searchTerm,
       results: searchResponse.length
@@ -43,4 +44,19 @@ export class SearchPrisonerController {
       validationErrors: res.locals['validationErrors'] ?? getValidationErrors(req),
     })
   }
+
+  GET = async (req: Request, res: Response) => this.GET_BASE(req, res)
+
+  GET_GENERATE_CHECKLIST = async (req: Request, res: Response) =>
+    this.GET_BASE(
+      req,
+      res,
+      `${config.serviceUrls.documentGeneration}/download-document/${req.middleware?.documentTemplateId}?${new URLSearchParams(
+        {
+          prisonId: res.locals.user.getActiveCaseloadId()!,
+          returnTo: config.ingressUrl,
+          backTo: config.ingressUrl + req.originalUrl,
+        },
+      ).toString()}&prisonNumber=`,
+    )
 }

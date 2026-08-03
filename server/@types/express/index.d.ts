@@ -27,6 +27,7 @@ export declare global {
         prisonerData?: Prisoner
         transfer?: components['schemas']['Transfer'] & { label: 'scheduled transfer' | 'planned transfer' }
         transferHistory?: components['schemas']['AuditHistory']
+        documentTemplateId?: string
       }
     }
 
