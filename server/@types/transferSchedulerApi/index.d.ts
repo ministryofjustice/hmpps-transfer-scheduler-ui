@@ -260,7 +260,7 @@ export interface components {
       destinationCodes?: string[]
       logisticsCodes?: string[]
       /** @enum {string|null} */
-      priorityCode?: '1' | '2' | '3' | null
+      priorityCodes?: ('1' | '2' | '3')[]
       /** @enum {string|null} */
       stage?: 'PLANNING' | 'SCHEDULED' | null
       /** Format: int32 */

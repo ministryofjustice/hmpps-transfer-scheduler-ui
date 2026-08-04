@@ -15,6 +15,7 @@ import insertJourneyIdentifier from '../middleware/journey/insertJourneyIdentifi
 import { JourneyRoutes } from './journeys/routes'
 import { BrowseScheduledTransfersRoutes } from './scheduled-transfers/routes'
 import { ManageTransferRoutes } from './transfers/routes'
+import { BrowsePlannedTransfersRoutes } from './planned-transfers/routes'
 
 export default function routes(services: Services): Router {
   const { router, get } = BaseRouter()
@@ -57,6 +58,11 @@ export default function routes(services: Services): Router {
     '/scheduled-transfers',
     requirePermissions(UserPermissionLevel.VIEW_ONLY),
     BrowseScheduledTransfersRoutes(services),
+  )
+  router.use(
+    '/planned-transfers',
+    requirePermissions(UserPermissionLevel.VIEW_ONLY),
+    BrowsePlannedTransfersRoutes(services),
   )
   router.use('/transfers', requirePermissions(UserPermissionLevel.VIEW_ONLY), ManageTransferRoutes(services))
 
