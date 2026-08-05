@@ -16,7 +16,7 @@ export class BrowsePlannedTransfersController {
 
   private PAGE_SIZE = 10
 
-  private DEFAULT_SORT = 'start,asc'
+  private DEFAULT_SORT = 'requestedOn,asc'
 
   GET = async (_req: Request, res: Response) => {
     const resQuery = res.locals['query'] as ResQuerySchemaType

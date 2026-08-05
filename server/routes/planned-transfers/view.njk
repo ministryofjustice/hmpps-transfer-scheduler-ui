@@ -181,7 +181,9 @@
               <form id="sortForm">
                 {{ hiddenInputs(query | getQueryEntries(['searchTerm','start','end','destination','reason', 'logistics', 'status','history'])) }}
                 <label class="govuk-label" for="sort">Sort by</label>
-                <select class="govuk-select hmpps-sort-selector__select" id="sort" name="sort" value="{{ sort or 'start,asc' }}">
+                <select class="govuk-select hmpps-sort-selector__select" id="sort" name="sort" value="{{ sort or 'requestedOn,asc' }}">
+                  <option value="requestedOn,asc" {{ 'selected' if sort === 'requestedOn,asc' else '' }}>Request date (oldest)</option>
+                  <option value="requestedOn,desc" {{ 'selected' if sort === 'requestedOn,desc' else '' }}>Request date (most recent)</option>
                   <option value="start,asc" {{ 'selected' if sort === 'start,asc' else '' }}>Start date (oldest)</option>
                   <option value="start,desc" {{ 'selected' if sort === 'start,desc' else '' }}>Start date (most recent)</option>
                 </select>
