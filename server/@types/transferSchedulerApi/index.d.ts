@@ -28,6 +28,86 @@ export interface paths {
     patch?: never
     trace?: never
   }
+  '/sync/transfers/{personIdentifier}': {
+    parameters: {
+      query?: never
+      header?: never
+      path?: never
+      cookie?: never
+    }
+    get?: never
+    /**
+     * @description Requires one of the following roles:
+     *     * ROLE_TRANSFERS__SYNC__RW
+     */
+    put: operations['syncTransfer']
+    post?: never
+    delete?: never
+    options?: never
+    head?: never
+    patch?: never
+    trace?: never
+  }
+  '/sync/transfer-movements/{personIdentifier}': {
+    parameters: {
+      query?: never
+      header?: never
+      path?: never
+      cookie?: never
+    }
+    get?: never
+    /**
+     * @description Requires one of the following roles:
+     *     * ROLE_TRANSFERS__SYNC__RW
+     */
+    put: operations['syncMovement']
+    post?: never
+    delete?: never
+    options?: never
+    head?: never
+    patch?: never
+    trace?: never
+  }
+  '/resync/transfers/{personIdentifier}': {
+    parameters: {
+      query?: never
+      header?: never
+      path?: never
+      cookie?: never
+    }
+    get?: never
+    /**
+     * @description Requires one of the following roles:
+     *     * ROLE_TRANSFERS__SYNC__RW
+     */
+    put: operations['resync']
+    post?: never
+    delete?: never
+    options?: never
+    head?: never
+    patch?: never
+    trace?: never
+  }
+  '/move/transfers': {
+    parameters: {
+      query?: never
+      header?: never
+      path?: never
+      cookie?: never
+    }
+    get?: never
+    /**
+     * @description Requires one of the following roles:
+     *     * ROLE_TRANSFERS__SYNC__RW
+     */
+    put: operations['moveTransfers']
+    post?: never
+    delete?: never
+    options?: never
+    head?: never
+    patch?: never
+    trace?: never
+  }
   '/transfers/{personIdentifier}': {
     parameters: {
       query?: never
@@ -68,6 +148,26 @@ export interface paths {
     patch?: never
     trace?: never
   }
+  '/search/people/clashes': {
+    parameters: {
+      query?: never
+      header?: never
+      path?: never
+      cookie?: never
+    }
+    get?: never
+    put?: never
+    /**
+     * @description Requires one of the following roles:
+     *     * ROLE_SCHEDULES__CLASHES__RO
+     */
+    post: operations['findTapClashes']
+    delete?: never
+    options?: never
+    head?: never
+    patch?: never
+    trace?: never
+  }
   '/transfers/{id}/history': {
     parameters: {
       query?: never
@@ -83,6 +183,54 @@ export interface paths {
     put?: never
     post?: never
     delete?: never
+    options?: never
+    head?: never
+    patch?: never
+    trace?: never
+  }
+  '/sync/transfers/{id}': {
+    parameters: {
+      query?: never
+      header?: never
+      path?: never
+      cookie?: never
+    }
+    /**
+     * @description Requires one of the following roles:
+     *     * ROLE_TRANSFERS__SYNC__RW
+     */
+    get: operations['getTransfer']
+    put?: never
+    post?: never
+    /**
+     * @description Requires one of the following roles:
+     *     * ROLE_TRANSFERS__SYNC__RW
+     */
+    delete: operations['deleteTransfer']
+    options?: never
+    head?: never
+    patch?: never
+    trace?: never
+  }
+  '/sync/transfer-movements/{id}': {
+    parameters: {
+      query?: never
+      header?: never
+      path?: never
+      cookie?: never
+    }
+    /**
+     * @description Requires one of the following roles:
+     *     * ROLE_TRANSFERS__SYNC__RW
+     */
+    get: operations['getMovement']
+    put?: never
+    post?: never
+    /**
+     * @description Requires one of the following roles:
+     *     * ROLE_TRANSFERS__SYNC__RW
+     */
+    delete: operations['deleteMovement']
     options?: never
     head?: never
     patch?: never
@@ -108,6 +256,26 @@ export interface paths {
     patch?: never
     trace?: never
   }
+  '/reconciliation/transfers/{personIdentifier}': {
+    parameters: {
+      query?: never
+      header?: never
+      path?: never
+      cookie?: never
+    }
+    /**
+     * @description Requires one of the following roles:
+     *     * ROLE_TRANSFERS__SYNC__RW
+     */
+    get: operations['reconcile']
+    put?: never
+    post?: never
+    delete?: never
+    options?: never
+    head?: never
+    patch?: never
+    trace?: never
+  }
 }
 export type webhooks = Record<string, never>
 export interface components {
@@ -115,21 +283,70 @@ export interface components {
     ApplyDestination: {
       type: 'ApplyDestination'
     } & (Omit<components['schemas']['TransferAction'], 'type'> & {
-      destinationCode: string
+      destinationCode?: string | null
     })
     ApplyLogistics: {
       type: 'ApplyLogistics'
     } & (Omit<components['schemas']['TransferAction'], 'type'> & {
       logisticsCode?: string | null
     })
+    ApplyPlanComments: {
+      type: 'ApplyPlanComments'
+    } & (Omit<components['schemas']['TransferAction'], 'type'> & {
+      comments?: string | null
+    })
+    ApplyPriority: {
+      type: 'ApplyPriority'
+    } & (Omit<components['schemas']['TransferAction'], 'type'> & {
+      priorityCode: string
+    })
     ApplyReason: {
       type: 'ApplyReason'
     } & (Omit<components['schemas']['TransferAction'], 'type'> & {
       reasonCode: string
     })
+    ApplyRequestedOn: {
+      type: 'ApplyRequestedOn'
+    } & (Omit<components['schemas']['TransferAction'], 'type'> & {
+      /** Format: date */
+      requestedOn: string
+    })
+    ApplyScheduleComments: {
+      type: 'ApplyScheduleComments'
+    } & (Omit<components['schemas']['TransferAction'], 'type'> & {
+      comments?: string | null
+    })
+    ApplyTransit: {
+      type: 'ApplyTransit'
+    } & (Omit<components['schemas']['TransferAction'], 'type'> & {
+      request: components['schemas']['MovementRequest']
+      /** Format: date-time */
+      occurredAt: string
+      destinationCode: string
+      reasonCode: string
+      logisticsCode: string
+      comments?: string | null
+    })
     CancelTransfer: {
       type: 'CancelTransfer'
     } & Omit<components['schemas']['TransferAction'], 'type'>
+    CompleteTransfer: {
+      type: 'CompleteTransfer'
+    } & Omit<components['schemas']['TransferAction'], 'type'>
+    ExpireTransfer: {
+      type: 'ExpireTransfer'
+    } & Omit<components['schemas']['TransferAction'], 'type'>
+    MakeUnscheduled: {
+      type: 'MakeUnscheduled'
+    } & Omit<components['schemas']['TransferAction'], 'type'>
+    MovementRequest: {
+      /** Format: date-time */
+      occurredAt: string
+      destinationCode: string
+      reasonCode: string
+      logisticsCode: string
+      comments?: string | null
+    }
     PlanTransfer: {
       type: 'PlanTransfer'
     } & (Omit<components['schemas']['TransferAction'], 'type'> & {
@@ -137,6 +354,12 @@ export interface components {
       requestedOn: string
       priorityCode: string
       comments?: string | null
+    })
+    RescheduleTransfer: {
+      type: 'RescheduleTransfer'
+    } & (Omit<components['schemas']['TransferAction'], 'type'> & {
+      /** Format: date-time */
+      start: string
     })
     ScheduleTransfer: {
       type: 'ScheduleTransfer'
@@ -152,9 +375,18 @@ export interface components {
       actions: (
         | components['schemas']['ApplyDestination']
         | components['schemas']['ApplyLogistics']
+        | components['schemas']['ApplyPlanComments']
+        | components['schemas']['ApplyPriority']
         | components['schemas']['ApplyReason']
+        | components['schemas']['ApplyRequestedOn']
+        | components['schemas']['ApplyScheduleComments']
+        | components['schemas']['ApplyTransit']
         | components['schemas']['CancelTransfer']
+        | components['schemas']['CompleteTransfer']
+        | components['schemas']['ExpireTransfer']
+        | components['schemas']['MakeUnscheduled']
         | components['schemas']['PlanTransfer']
+        | components['schemas']['RescheduleTransfer']
         | components['schemas']['ScheduleTransfer']
       )[]
       reason?: string | null
@@ -178,6 +410,124 @@ export interface components {
     User: {
       username: string
       name: string
+    }
+    SyncSchedule: {
+      /** Format: date-time */
+      start?: string | null
+      eventSubType: string
+      eventStatus: string
+      commentText?: string | null
+      hiddenCommentText?: string | null
+      agyLocId: string
+      toAgyLocId?: string | null
+      outcomeReasonCode?: string | null
+      escortCode?: string | null
+    }
+    SyncTransfer: {
+      /** Format: uuid */
+      dpsId?: string | null
+      /** Format: int64 */
+      eventId?: number | null
+      waitlist?: components['schemas']['SyncWaitlist']
+      schedule: components['schemas']['SyncSchedule'] | null
+    }
+    SyncTransferRequest: {
+      /** Format: date-time */
+      occurredAt: string
+      syncUser: components['schemas']['SyncUser']
+      transfer: components['schemas']['SyncTransfer']
+    }
+    SyncUser: {
+      username: string
+      activeCaseloadId?: string | null
+    }
+    SyncWaitlist: {
+      /** Format: date */
+      requestDate: string
+      waitListStatus: string
+      /** Format: date */
+      statusDate: string
+      transferPriority: string
+      approved: boolean
+      approvedUsername?: string | null
+      /** @enum {string|null} */
+      outcomeReasonCode?: 'OIC' | 'ADMI' | 'TRANS' | null
+      commentText1?: string | null
+    }
+    ReferenceId: {
+      /** Format: uuid */
+      dpsId: string
+    }
+    SyncMovement: {
+      /** Format: uuid */
+      dpsId?: string | null
+      /** Format: uuid */
+      dpsTransferId?: string | null
+      /** Format: int64 */
+      offenderBookId?: number | null
+      /** Format: int32 */
+      movementSeq?: number | null
+      /** Format: date-time */
+      occurredAt: string
+      movementReasonCode: string
+      escortCode: string
+      fromAgyLocId: string
+      toAgyLocId: string
+      active?: boolean | null
+      commentText?: string
+      reasonCode: string
+      destinationCode: string
+      logisticsCode: string
+    }
+    SyncMovementRequest: {
+      /** Format: date-time */
+      occurredAt: string
+      syncUser: components['schemas']['SyncUser']
+      movement: components['schemas']['SyncMovement']
+    }
+    AtAndBy: {
+      /** Format: date-time */
+      at: string
+      by: string
+    }
+    ResyncMovement: {
+      movement: components['schemas']['SyncMovement']
+      created: components['schemas']['AtAndBy']
+      modified?: components['schemas']['AtAndBy'] | null
+    }
+    ResyncTransfer: {
+      transfer: components['schemas']['SyncTransfer']
+      created: components['schemas']['AtAndBy']
+      modified?: components['schemas']['AtAndBy'] | null
+      movement?: components['schemas']['ResyncMovement'] | null
+    }
+    ResyncTransfersRequest: {
+      transfers: components['schemas']['ResyncTransfer'][]
+      unscheduledMovements: components['schemas']['ResyncMovement'][]
+    }
+    ResyncResponse: {
+      transfers: components['schemas']['TransferMapping'][]
+      unscheduledMovements: components['schemas']['TransferMovementMapping'][]
+    }
+    TransferMapping: {
+      /** Format: uuid */
+      dpsId: string
+      /** Format: int64 */
+      eventId: number
+      movement?: components['schemas']['TransferMovementMapping'] | null
+    }
+    TransferMovementMapping: {
+      /** Format: uuid */
+      dpsId: string
+      /** Format: int64 */
+      offenderBookId: number
+      /** Format: int32 */
+      movementSeq: number
+    }
+    MoveTransfersRequest: {
+      from: string
+      to: string
+      transferIds: string[]
     }
     CreatePlanRequest: {
       /** Format: date */
@@ -204,6 +554,9 @@ export interface components {
     Movement: {
       /** Format: date-time */
       occurredAt: string
+      destination: components['schemas']['Prison']
+      reason: components['schemas']['CodedDescription']
+      logistics: components['schemas']['CodedDescription']
       comments?: string | null
     }
     Person: {
@@ -239,7 +592,7 @@ export interface components {
       schedule?: components['schemas']['Schedule'] | null
       movement?: components['schemas']['Movement'] | null
       /** @enum {string} */
-      stage: 'PLANNING' | 'SCHEDULED'
+      stage: 'PLANNING' | 'SCHEDULED' | 'UNSCHEDULED'
     }
     TransferPrisonSearchRequest: {
       /** Format: date */
@@ -259,10 +612,9 @@ export interface components {
       reasonCodes?: string[]
       destinationCodes?: string[]
       logisticsCodes?: string[]
+      priorityCodes?: ('1' | '2' | '3')[]
       /** @enum {string|null} */
-      priorityCode?: '1' | '2' | '3' | null
-      /** @enum {string|null} */
-      stage?: 'PLANNING' | 'SCHEDULED' | null
+      stage?: 'PLANNING' | 'SCHEDULED' | 'UNSCHEDULED' | null
       /** Format: int32 */
       page: number
       /** Format: int32 */
@@ -277,9 +629,62 @@ export interface components {
       content: components['schemas']['Transfer'][]
       metadata: components['schemas']['PageMetadata']
     }
+    ClashPersonIdentifier: {
+      /** @enum {string} */
+      type: 'PRISON_NUMBER'
+      value: string
+    }
+    ClashRange: {
+      /** Format: date-time */
+      start: string
+      /** Format: date-time */
+      end: string
+    }
+    ClashRequest: {
+      personIdentifiers: components['schemas']['ClashPersonIdentifier'][]
+      ranges: components['schemas']['ClashRange'][]
+    }
+    AdditionalInformation: {
+      prisonCode: string
+    }
+    Clash: {
+      /** Format: date-time */
+      start: string
+      /** Format: date-time */
+      end: string
+      description: components['schemas']['Description']
+      location: components['schemas']['Location']
+      additionalInformation: components['schemas']['AdditionalInformation']
+    }
+    ClashOrigin: {
+      source: components['schemas']['ClashSource']
+    }
+    ClashResponse: {
+      origin: components['schemas']['ClashOrigin']
+      data: components['schemas']['PersonClashes'][]
+    }
+    ClashSource: {
+      productId: string
+      name: string
+    }
+    Description: {
+      full: string
+      short: string
+    }
+    Location: {
+      description: string
+    }
+    PersonClashes: {
+      personIdentifier: components['schemas']['ClashPersonIdentifier']
+      clashes: components['schemas']['Clash'][]
+    }
     ReferenceDataResponse: {
       domain: components['schemas']['CodedDescription']
       items: components['schemas']['CodedDescription'][]
+    }
+    ReconciliationResponse: {
+      transfers: components['schemas']['SyncTransfer'][]
+      unscheduledMovements: components['schemas']['SyncMovement'][]
     }
   }
   responses: never
@@ -341,6 +746,106 @@ export interface operations {
       }
     }
   }
+  syncTransfer: {
+    parameters: {
+      query?: never
+      header?: never
+      path: {
+        personIdentifier: string
+      }
+      cookie?: never
+    }
+    requestBody: {
+      content: {
+        'application/json': components['schemas']['SyncTransferRequest']
+      }
+    }
+    responses: {
+      /** @description OK */
+      200: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          '*/*': components['schemas']['ReferenceId']
+        }
+      }
+    }
+  }
+  syncMovement: {
+    parameters: {
+      query?: never
+      header?: never
+      path: {
+        personIdentifier: string
+      }
+      cookie?: never
+    }
+    requestBody: {
+      content: {
+        'application/json': components['schemas']['SyncMovementRequest']
+      }
+    }
+    responses: {
+      /** @description OK */
+      200: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          '*/*': components['schemas']['ReferenceId']
+        }
+      }
+    }
+  }
+  resync: {
+    parameters: {
+      query?: never
+      header?: never
+      path: {
+        personIdentifier: string
+      }
+      cookie?: never
+    }
+    requestBody: {
+      content: {
+        'application/json': components['schemas']['ResyncTransfersRequest']
+      }
+    }
+    responses: {
+      /** @description OK */
+      200: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          '*/*': components['schemas']['ResyncResponse']
+        }
+      }
+    }
+  }
+  moveTransfers: {
+    parameters: {
+      query?: never
+      header?: never
+      path?: never
+      cookie?: never
+    }
+    requestBody: {
+      content: {
+        'application/json': components['schemas']['MoveTransfersRequest']
+      }
+    }
+    responses: {
+      /** @description No Content */
+      204: {
+        headers: {
+          [name: string]: unknown
+        }
+        content?: never
+      }
+    }
+  }
   initiateTransfer: {
     parameters: {
       query?: never
@@ -396,6 +901,30 @@ export interface operations {
       }
     }
   }
+  findTapClashes: {
+    parameters: {
+      query?: never
+      header?: never
+      path?: never
+      cookie?: never
+    }
+    requestBody: {
+      content: {
+        'application/json': components['schemas']['ClashRequest']
+      }
+    }
+    responses: {
+      /** @description OK */
+      200: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          '*/*': components['schemas']['ClashResponse']
+        }
+      }
+    }
+  }
   retrieveHistory: {
     parameters: {
       query?: never
@@ -418,6 +947,90 @@ export interface operations {
       }
     }
   }
+  getTransfer: {
+    parameters: {
+      query?: never
+      header?: never
+      path: {
+        id: string
+      }
+      cookie?: never
+    }
+    requestBody?: never
+    responses: {
+      /** @description OK */
+      200: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          '*/*': components['schemas']['SyncTransfer']
+        }
+      }
+    }
+  }
+  deleteTransfer: {
+    parameters: {
+      query?: never
+      header?: never
+      path: {
+        id: string
+      }
+      cookie?: never
+    }
+    requestBody?: never
+    responses: {
+      /** @description No Content */
+      204: {
+        headers: {
+          [name: string]: unknown
+        }
+        content?: never
+      }
+    }
+  }
+  getMovement: {
+    parameters: {
+      query?: never
+      header?: never
+      path: {
+        id: string
+      }
+      cookie?: never
+    }
+    requestBody?: never
+    responses: {
+      /** @description OK */
+      200: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          '*/*': components['schemas']['SyncMovement']
+        }
+      }
+    }
+  }
+  deleteMovement: {
+    parameters: {
+      query?: never
+      header?: never
+      path: {
+        id: string
+      }
+      cookie?: never
+    }
+    requestBody?: never
+    responses: {
+      /** @description No Content */
+      204: {
+        headers: {
+          [name: string]: unknown
+        }
+        content?: never
+      }
+    }
+  }
   getDomain: {
     parameters: {
       query?: never
@@ -437,6 +1050,28 @@ export interface operations {
         }
         content: {
           '*/*': components['schemas']['ReferenceDataResponse']
+        }
+      }
+    }
+  }
+  reconcile: {
+    parameters: {
+      query?: never
+      header?: never
+      path: {
+        personIdentifier: string
+      }
+      cookie?: never
+    }
+    requestBody?: never
+    responses: {
+      /** @description OK */
+      200: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          '*/*': components['schemas']['ReconciliationResponse']
         }
       }
     }

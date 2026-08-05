@@ -8,7 +8,7 @@ import { formatInputDate } from '../../utils/dateTimeUtils'
 import PrisonRegisterService from '../../services/apis/prisonRegisterService'
 import TransferSchedulerService from '../../services/apis/transferSchedulerService'
 
-export class BrowseScheduledTransfersController {
+export class BrowsePlannedTransfersController {
   constructor(
     private readonly transferSchedulerService: TransferSchedulerService,
     private readonly prisonRegisterService: PrisonRegisterService,
@@ -25,6 +25,8 @@ export class BrowseScheduledTransfersController {
       res.setAuditDetails.searchTerm(resQuery.searchTerm.trim())
     }
 
+    const priorityOptions = await this.transferSchedulerService.getReferenceData({ res }, 'transfer-priority')
+
     let searchResponse: components['schemas']['TransferSearchResponse'] | undefined
     let results: components['schemas']['Transfer'][] = []
 
@@ -36,7 +38,7 @@ export class BrowseScheduledTransfersController {
           sort: resQuery.validated.sort ?? this.DEFAULT_SORT,
           page: resQuery.validated.page || 1,
           size: this.PAGE_SIZE,
-          stage: 'SCHEDULED',
+          stage: 'PLANNING',
         }
 
         if (resQuery.validated.destination) requestBody.destinationCodes = [resQuery.validated.destination]
@@ -45,6 +47,9 @@ export class BrowseScheduledTransfersController {
         if (resQuery.validated.searchTerm) requestBody.query = resQuery.validated.searchTerm
         if (resQuery.validated.status?.length) {
           requestBody.statusCodes = resQuery.validated.status
+        }
+        if (resQuery.validated.priority?.length) {
+          requestBody.priorityCodes = resQuery.validated.priority as ('1' | '2' | '3')[]
         }
 
         searchResponse = await this.transferSchedulerService.searchTransfers({ res }, requestBody)
@@ -70,13 +75,19 @@ export class BrowseScheduledTransfersController {
             : resQuery.status
               ? [`status=${resQuery.status}`]
               : []),
+          // eslint-disable-next-line no-nested-ternary
+          ...(Array.isArray(resQuery?.priority)
+            ? resQuery.priority.map(itm => `priority=${itm}`)
+            : resQuery.priority
+              ? [`priority=${resQuery.priority}`]
+              : []),
         ].join('&')}`,
       )
     } catch (error: unknown) {
       res.locals['validationErrors'] = { apiError: [getApiUserErrorMessage(error as HTTPError)] }
     }
 
-    res.render('scheduled-transfers/view', {
+    res.render('planned-transfers/view', {
       showBreadcrumbs: true,
       prisons:
         (await this.prisonRegisterService.getPrisons({ res }))?.filter(
@@ -84,6 +95,7 @@ export class BrowseScheduledTransfersController {
         ) ?? [],
       reasons: await this.transferSchedulerService.getReferenceData({ res }, 'transfer-reason'),
       logisticsOptions: await this.transferSchedulerService.getReferenceData({ res }, 'transfer-logistics'),
+      priorityOptions,
       hasValidationError: !resQuery.validated,
       results,
       searchTerm: resQuery.searchTerm,
@@ -93,6 +105,7 @@ export class BrowseScheduledTransfersController {
       reason: resQuery.reason,
       logistics: resQuery.logistics,
       status: resQuery.status,
+      priority: resQuery.priority,
       sort: resQuery?.sort ?? this.DEFAULT_SORT,
     })
   }
