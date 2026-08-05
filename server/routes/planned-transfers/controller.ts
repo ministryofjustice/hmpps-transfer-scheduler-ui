@@ -47,13 +47,9 @@ export class BrowsePlannedTransfersController {
         if (resQuery.validated.searchTerm) requestBody.query = resQuery.validated.searchTerm
         if (resQuery.validated.status?.length) {
           requestBody.statusCodes = resQuery.validated.status
-        } else {
-          requestBody.statusCodes = ['PLANNING', 'READY_TO_SCHEDULE', 'CANCELLED']
         }
         if (resQuery.validated.priority?.length) {
           requestBody.priorityCodes = resQuery.validated.priority as ('1' | '2' | '3')[]
-        } else {
-          requestBody.priorityCodes = priorityOptions.map(({ code }) => code) as ('1' | '2' | '3')[]
         }
 
         searchResponse = await this.transferSchedulerService.searchTransfers({ res }, requestBody)

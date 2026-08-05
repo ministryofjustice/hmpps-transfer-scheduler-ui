@@ -430,7 +430,6 @@ export interface components {
       eventId?: number | null
       waitlist?: components['schemas']['SyncWaitlist']
       schedule: components['schemas']['SyncSchedule'] | null
-      isReadyToSchedule: boolean
     }
     SyncTransferRequest: {
       /** Format: date-time */
@@ -547,7 +546,6 @@ export interface components {
       logisticsCode?: string | null
       plan?: components['schemas']['CreatePlanRequest'] | null
       schedule?: components['schemas']['CreateScheduleRequest'] | null
-      isReadyToSchedule: boolean
     }
     CodedDescription: {
       code: string
@@ -614,7 +612,7 @@ export interface components {
       reasonCodes?: string[]
       destinationCodes?: string[]
       logisticsCodes?: string[]
-      priorityCodes: ('1' | '2' | '3')[]
+      priorityCodes?: ('1' | '2' | '3')[]
       /** @enum {string|null} */
       stage?: 'PLANNING' | 'SCHEDULED' | 'UNSCHEDULED' | null
       /** Format: int32 */

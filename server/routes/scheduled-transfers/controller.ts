@@ -45,8 +45,6 @@ export class BrowseScheduledTransfersController {
         if (resQuery.validated.searchTerm) requestBody.query = resQuery.validated.searchTerm
         if (resQuery.validated.status?.length) {
           requestBody.statusCodes = resQuery.validated.status
-        } else {
-          requestBody.statusCodes = ['SCHEDULED', 'IN_TRANSIT', 'COMPLETED', 'CANCELLED', 'EXPIRED']
         }
 
         searchResponse = await this.transferSchedulerService.searchTransfers({ res }, requestBody)
