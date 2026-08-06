@@ -1,5 +1,5 @@
 import { z } from 'zod'
-import { addDays, differenceInDays, format } from 'date-fns'
+import { differenceInDays, format, subDays } from 'date-fns'
 import { Request, Response } from 'express'
 import { createSchema } from '../../middleware/validation/validationMiddleware'
 import { validateTransformOptionalDate } from '../../utils/validations/validateDatePicker'
@@ -17,8 +17,11 @@ export const schemaFactory =
         .string()
         .optional()
         .transform(val => val?.replace(/[\r\n]/g, '').trim()),
-      start: validateTransformOptionalDate('date from'),
-      end: validateTransformOptionalDate('date to'),
+      dateType: z.enum(['REQUESTED_ON', 'START']).optional(),
+      start: validateTransformOptionalDate('transfer date from'),
+      end: validateTransformOptionalDate('transfer date to'),
+      requestStart: validateTransformOptionalDate('request date from'),
+      requestEnd: validateTransformOptionalDate('request date to'),
       destination: z.string().optional(),
       reason: z.string().optional(),
       logistics: z.string().optional(),
@@ -34,40 +37,70 @@ export const schemaFactory =
           if (!Number.isNaN(num)) return num
           return 1
         }),
-    }).transform(({ start, end, ...otherProps }, ctx) => {
-      if (start === null && end === null) {
-        return {
-          start: format(new Date(), 'yyyy-MM-dd'),
-          end: format(addDays(new Date(), 31), 'yyyy-MM-dd'),
-          ...otherProps,
+    }).transform(({ start, end, requestStart, requestEnd, ...otherProps }, ctx) => {
+      if (otherProps.dateType === 'REQUESTED_ON' || !otherProps.dateType) {
+        if (requestStart === null && requestEnd === null) {
+          return {
+            requestStart: format(subDays(new Date(), 31), 'yyyy-MM-dd'),
+            requestEnd: format(new Date(), 'yyyy-MM-dd'),
+            start,
+            end,
+            ...otherProps,
+          }
         }
-      }
 
-      if (start === null) {
-        ctx.addIssue({ code: 'custom', message: 'Enter or select date from', path: ['start'] })
-        return z.NEVER
-      }
+        if (requestStart === null && requestEnd) {
+          ctx.addIssue({ code: 'custom', message: 'Enter or select date from', path: ['requestStart'] })
+          return z.NEVER
+        }
 
-      if (end === null) {
-        ctx.addIssue({ code: 'custom', message: 'Enter or select date to', path: ['end'] })
-        return z.NEVER
-      }
+        if (requestEnd === null && requestStart) {
+          ctx.addIssue({ code: 'custom', message: 'Enter or select date to', path: ['requestEnd'] })
+          return z.NEVER
+        }
+        if (requestStart && requestEnd) {
+          if (requestStart > requestEnd) {
+            ctx.addIssue({ code: 'custom', message: 'Enter a valid date range', path: ['requestEnd'] })
+            ctx.addIssue({ code: 'custom', message: '', path: ['requestStart'] })
+            return z.NEVER
+          }
 
-      if (start > end) {
-        ctx.addIssue({ code: 'custom', message: 'Enter a valid date range', path: ['end'] })
-        ctx.addIssue({ code: 'custom', message: '', path: ['start'] })
-        return z.NEVER
-      }
+          if (differenceInDays(requestEnd, requestStart) > 31) {
+            ctx.addIssue({ code: 'custom', message: 'Enter a date range less than 31 days', path: ['requestEnd'] })
+            ctx.addIssue({ code: 'custom', message: '', path: ['requestStart'] })
+            return z.NEVER
+          }
+        }
+      } else {
+        if (start === null && end) {
+          ctx.addIssue({ code: 'custom', message: 'Enter or select date from', path: ['start'] })
+          return z.NEVER
+        }
 
-      if (differenceInDays(end, start) > 31) {
-        ctx.addIssue({ code: 'custom', message: 'Enter a date range less than 31 days', path: ['end'] })
-        ctx.addIssue({ code: 'custom', message: '', path: ['start'] })
-        return z.NEVER
+        if (end === null && start) {
+          ctx.addIssue({ code: 'custom', message: 'Enter or select date to', path: ['end'] })
+          return z.NEVER
+        }
+        if (start && end) {
+          if (start > end) {
+            ctx.addIssue({ code: 'custom', message: 'Enter a valid date range', path: ['end'] })
+            ctx.addIssue({ code: 'custom', message: '', path: ['start'] })
+            return z.NEVER
+          }
+
+          if (differenceInDays(end, start) > 31) {
+            ctx.addIssue({ code: 'custom', message: 'Enter a date range less than 31 days', path: ['end'] })
+            ctx.addIssue({ code: 'custom', message: '', path: ['start'] })
+            return z.NEVER
+          }
+        }
       }
 
       return {
         start,
         end,
+        requestStart,
+        requestEnd,
         ...otherProps,
       }
     })

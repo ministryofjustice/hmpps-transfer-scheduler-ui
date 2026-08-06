@@ -30,7 +30,7 @@ export class BrowseScheduledTransfersController {
 
     try {
       if (resQuery.validated) {
-        const requestBody: components['schemas']['TransferPrisonSearchRequest'] = {
+        const requestBody: components['schemas']['ScheduledSearchRequest'] = {
           start: resQuery.validated.start,
           end: resQuery.validated.end,
           sort: resQuery.validated.sort ?? this.DEFAULT_SORT,

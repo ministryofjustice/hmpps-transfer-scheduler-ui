@@ -320,12 +320,12 @@ export interface components {
       type: 'ApplyTransit'
     } & (Omit<components['schemas']['TransferAction'], 'type'> & {
       request: components['schemas']['MovementRequest']
+      comments?: string | null
       /** Format: date-time */
       occurredAt: string
       destinationCode: string
       reasonCode: string
       logisticsCode: string
-      comments?: string | null
     })
     CancelTransfer: {
       type: 'CancelTransfer'
@@ -340,12 +340,12 @@ export interface components {
       type: 'MakeUnscheduled'
     } & Omit<components['schemas']['TransferAction'], 'type'>
     MovementRequest: {
+      comments?: string | null
       /** Format: date-time */
       occurredAt: string
       destinationCode: string
       reasonCode: string
       logisticsCode: string
-      comments?: string | null
     }
     PlanTransfer: {
       type: 'PlanTransfer'
@@ -594,12 +594,29 @@ export interface components {
       /** @enum {string} */
       stage: 'PLANNING' | 'SCHEDULED' | 'UNSCHEDULED'
     }
-    TransferPrisonSearchRequest: {
+    PlanningSearchRequest: Omit<
+      WithRequired<components['schemas']['PrisonTransferSearchRequest'], 'page' | 'size' | 'sort' | 'stage'>,
+      'stage'
+    > & {
+      /** @enum {string} */
+      startAndEndType: 'REQUESTED_ON' | 'START'
       /** Format: date */
-      start: string
+      start?: string | null
       /** Format: date */
-      end: string
+      end?: string | null
       query?: string | null
+      priorityCodes: ('1' | '2' | '3')[]
+    } & {
+      /**
+       * @description discriminator enum property added by openapi-typescript
+       * @enum {string}
+       */
+      stage: 'PLANNING'
+    }
+    PrisonTransferSearchRequest: {
+      stage: string
+      destinationCodes?: string[]
+      logisticsCodes?: string[]
       statusCodes?: (
         | 'PLANNING'
         | 'READY_TO_SCHEDULE'
@@ -610,16 +627,30 @@ export interface components {
         | 'COMPLETED'
       )[]
       reasonCodes?: string[]
-      destinationCodes?: string[]
-      logisticsCodes?: string[]
-      priorityCodes?: ('1' | '2' | '3')[]
-      /** @enum {string|null} */
-      stage?: 'PLANNING' | 'SCHEDULED' | 'UNSCHEDULED' | null
-      /** Format: int32 */
-      page: number
       /** Format: int32 */
       size: number
       sort: string
+      /** Format: int32 */
+      page: number
+      /** Format: date */
+      end?: string | null
+      /** Format: date */
+      start?: string | null
+    }
+    ScheduledSearchRequest: Omit<
+      WithRequired<
+        components['schemas']['PrisonTransferSearchRequest'],
+        'end' | 'page' | 'size' | 'sort' | 'stage' | 'start'
+      >,
+      'stage'
+    > & {
+      query?: string | null
+    } & {
+      /**
+       * @description discriminator enum property added by openapi-typescript
+       * @enum {string}
+       */
+      stage: 'SCHEDULED'
     }
     PageMetadata: {
       /** Format: int64 */
@@ -886,7 +917,9 @@ export interface operations {
     }
     requestBody: {
       content: {
-        'application/json': components['schemas']['TransferPrisonSearchRequest']
+        'application/json':
+          | components['schemas']['PlanningSearchRequest']
+          | components['schemas']['ScheduledSearchRequest']
       }
     }
     responses: {
@@ -1076,4 +1109,7 @@ export interface operations {
       }
     }
   }
+}
+type WithRequired<T, K extends keyof T> = T & {
+  [P in K]-?: T[P]
 }
