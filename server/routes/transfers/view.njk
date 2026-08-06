@@ -73,7 +73,7 @@
                 key: { text: "Request received" },
                 value: { text: transfer.plan.requestedOn | formatDate("d MMMM yyyy") },
                 actions: { items: [{ href: baseEditUrl + "/request-date", text: "Change", visuallyHiddenText: "request date" }] }
-              },
+              } if transfer.stage === 'PLANNING',
               {
                 key: { text: "Destination" },
                 value: { text: transfer.destination.name or 'Not entered' },
@@ -93,7 +93,7 @@
                 key: { text: "Priority" },
                 value: { text: transfer.plan.priority.description },
                 actions: { items: [{ href: baseEditUrl + "/priority", text: "Change", visuallyHiddenText: "priority" }] }
-              },
+              } if transfer.stage === 'PLANNING',
               {
                 key: { text: "Comments" },
                 value: { text: ((transfer.plan.comments if transfer.stage === 'PLANNING' else transfer.schedule.comments) or 'Not provided') | escape | nl2br },
