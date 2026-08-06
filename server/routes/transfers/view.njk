@@ -68,6 +68,12 @@
                 value: { text: transfer.schedule.start | formatDate("d MMMM yyyy 'at' HH:mm") or 'Not entered' },
                 actions: { items: [{ href: baseEditUrl + "/date-and-time", text: "Change" if transfer.schedule.start else "Add", visuallyHiddenText: "date and time" }] }
               },
+
+              {
+                key: { text: "Request received" },
+                value: { text: transfer.plan.requestedOn | formatDate("d MMMM yyyy") },
+                actions: { items: [{ href: baseEditUrl + "/request-date", text: "Change", visuallyHiddenText: "request date" }] }
+              },
               {
                 key: { text: "Destination" },
                 value: { text: transfer.destination.name or 'Not entered' },
@@ -82,6 +88,11 @@
                 key: { text: "Escort details" },
                 value: { text: transfer.logistics.description or 'Not entered' },
                 actions: { items: [{ href: baseEditUrl + "/logistics", text: "Change" if transfer.logistics else "Add", visuallyHiddenText: "escort details" }] }
+              },
+              {
+                key: { text: "Priority" },
+                value: { text: transfer.plan.priority.description },
+                actions: { items: [{ href: baseEditUrl + "/priority", text: "Change", visuallyHiddenText: "priority" }] }
               },
               {
                 key: { text: "Comments" },

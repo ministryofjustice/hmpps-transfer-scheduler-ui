@@ -34,6 +34,16 @@ export default function routes(services: Services): Router {
         text: 'Search prisoner',
         alias: Page.SEARCH_PRISONER,
       },
+      {
+        matcher: /^\/scheduled-transfers/,
+        text: 'Manage scheduled transfers',
+        alias: Page.BROWSE_SCHEDULED_TRANSFERS,
+      },
+      {
+        matcher: /^\/planned-transfers/,
+        text: 'Manage planned transfers',
+        alias: Page.BROWSE_PLANNED_TRANSFERS,
+      },
     ]),
   )
 
