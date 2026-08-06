@@ -61,7 +61,7 @@ test.describe('/scheduled-transfers', () => {
   })
 
   test('should show search transfers page', async ({ page }) => {
-    await page.goto('/planned-transfers?searchTerm=test&start=01/01/2001&end=31/01/2001&page=2')
+    await page.goto('/planned-transfers?searchTerm=test&requestStart=01/01/2001&requestEnd=31/01/2001&page=2')
 
     const testPage = await new BrowsePlannedTransfersPage(page).verifyContent()
 

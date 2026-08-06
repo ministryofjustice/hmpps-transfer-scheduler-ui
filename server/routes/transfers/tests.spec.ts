@@ -42,7 +42,7 @@ test.describe('/transfers/:id', () => {
     await new NotAuthorisedPage(page).verifyContent()
   })
 
-  test('should show transfer details and edit links', async ({ page }) => {
+  test('should show scheduled transfer details and edit links', async ({ page }) => {
     await login(page)
 
     const transferId = uuidV4()
@@ -126,5 +126,82 @@ test.describe('/transfers/:id', () => {
 
     await expect(testPage.button('Cancel this transfer')).toHaveCount(0)
     await expect(testPage.button('Move to planned transfers')).toHaveCount(0)
+  })
+
+  test('should show planned transfer details (awaiting details) and edit links', async ({ page }) => {
+    await login(page)
+
+    const transferId = uuidV4()
+    await stubGetTransfer({
+      id: transferId,
+      person: testTransfer.person,
+      prison: testTransfer.prison,
+      reason: { code: 'R1', description: 'Reason One' },
+      status: { code: 'PLANNING', description: 'Awaiting details' },
+      plan: { requestedOn: '2001-01-01', comments: 'Lorem ipsum', priority: { code: '1', description: 'High' } },
+      stage: 'PLANNING',
+    })
+    await stubGetTransferHistory(transferId, { content: [] })
+    await page.goto(`/transfers/${transferId}`)
+
+    // verify page content
+    const testPage = await new ManageTransferPage(page).verifyContent()
+
+    await testPage.verifyAnswer('Date and time', 'Not entered')
+    await testPage.verifyAnswer('Request received', '1 January 2001')
+    await testPage.verifyAnswer('Destination', 'Not entered')
+    await testPage.verifyAnswer('Reason', 'Reason One')
+    await testPage.verifyAnswer('Escort details', 'Not entered')
+    await testPage.verifyAnswer('Priority', 'High')
+    await testPage.verifyAnswer('Comments', 'Lorem ipsum')
+    await testPage.verifyAnswer('Status', 'Awaiting details')
+
+    await expect(testPage.link('Add date and time (Transfer information)')).toBeVisible()
+    await expect(testPage.link('Change request date (Transfer information)')).toBeVisible()
+    await expect(testPage.link('Add destination (Transfer information)')).toBeVisible()
+    await expect(testPage.link('Change reason (Transfer information)')).toBeVisible()
+    await expect(testPage.link('Add escort details (Transfer information)')).toBeVisible()
+    await expect(testPage.link('Change priority (Transfer information)')).toBeVisible()
+    await expect(testPage.link('Change comments (Transfer information)')).toBeVisible()
+
+    await expect(testPage.button('Schedule this plan')).toHaveCount(0)
+    await expect(testPage.button('Cancel this plan')).toBeVisible()
+  })
+
+  test('should show planned transfer details (ready to schedule) and edit links', async ({ page }) => {
+    await login(page)
+
+    const transferId = uuidV4()
+    await stubGetTransfer({
+      ...testTransfer,
+      id: transferId,
+      status: { code: 'READY_TO_SCHEDULE', description: 'Ready to schedule' },
+      plan: { requestedOn: '2001-01-01', comments: 'Lorem ipsum', priority: { code: '1', description: 'High' } },
+      stage: 'PLANNING',
+    })
+    await stubGetTransferHistory(transferId, { content: [] })
+    await page.goto(`/transfers/${transferId}`)
+
+    // verify page content
+    const testPage = await new ManageTransferPage(page).verifyContent()
+
+    await testPage.verifyAnswer('Date and time', '1 January 2001 at 09:15')
+    await testPage.verifyAnswer('Request received', '1 January 2001')
+    await testPage.verifyAnswer('Destination', 'Prison One')
+    await testPage.verifyAnswer('Reason', 'Reason One')
+    await testPage.verifyAnswer('Escort details', 'Logistics One')
+    await testPage.verifyAnswer('Priority', 'High')
+    await testPage.verifyAnswer('Status', 'Ready to schedule')
+
+    await expect(testPage.link('Change date and time (Transfer information)')).toBeVisible()
+    await expect(testPage.link('Change request date (Transfer information)')).toBeVisible()
+    await expect(testPage.link('Change destination (Transfer information)')).toBeVisible()
+    await expect(testPage.link('Change reason (Transfer information)')).toBeVisible()
+    await expect(testPage.link('Change escort details (Transfer information)')).toBeVisible()
+    await expect(testPage.link('Change priority (Transfer information)')).toBeVisible()
+    await expect(testPage.link('Change comments (Transfer information)')).toBeVisible()
+
+    await expect(testPage.button('Schedule this plan')).toBeVisible()
+    await expect(testPage.button('Cancel this plan')).toBeVisible()
   })
 })

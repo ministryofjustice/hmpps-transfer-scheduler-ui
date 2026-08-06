@@ -10,6 +10,7 @@
 {% from "partials/simplePagination/macro.njk" import simplePagination %}
 {% from "partials/cardTable/macro.njk" import cardTable %}
 {% from "partials/statusTag/macro.njk" import statusTag %}
+{% from "govuk/components/radios/macro.njk" import govukRadios %}
 
 {% set fullScreen = true %}
 {% set fullWidth = true %}
@@ -73,29 +74,84 @@
               preventDoubleClick: true
             }) }}
 
-            <div class="hmpps-side-filter__content">
+            {% set requestDateInputs %}
+              {{ mojDatePicker({
+                id: "requestStart",
+                name: "requestStart",
+                label: {
+                  html: 'Date from<span class="govuk-visually-hidden"> (request date)</span>'
+                },
+                hint: { text: 'For example, 17/5/2024.' },
+                value: requestStart,
+                errorMessage: validationErrors | findError('requestStart'),
+                classes: 'hmpps-datepicker--fixed-width govuk-!-margin-bottom-4'
+              }) }}
+
+              {{ mojDatePicker({
+                id: "requestEnd",
+                name: "requestEnd",
+                label: {
+                  html: 'Date to<span class="govuk-visually-hidden"> (request date)</span>'
+                },
+                hint: { text: 'For example, 17/5/2024.' },
+                value: requestEnd,
+                errorMessage: validationErrors | findError('requestEnd'),
+                classes: 'hmpps-datepicker--fixed-width'
+              }) }}
+            {% endset %}
+
+            {% set transferDateInputs %}
               {{ mojDatePicker({
                 id: "start",
                 name: "start",
                 label: {
-                  text: 'Date from'
+                  html: 'Date from<span class="govuk-visually-hidden"> (request date)</span>'
                 },
                 hint: { text: 'For example, 17/5/2024.' },
                 value: start,
                 errorMessage: validationErrors | findError('start'),
-                classes: 'hmpps-datepicker--fixed-width'
+                classes: 'hmpps-datepicker--fixed-width govuk-!-margin-bottom-4'
               }) }}
 
               {{ mojDatePicker({
                 id: "end",
                 name: "end",
                 label: {
-                  text: 'Date to'
+                  html: 'Date to<span class="govuk-visually-hidden"> (request date)</span>'
                 },
                 hint: { text: 'For example, 17/5/2024.' },
                 value: end,
                 errorMessage: validationErrors | findError('end'),
                 classes: 'hmpps-datepicker--fixed-width'
+              }) }}
+            {% endset %}
+
+            <div class="hmpps-side-filter__content">
+              {{ govukRadios({
+                name: "dateType",
+                classes: "govuk-radios--small",
+                errorMessage: validationErrors | findError('dateType'),
+                fieldset: {
+                  legend: {
+                    text: 'Date type',
+                    isPageHeading: false,
+                    classes: "govuk-fieldset__legend--s"
+                  }
+                },
+                items: [
+                  {
+                    value: 'REQUESTED_ON',
+                    text: "Request received",
+                    label: { classes: 'govuk-!-font-weight-regular' },
+                    conditional: { html: requestDateInputs }
+                  },
+                  {
+                    value: 'START',
+                    text: "Transfer date",
+                    label: { classes: 'govuk-!-font-weight-regular' },
+                    conditional: { html: transferDateInputs }
+                  }
+                ] | setCheckedValue(dateType or 'REQUESTED_ON')
               }) }}
 
               {{ govukSelect({
@@ -181,7 +237,9 @@
               <form id="sortForm">
                 {{ hiddenInputs(query | getQueryEntries(['searchTerm','start','end','destination','reason', 'logistics', 'status','history'])) }}
                 <label class="govuk-label" for="sort">Sort by</label>
-                <select class="govuk-select hmpps-sort-selector__select" id="sort" name="sort" value="{{ sort or 'start,asc' }}">
+                <select class="govuk-select hmpps-sort-selector__select" id="sort" name="sort" value="{{ sort or 'requestedOn,asc' }}">
+                  <option value="requestedOn,asc" {{ 'selected' if sort === 'requestedOn,asc' else '' }}>Request date (oldest)</option>
+                  <option value="requestedOn,desc" {{ 'selected' if sort === 'requestedOn,desc' else '' }}>Request date (most recent)</option>
                   <option value="start,asc" {{ 'selected' if sort === 'start,asc' else '' }}>Start date (oldest)</option>
                   <option value="start,desc" {{ 'selected' if sort === 'start,desc' else '' }}>Start date (most recent)</option>
                 </select>
@@ -202,6 +260,7 @@
                 action: { text: 'View details', href: '/transfers/' + result.id },
                 data: [
                   result.destination.name or 'Not entered',
+                  result.plan.requestedOn | formatDate("d MMMM yyyy"),
                   result.schedule.start | formatDate("d MMMM yyyy") or 'Not entered',
                   result.schedule.start | formatDate("HH:mm") or 'Not entered',
                   result.reason.description,
@@ -216,13 +275,14 @@
           {{ cardTable({
             columns: [
               [
-                { text: 'Destination', width: 35 },
+                { text: 'Destination', width: 30 },
+                { text: 'Request received', width: 25 },
                 { text: 'Date', width: 20 },
-                { text: 'Time', width: 45 }
+                { text: 'Time', width: 25 }
               ],
               [
-                { text: 'Reason', width: 35 },
-                { text: 'Escort details', width: 20 },
+                { text: 'Reason', width: 30 },
+                { text: 'Escort details', width: 25 },
                 { text: 'Priority', width: 20 },
                 { text: '', width: 25 }
               ]

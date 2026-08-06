@@ -15,11 +15,11 @@ export class BrowsePlannedTransfersPage extends BaseTestPage {
   }
 
   startDateField() {
-    return this.textbox('Date from')
+    return this.textbox('Date from (request date)')
   }
 
   endDateField() {
-    return this.textbox('Date to')
+    return this.textbox('Date to (request date)')
   }
 
   destinationInput() {

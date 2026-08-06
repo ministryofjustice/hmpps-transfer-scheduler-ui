@@ -48,7 +48,10 @@ export default class TransferSchedulerService {
       .post<components['schemas']['Transfer']>({ path: `/transfers/${prisonNumber}`, data: request })
   }
 
-  searchTransfers(context: ApiRequestContext, request: components['schemas']['TransferPrisonSearchRequest']) {
+  searchTransfers(
+    context: ApiRequestContext,
+    request: components['schemas']['ScheduledSearchRequest'] | components['schemas']['PlanningSearchRequest'],
+  ) {
     return this.apiClient
       .withContext({ ...context, readOnly: true })
       .post<components['schemas']['TransferSearchResponse']>({
