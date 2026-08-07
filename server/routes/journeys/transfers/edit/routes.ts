@@ -5,6 +5,7 @@ import preventNavigationToExpiredJourneys from '../../../../middleware/journey/p
 import journeyStateGuard from '../../../../middleware/journey/journeyStateGuard'
 import { TransferCancelRoutes } from './cancel/routes'
 import { EditTransferConfirmationRoutes } from './confirmation/routes'
+import { EditTransferDateTimeRoutes } from './date-and-time/routes'
 
 export const EditTransferRoutes = (services: Services) => {
   const { router, get } = BaseRouter()
@@ -24,6 +25,7 @@ export const EditTransferRoutes = (services: Services) => {
 
   router.use('/cancel', TransferCancelRoutes(services))
   router.use('/confirmation', EditTransferConfirmationRoutes())
+  router.use('/date-and-time', EditTransferDateTimeRoutes(services))
 
   return router
 }
