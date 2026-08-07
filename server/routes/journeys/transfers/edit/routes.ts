@@ -9,6 +9,7 @@ import { EditTransferDateTimeRoutes } from './date-and-time/routes'
 import { EditTransferCommentsRoutes } from './comments/routes'
 import { EditTransferDestinationRoutes } from './destination/routes'
 import { EditTransferLogisticsRoutes } from './logistics/routes'
+import { EditTransferPriorityRoutes } from './priority/routes'
 
 export const EditTransferRoutes = (services: Services) => {
   const { router, get } = BaseRouter()
@@ -32,6 +33,7 @@ export const EditTransferRoutes = (services: Services) => {
   router.use('/date-and-time', EditTransferDateTimeRoutes(services))
   router.use('/destination', EditTransferDestinationRoutes(services))
   router.use('/logistics', EditTransferLogisticsRoutes(services))
+  router.use('/priority', EditTransferPriorityRoutes(services))
 
   return router
 }
