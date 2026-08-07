@@ -7,6 +7,7 @@ import { TransferCancelRoutes } from './cancel/routes'
 import { EditTransferConfirmationRoutes } from './confirmation/routes'
 import { EditTransferDateTimeRoutes } from './date-and-time/routes'
 import { EditTransferCommentsRoutes } from './comments/routes'
+import { EditTransferDestinationRoutes } from './destination/routes'
 
 export const EditTransferRoutes = (services: Services) => {
   const { router, get } = BaseRouter()
@@ -28,6 +29,7 @@ export const EditTransferRoutes = (services: Services) => {
   router.use('/confirmation', EditTransferConfirmationRoutes())
   router.use('/comments', EditTransferCommentsRoutes(services))
   router.use('/date-and-time', EditTransferDateTimeRoutes(services))
+  router.use('/destination', EditTransferDestinationRoutes(services))
 
   return router
 }
