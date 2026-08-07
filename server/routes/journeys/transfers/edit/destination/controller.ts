@@ -34,7 +34,10 @@ export class EditTransferDestinationController {
       })
 
       req.journeyData.journeyCompleted = true
-      req.flash(FLASH_KEY__SUCCESS_BANNER, 'Transfer destination changed')
+      req.flash(
+        FLASH_KEY__SUCCESS_BANNER,
+        transfer.destination ? 'Transfer destination changed' : 'Transfer destination added',
+      )
       next()
     } catch (e) {
       next(e)
