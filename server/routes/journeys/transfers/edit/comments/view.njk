@@ -1,0 +1,31 @@
+{% extends "partials/layout.njk" %}
+{% from "govuk/components/character-count/macro.njk" import govukCharacterCount %}
+{% from "govuk/components/button/macro.njk" import govukButton %}
+
+{% set pageTitle = 'Add any comments for this transfer - Manage ' + transfer.label + 's' %}
+
+{% block innerContent %}
+  <div class="govuk-width-container">
+    <span class="govuk-caption-l">Manage {{ transfer.label }}s</span>
+    <form method="post">
+      <input type="hidden" name="_csrf" value="{{ csrfToken }}" />
+      {{ govukCharacterCount({
+        name: "comments",
+        errorMessage: validationErrors | findError('comments'),
+        maxlength: 225,
+        label: {
+          text: "Add any comments for this transfer",
+          classes: "govuk-label--l",
+          isPageHeading: true
+        },
+        value: comments
+      }) }}
+
+      {{ govukButton({
+        classes: 'govuk-!-margin-top-6',
+        text: "Save",
+        preventDoubleClick: true
+      }) }}
+    </form>
+  </div>
+{% endblock %}

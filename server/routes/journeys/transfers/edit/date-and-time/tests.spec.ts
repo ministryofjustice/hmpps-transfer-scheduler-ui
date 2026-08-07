@@ -16,6 +16,7 @@ import {
   stubPutTransfer,
 } from '../../../../../../integration_tests/mockApis/transferSchedulerApi'
 import { stubGetPrisons } from '../../../../../../integration_tests/mockApis/prisonRegisterApi'
+import { getApiBody } from '../../../../../../integration_tests/mockApis/wiremock'
 
 test.describe('/transfers/edit/date-and-time unauthorised', () => {
   test('should show unauthorised error', async ({ page }) => {
@@ -110,5 +111,10 @@ test.describe('/transfers/edit/date-and-time', () => {
     expect(page.url()).toMatch(/\/transfers\/[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}/)
 
     expect(page.getByText('Transfer date and time changed')).toBeVisible()
+
+    // verify API call
+    expect(await getApiBody(`/transfer-scheduler-api/transfers/${transferId}`, 'PUT')).toContainEqual({
+      actions: [{ type: 'ApplyScheduleStart', start: expect.any(String) }],
+    })
   })
 })
