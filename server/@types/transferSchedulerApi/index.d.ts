@@ -276,6 +276,27 @@ export interface paths {
     patch?: never
     trace?: never
   }
+  '/integrations/transfers/{id}': {
+    parameters: {
+      query?: never
+      header?: never
+      path?: never
+      cookie?: never
+    }
+    /**
+     * @description Requires one of the following roles:
+     *     * ROLE_TRANSFER_SCHEDULER__TRANSFER__RO
+     *     * ROLE_TRANSFER_SCHEDULER__TRANSFER__RW
+     */
+    get: operations['getTransferForIntegration']
+    put?: never
+    post?: never
+    delete?: never
+    options?: never
+    head?: never
+    patch?: never
+    trace?: never
+  }
 }
 export type webhooks = Record<string, never>
 export interface components {
@@ -316,16 +337,22 @@ export interface components {
     } & (Omit<components['schemas']['TransferAction'], 'type'> & {
       comments?: string | null
     })
+    ApplyScheduleStart: {
+      type: 'ApplyScheduleStart'
+    } & (Omit<components['schemas']['TransferAction'], 'type'> & {
+      /** Format: date-time */
+      start: string
+    })
     ApplyTransit: {
       type: 'ApplyTransit'
     } & (Omit<components['schemas']['TransferAction'], 'type'> & {
       request: components['schemas']['MovementRequest']
-      comments?: string | null
       /** Format: date-time */
       occurredAt: string
       destinationCode: string
       reasonCode: string
       logisticsCode: string
+      comments?: string | null
     })
     CancelTransfer: {
       type: 'CancelTransfer'
@@ -340,12 +367,12 @@ export interface components {
       type: 'MakeUnscheduled'
     } & Omit<components['schemas']['TransferAction'], 'type'>
     MovementRequest: {
-      comments?: string | null
       /** Format: date-time */
       occurredAt: string
       destinationCode: string
       reasonCode: string
       logisticsCode: string
+      comments?: string | null
     }
     PlanTransfer: {
       type: 'PlanTransfer'
@@ -354,12 +381,6 @@ export interface components {
       requestedOn: string
       priorityCode: string
       comments?: string | null
-    })
-    RescheduleTransfer: {
-      type: 'RescheduleTransfer'
-    } & (Omit<components['schemas']['TransferAction'], 'type'> & {
-      /** Format: date-time */
-      start: string
     })
     ScheduleTransfer: {
       type: 'ScheduleTransfer'
@@ -380,13 +401,13 @@ export interface components {
         | components['schemas']['ApplyReason']
         | components['schemas']['ApplyRequestedOn']
         | components['schemas']['ApplyScheduleComments']
+        | components['schemas']['ApplyScheduleStart']
         | components['schemas']['ApplyTransit']
         | components['schemas']['CancelTransfer']
         | components['schemas']['CompleteTransfer']
         | components['schemas']['ExpireTransfer']
         | components['schemas']['MakeUnscheduled']
         | components['schemas']['PlanTransfer']
-        | components['schemas']['RescheduleTransfer']
         | components['schemas']['ScheduleTransfer']
       )[]
       reason?: string | null
@@ -475,9 +496,6 @@ export interface components {
       toAgyLocId: string
       active?: boolean | null
       commentText?: string
-      reasonCode: string
-      destinationCode: string
-      logisticsCode: string
     }
     SyncMovementRequest: {
       /** Format: date-time */
@@ -716,6 +734,38 @@ export interface components {
     ReconciliationResponse: {
       transfers: components['schemas']['SyncTransfer'][]
       unscheduledMovements: components['schemas']['SyncMovement'][]
+    }
+    IntegrationMovement: {
+      /** Format: date-time */
+      occurredAt: string
+      comments?: string | null
+    }
+    IntegrationPlan: {
+      /** Format: date */
+      requestedOn: string
+      priority: components['schemas']['CodedDescription']
+      comments?: string | null
+    }
+    IntegrationResponse: {
+      data: components['schemas']['IntegrationTransfer']
+    }
+    IntegrationSchedule: {
+      /** Format: date-time */
+      start: string
+      comments?: string | null
+    }
+    IntegrationTransfer: {
+      /** Format: uuid */
+      id: string
+      personIdentifier: string
+      prisonCode: string
+      status: components['schemas']['CodedDescription']
+      reason: components['schemas']['CodedDescription']
+      destinationCode?: string | null
+      logistics?: components['schemas']['CodedDescription'] | null
+      plan?: components['schemas']['IntegrationPlan'] | null
+      schedule?: components['schemas']['IntegrationSchedule'] | null
+      movement?: components['schemas']['IntegrationMovement'] | null
     }
   }
   responses: never
@@ -1105,6 +1155,28 @@ export interface operations {
         }
         content: {
           '*/*': components['schemas']['ReconciliationResponse']
+        }
+      }
+    }
+  }
+  getTransferForIntegration: {
+    parameters: {
+      query?: never
+      header?: never
+      path: {
+        id: string
+      }
+      cookie?: never
+    }
+    requestBody?: never
+    responses: {
+      /** @description OK */
+      200: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          '*/*': components['schemas']['IntegrationResponse']
         }
       }
     }

@@ -1,0 +1,33 @@
+{% extends "partials/layout.njk" %}
+{% from "govuk/components/radios/macro.njk" import govukRadios %}
+{% from "govuk/components/button/macro.njk" import govukButton %}
+
+{% set pageTitle = 'What is the priority of this transfer - Manage ' + transfer.label + 's' %}
+
+{% block innerContent %}
+  <div class="govuk-width-container">
+    <span class="govuk-caption-l">Manage {{ transfer.label }}s</span>
+    <form method="post">
+      <input type="hidden" name="_csrf" value="{{ csrfToken }}" />
+
+      {{ govukRadios({
+        name: "priority",
+        errorMessage: validationErrors | findError('priority'),
+        fieldset: {
+          legend: {
+            text: 'What is the priority of this transfer?',
+            isPageHeading: true,
+            classes: "govuk-fieldset__legend--xl"
+          }
+        },
+        items: options | fromCodedDescription | setCheckedValue(priority)
+      }) }}
+
+      {{ govukButton({
+        classes: 'govuk-!-margin-top-6',
+        text: "Save",
+        preventDoubleClick: true
+      }) }}
+    </form>
+  </div>
+{% endblock %}
