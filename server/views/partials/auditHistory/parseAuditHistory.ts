@@ -99,6 +99,9 @@ const DOMAIN_EVENT_MAP: { [key: string]: DomainEventText } = {
   'person.transfer-movement.comments-changed': {
     heading: 'Comments changed',
   },
+  'person.transfer.planning-requested-changed': {
+    heading: 'Request date changed',
+  },
 }
 
 const CHANGE_PROPERTY_MAP: { [key: string]: string } = {
@@ -107,6 +110,8 @@ const CHANGE_PROPERTY_MAP: { [key: string]: string } = {
   comments: 'Comments',
   destinationCode: 'Destination',
   logistics: 'Escort details',
+  priority: 'Priority',
+  requestedOn: 'Request date',
 }
 
 const parseChangedPropertyValue = (domain: string, property: string, value: unknown, referenceData: ReferenceData) => {
@@ -116,6 +121,10 @@ const parseChangedPropertyValue = (domain: string, property: string, value: unkn
     const prison = referenceData.prisons.find(({ code }) => code === value)
     if (prison) return `“${prison.description}”`
     return `unknown prison code “${value}”`
+  }
+
+  if (property === 'requestedOn') {
+    return formatDate(String(value), `d MMMM yyyy`)
   }
 
   if (domain.endsWith('comments-changed') && property === 'comments') return `“${value}”`
