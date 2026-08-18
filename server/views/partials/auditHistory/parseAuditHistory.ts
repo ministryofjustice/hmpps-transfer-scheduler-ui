@@ -105,12 +105,14 @@ const CHANGE_PROPERTY_MAP: { [key: string]: string } = {
   start: 'Start date and time',
   reason: 'Reason',
   comments: 'Comments',
+  destinationCode: 'Destination',
+  logistics: 'Escort details',
 }
 
 const parseChangedPropertyValue = (domain: string, property: string, value: unknown, referenceData: ReferenceData) => {
   if (!value) return 'Not applicable'
 
-  if (property === 'prisonCode') {
+  if (property === 'prisonCode' || property === 'destinationCode') {
     const prison = referenceData.prisons.find(({ code }) => code === value)
     if (prison) return `“${prison.description}”`
     return `unknown prison code “${value}”`
