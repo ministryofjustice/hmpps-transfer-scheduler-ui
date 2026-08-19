@@ -257,7 +257,7 @@
             {% set rows = (rows.push(
               {
                 title: { text: result.person | firstNameSpaceLastName + ' - ' + result.person.identifier },
-                action: { text: 'View details', href: '/transfers/' + result.id },
+                action: { text: 'Add details' if result.status.code === 'PLANNING' else 'View details', href: '/transfers/' + result.id },
                 data: [
                   result.destination.name or 'Not entered',
                   result.plan.requestedOn | formatDate("d MMMM yyyy"),
