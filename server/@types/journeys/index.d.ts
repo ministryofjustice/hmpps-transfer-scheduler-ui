@@ -61,6 +61,7 @@ type UpdateTransferJourney = {
   transfer: components['schemas']['Transfer'] & { label: 'scheduled transfer' | 'planned transfer' }
 } & Partial<{
   result: components['schemas']['AuditHistory']
+  updatedTransfer: components['schemas']['Transfer']
 }>
 
 type MoveTransferToPlanningJourney = {

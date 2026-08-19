@@ -1,6 +1,7 @@
 {% extends "partials/layout.njk" %}
 {% from "govuk/components/panel/macro.njk" import govukPanel %}
 {% from "govuk/components/summary-list/macro.njk" import govukSummaryList %}
+{% from "partials/statusTag/macro.njk" import statusTag %}
 
 {% set pageTitle = 'Transfer scheduled' %}
 
@@ -37,6 +38,10 @@
         {
           key: { text: "Comments" },
           value: { text: (result.schedule.comments or 'Not provided') | escape | nl2br }
+        },
+        {
+          key: { text: "Status" },
+          value: { html: statusTag(result) }
         }
       ]
     }) }}

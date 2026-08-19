@@ -28,7 +28,7 @@
         {% if transfer.status.code === 'READY_TO_SCHEDULE' and user | hasPermission('MANAGE') %}
           {{ govukButton({
             text: "Schedule this plan",
-            href: "/transfers/start-schedule-a-plan/" + transfer.id,
+            href:  baseEditUrl + "/schedule-a-plan",
             preventDoubleClick: true
           }) }}
         {% endif %}
