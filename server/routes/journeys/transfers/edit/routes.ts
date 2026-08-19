@@ -12,6 +12,7 @@ import { EditTransferLogisticsRoutes } from './logistics/routes'
 import { EditTransferPriorityRoutes } from './priority/routes'
 import { EditTransferReasonRoutes } from './reason/routes'
 import { EditTransferRequestDateRoutes } from './request-date/routes'
+import { SchedulePlanRoutes } from './schedule-a-plan/routes'
 
 export const EditTransferRoutes = (services: Services) => {
   const { router, get } = BaseRouter()
@@ -29,6 +30,7 @@ export const EditTransferRoutes = (services: Services) => {
     journeyStateGuard({ '*': () => undefined }),
   )
 
+  router.use('/schedule-a-plan', SchedulePlanRoutes(services))
   router.use('/cancel', TransferCancelRoutes(services))
   router.use('/confirmation', EditTransferConfirmationRoutes())
   router.use('/comments', EditTransferCommentsRoutes(services))
