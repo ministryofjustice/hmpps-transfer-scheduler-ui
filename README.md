@@ -77,8 +77,6 @@ npm run int-test
 Or run tests with the Playwright UI:
 `npm run int-test-ui`
 
-By default, playwright will run in 8 parallel workers. This can be changed by setting the `PARALLEL_WORKERS` environment variable in your shell (ie, `~/.zshrc` or `~/.zprofile`).
-
 ### Code Quality
 ```bash
 npm run lint
