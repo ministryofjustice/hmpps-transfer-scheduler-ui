@@ -1,3 +1,5 @@
+import { OtherPrisonerDetails } from '../nonAssociations'
+
 export interface PrisonerDetails {
   prisonerNumber: string
   lastName: string
@@ -34,6 +36,7 @@ type ScheduleTransferJourney = {
   startDate: string
   startTime: string
   destination: CodedDescription
+  nonAssociations: OtherPrisonerDetails[]
   reason: CodedDescription
   logistics: CodedDescription
   comments: string | null
