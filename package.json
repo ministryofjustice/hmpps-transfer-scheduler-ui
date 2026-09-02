@@ -33,14 +33,14 @@
     "npm": "^11"
   },
   "dependencies": {
-    "@aws-sdk/client-sqs": "^3.1113.0",
-    "@ministryofjustice/frontend": "10.0.1",
+    "@aws-sdk/client-sqs": "^3.1114.0",
+    "@ministryofjustice/frontend": "11.0.0",
     "@ministryofjustice/hmpps-auth-clients": "3.0.0",
     "@ministryofjustice/hmpps-azure-telemetry": "^1.0.2",
     "@ministryofjustice/hmpps-connect-dps-components": "6.3.3",
-    "@ministryofjustice/hmpps-connect-dps-shared-items": "4.4.0",
+    "@ministryofjustice/hmpps-connect-dps-shared-items": "5.2.0",
     "@ministryofjustice/hmpps-monitoring": "^2.1.0",
-    "@ministryofjustice/hmpps-prison-permissions-lib": "4.2.2",
+    "@ministryofjustice/hmpps-prison-permissions-lib": "4.3.0",
     "@ministryofjustice/hmpps-rest-client": "2.2.0",
     "@sentry/node": "10.70.0",
     "accessible-autocomplete": "3.0.1",
@@ -72,7 +72,7 @@
     "@emnapi/runtime": "1.11.3",
     "@jgoz/esbuild-plugin-typecheck": "^4.0.4",
     "@ministryofjustice/eslint-config-hmpps": "^1.0.3",
-    "@ministryofjustice/frontend-types": "2.0.1",
+    "@ministryofjustice/frontend-types": "^2.0.1",
     "@ministryofjustice/hmpps-npm-script-allowlist": "0.0.6",
     "@ministryofjustice/hmpps-precommit-hooks": "3.0.2",
     "@playwright/test": "^1.62.1",
@@ -111,6 +111,9 @@
     "typescript": "^5.9.3"
   },
   "overrides": {
-    "@opentelemetry/core": "2.10.0"
+    "@opentelemetry/core": "2.10.0",
+    "@ministryofjustice/frontend-types": {
+        "@ministryofjustice/frontend": "^11.0.0"
+    }
   }
 }
