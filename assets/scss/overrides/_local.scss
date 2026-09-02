@@ -39,3 +39,15 @@
   overflow: visible;
   white-space: nowrap;
 }
+
+.search-button {
+  display: inline-block;
+  width: auto;
+  margin-bottom: 2px;
+  margin-left: 10px;
+}
+
+.search-wrapper {
+  display: flex;
+  align-items: flex-end;
+}
