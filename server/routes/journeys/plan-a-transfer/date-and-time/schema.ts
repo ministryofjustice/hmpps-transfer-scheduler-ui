@@ -19,7 +19,7 @@ export const schema = createSchema({
   }
 
   const parsedStartDate = validateTransformDate(
-    checkTodayOrFuture(),
+    checkTodayOrFuture,
     'transfer date',
     'Transfer date must be today or in the future',
   ).safeParse(startDate)
