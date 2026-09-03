@@ -30,7 +30,7 @@ export const validateDateBase = (dateName: string) => {
     })
 }
 
-type DateChecker = () => (date: Date) => boolean
+type DateChecker = (date: Date) => boolean
 
 export const validateTransformDate = (
   checker: DateChecker | null,
@@ -39,7 +39,7 @@ export const validateTransformDate = (
 ) => {
   return validateDateBase(dateName)
     .check(ctx => {
-      if (checker && !checker()(ctx.value)) {
+      if (checker && !checker(ctx.value)) {
         ctx.issues.push({ code: 'custom', message: checkFailErrorMsg, input: ctx.value })
       }
     })
@@ -74,8 +74,8 @@ export const validateTransformOptionalDate = (dateName: string) =>
 
 export const getMinDateChecker = (minDate: Date) => (date: Date) => !isBefore(startOfDay(date), startOfDay(minDate))
 
-export const checkTodayOrFuture = () => getMinDateChecker(new Date())
+export const checkTodayOrFuture = (date: Date) => !isBefore(startOfDay(date), startOfDay(new Date()))
 
 export const getMaxDateChecker = (minDate: Date) => (date: Date) => !isAfter(startOfDay(date), startOfDay(minDate))
 
-export const checkTodayOrPast = () => getMaxDateChecker(new Date())
+export const checkTodayOrPast = (date: Date) => !isAfter(startOfDay(date), startOfDay(new Date()))
