@@ -11,7 +11,7 @@ export const schema = createSchema({
   startTimeMinute: z.string().optional(),
 }).transform(({ startDate, startTimeHour, startTimeMinute }, ctx) => {
   const parsedStartDate = validateTransformDate(
-    checkTodayOrFuture(),
+    checkTodayOrFuture,
     'transfer date',
     'Transfer date must be today or in the future',
   ).safeParse(startDate)

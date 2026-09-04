@@ -4,7 +4,7 @@ import { createSchema } from '../../../../../middleware/validation/validationMid
 import { checkTodayOrPast, validateTransformDate } from '../../../../../utils/validations/validateDatePicker'
 
 export const schema = createSchema({
-  requestedOn: validateTransformDate(checkTodayOrPast(), 'request date', 'Request date must be today or in the past'),
+  requestedOn: validateTransformDate(checkTodayOrPast, 'request date', 'Request date must be today or in the past'),
 })
 
 export type SchemaType = z.infer<typeof schema>
