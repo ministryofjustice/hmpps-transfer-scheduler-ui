@@ -1,7 +1,10 @@
 import express, { Router } from 'express'
 import { FLASH_KEY__VALIDATION_ERRORS } from '../../utils/constants'
 
-export default function redirectCheckAnswersMiddleware(excludePaths: RegExp[] = []): Router {
+export default function redirectCheckAnswersMiddleware(
+  excludePaths: RegExp[] = [],
+  excludeRedirect: RegExp[] = [/non-associations/],
+): Router {
   const router = express.Router({ mergeParams: true })
 
   router.use((req, res, next) => {
@@ -27,7 +30,13 @@ export default function redirectCheckAnswersMiddleware(excludePaths: RegExp[] = 
         if (errors.length) {
           req.flash(FLASH_KEY__VALIDATION_ERRORS, errors[0]!)
         }
-        resRedirect.call(res, status || 302, req.journeyData.isCheckAnswers && !errors.length ? checkAnswersUrl : url)
+        resRedirect.call(
+          res,
+          status || 302,
+          req.journeyData.isCheckAnswers && !errors.length && !excludeRedirect.some(itm => url.match(itm))
+            ? checkAnswersUrl
+            : url,
+        )
       }
     }
     next()

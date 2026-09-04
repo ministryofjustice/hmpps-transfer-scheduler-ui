@@ -20,6 +20,7 @@ generic-service:
     EXTERNAL_MOVEMENTS_URL: "https://external-movements.hmpps.service.justice.gov.uk"
     DOCUMENT_GENERATION_API_URL: 'https://document-generation-api.hmpps.service.justice.gov.uk'
     DOCUMENT_GENERATION_UI_URL: 'https://document-generation.hmpps.service.justice.gov.uk'
+    NON_ASSOCIATIONS_API_URL: 'https://non-associations-api.hmpps.service.justice.gov.uk'
     SENTRY_ENVIRONMENT: PRODUCTION
     AUDIT_ENABLED: "true"
 

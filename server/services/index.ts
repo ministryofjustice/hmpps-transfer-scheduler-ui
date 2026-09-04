@@ -16,6 +16,7 @@ import TransferSchedulerService from './apis/transferSchedulerService'
 import { populateTransfer } from '../middleware/permissions/populateTransfer'
 import { populateDocumentTemplate } from '../middleware/permissions/populateDocumentTemplate'
 import DocumentGenerationService from './apis/documentGenerationService'
+import NonAssociationsService from './apis/nonAssociationsService'
 
 export const services = () => {
   const { applicationInfo, hmppsAuditClient, hmppsAuthClient } = dataAccess()
@@ -39,6 +40,7 @@ export const services = () => {
     auditService: new AuditService(hmppsAuditClient),
     prisonApiService: new PrisonApiService(hmppsAuthClient),
     prisonRegisterService: new PrisonRegisterService(hmppsAuthClient, cacheStore),
+    nonAssociationsService: new NonAssociationsService(hmppsAuthClient),
     transferSchedulerService,
     prisonerSearchService,
     cacheStore,
