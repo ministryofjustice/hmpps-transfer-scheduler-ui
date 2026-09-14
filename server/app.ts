@@ -27,7 +27,7 @@ import { handleApiError } from './middleware/validation/handleApiError'
 import sentryMiddleware from './middleware/sentryMiddleware'
 import { AuthorisedRoles } from './middleware/permissions/populateUserPermissions'
 import addUsernameAndCaseloadToTelemetry from './utils/azureAppInsights'
-import { permissionsMiddleware } from './middleware/permissions/permissionsMiddleware'
+import { serviceEnabledMiddleware } from './middleware/permissions/serviceEnabledMiddleware'
 
 export default function createApp(services: Services): express.Application {
   const app = express()
@@ -94,7 +94,7 @@ export default function createApp(services: Services): express.Application {
 
   app.use(addUsernameAndCaseloadToTelemetry())
 
-  app.get(/(.*)/, permissionsMiddleware)
+  app.get(/(.*)/, serviceEnabledMiddleware)
 
   app.use(routes(services))
 
