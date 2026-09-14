@@ -25,6 +25,7 @@
     "rebuild": "npm run clean && npm run setup && npm run build",
     "setup": "npm ci && hmpps-npm-script-run-allowlist",
     "swagger": "npx openapi-typescript https://transfer-scheduler-api-dev.hmpps.service.justice.gov.uk/v3/api-docs > ./server/@types/transferSchedulerApi/index.d.ts && eslint --fix \"./server/@types/transferSchedulerApi/index.d.ts\"",
+    "swagger-non-associations": "curl https://non-associations-api-dev.hmpps.service.justice.gov.uk/v3/api-docs > ./non-associations-openapi.json && npx @hey-api/openapi-ts@next -i ./non-associations-openapi.json -o ./server/@types/nonAssociations",
     "todo-reminder": "grep -r -n --color=always --include=\"*.ts\" \"// TODO:.*\" ./server ./integration_tests || true"
   },
   "engines": {

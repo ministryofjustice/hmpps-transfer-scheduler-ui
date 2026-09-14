@@ -1,0 +1,33 @@
+{% extends "partials/layout.njk" %}
+{%- from "moj/components/interruption-card/macro.njk" import interruptionCard -%}
+
+{% set fullWidth = true %}
+
+{% set pageTitle = 'This prisoner has a non-association - Schedule a transfer' %}
+
+{% block innerContent %}
+  <form method="post">
+    <input type="hidden" name="_csrf" value="{{ csrfToken }}"/>
+    {% call interruptionCard({
+      heading: "This prisoner has a non-association",
+      primaryAction: {
+        text: "Continue"
+      },
+      secondaryAction: {
+        text: "Go back",
+        href: backUrl
+      }
+    }) -%}
+      <p>
+        {{ prisonerDetails | firstNameSpaceLastName }} has a non-association at {{ destination.description }} with:
+        <ul class="govuk-list govuk-list--bullet">
+          {% for person in nonAssociations %}
+            <li>{{ person | firstNameSpaceLastName }}</li>
+          {% endfor %}
+        </ul>
+      </p>
+
+      <p>Go back to change the transfer, or continue to schedule the transfer, taking the non-association into consideration.</p>
+    {%- endcall %}
+  </form>
+{% endblock %}
