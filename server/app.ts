@@ -22,7 +22,7 @@ import { auditPageViewMiddleware } from './middleware/audit/auditPageViewMiddlew
 import { auditApiCallMiddleware } from './middleware/audit/auditApiCallMiddleware'
 import logger from '../logger'
 import config from './config'
-import PrisonerImageRoutes from './routes/prisonerImageRoutes'
+import PrisonerImageController from './routes/prisonerImageController'
 import { handleApiError } from './middleware/validation/handleApiError'
 import sentryMiddleware from './middleware/sentryMiddleware'
 import { AuthorisedRoles } from './middleware/permissions/populateUserPermissions'
@@ -66,8 +66,6 @@ export default function createApp(services: Services): express.Application {
   app.use(setUpCsrf())
   app.use(setUpCurrentUser())
 
-  app.get('/prisoner-image/:prisonNumber', new PrisonerImageRoutes(services.prisonApiService).GET)
-
   app.get(
     /(.*)/,
     getFrontendComponents({
@@ -91,6 +89,8 @@ export default function createApp(services: Services): express.Application {
       prisonApiConfig: config.apis.prisonApi,
     }),
   )
+
+  app.get('/prisoner-image/:prisonNumber', new PrisonerImageController(services.prisonApiService).GET)
 
   app.use(addUsernameAndCaseloadToTelemetry())
 

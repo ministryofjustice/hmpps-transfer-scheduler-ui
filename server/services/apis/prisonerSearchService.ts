@@ -31,7 +31,11 @@ export default class PrisonerSearchApiService {
     )
   }
 
-  async getPrisonerDetails(context: ApiRequestContext, prisonerNumber: string): Promise<Prisoner> {
+  async getPrisonerDetails(
+    context: ApiRequestContext,
+    prisonerNumber: string,
+    throwExceptionOnNoPermission: boolean = false,
+  ): Promise<Prisoner> {
     const prisoner = await this.prisonerSearchApiClient
       .withContext(context)
       .get<Prisoner>({ path: `/prisoner/${prisonerNumber}` })
@@ -43,6 +47,8 @@ export default class PrisonerSearchApiService {
     })
 
     if (permission['prisoner:base-record:read']) return prisoner
+
+    if (throwExceptionOnNoPermission) throw new Error('No permission')
 
     return {
       ...prisoner,

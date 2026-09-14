@@ -16,10 +16,12 @@ import { JourneyRoutes } from './journeys/routes'
 import { BrowseScheduledTransfersRoutes } from './scheduled-transfers/routes'
 import { ManageTransferRoutes } from './transfers/routes'
 import { BrowsePlannedTransfersRoutes } from './planned-transfers/routes'
+import sanitiseUrl from '../middleware/sanitiseUrl'
 
 export default function routes(services: Services): Router {
   const { router, get } = BaseRouter()
 
+  router.use(sanitiseUrl)
   router.use(populateUserPermissions)
   router.use(breadcrumbs())
   router.use(
