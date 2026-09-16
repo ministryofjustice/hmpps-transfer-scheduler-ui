@@ -7,10 +7,11 @@ import { stubGetPrisonerDetails } from '../../../../../integration_tests/mockApi
 import { stubGetPrisonerImage } from '../../../../../integration_tests/mockApis/prisonApi'
 import { ScheduleTransferDestinationPage } from './test.page'
 import { testNotAuthorisedPage } from '../../../../../integration_tests/steps/testNotAuthorisedPage'
-import { testPrisonerDetails } from '../../../../../integration_tests/data/testData'
+import { testNonAssociationResponse, testPrisonerDetails } from '../../../../../integration_tests/data/testData'
 import { login, resetStubs } from '../../../../../integration_tests/testUtils'
 import { injectJourneyData } from '../../../../../integration_tests/steps/journey'
 import { stubGetPrisons } from '../../../../../integration_tests/mockApis/prisonRegisterApi'
+import { stubGetNonAssociations } from '../../../../../integration_tests/mockApis/nonAssocationsApi'
 
 test.describe('/schedule-a-transfer/destination unauthorised', () => {
   test('should show unauthorised error', async ({ page }) => {
@@ -51,6 +52,15 @@ test.describe('/schedule-a-transfer/destination', () => {
     const journeyId = uuidV4()
     await startJourney(page, journeyId)
 
+    await stubGetNonAssociations({
+      closedCount: '',
+      firstName: '',
+      lastName: '',
+      nonAssociations: [],
+      openCount: '',
+      prisonerNumber: '',
+    })
+
     // verify page content
     const testPage = await new ScheduleTransferDestinationPage(page).verifyContent()
 
@@ -74,5 +84,22 @@ test.describe('/schedule-a-transfer/destination', () => {
     await page.goBack()
     await page.reload()
     await expect(testPage.destinationInput()).toHaveValue('Prison One')
+  })
+
+  test('should enter destination for schedule-a-transfer and redirect to non-associations', async ({ page }) => {
+    const journeyId = uuidV4()
+    await startJourney(page, journeyId)
+
+    await stubGetNonAssociations(testNonAssociationResponse)
+
+    // verify page content
+    const testPage = await new ScheduleTransferDestinationPage(page).verifyContent()
+
+    // verify next page routing
+    await testPage.destinationInput().click()
+    await page.getByText('Prison One').first().click()
+    await testPage.clickContinue()
+
+    expect(page.url()).toMatch(/\/schedule-a-transfer\/non-associations/)
   })
 })

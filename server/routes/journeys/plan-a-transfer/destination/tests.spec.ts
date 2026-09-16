@@ -7,10 +7,11 @@ import { stubGetPrisonerDetails } from '../../../../../integration_tests/mockApi
 import { stubGetPrisonerImage } from '../../../../../integration_tests/mockApis/prisonApi'
 import { PlanTransferDestinationPage } from './test.page'
 import { testNotAuthorisedPage } from '../../../../../integration_tests/steps/testNotAuthorisedPage'
-import { testPrisonerDetails } from '../../../../../integration_tests/data/testData'
+import { testNonAssociationResponse, testPrisonerDetails } from '../../../../../integration_tests/data/testData'
 import { login, resetStubs } from '../../../../../integration_tests/testUtils'
 import { injectJourneyData } from '../../../../../integration_tests/steps/journey'
 import { stubGetPrisons } from '../../../../../integration_tests/mockApis/prisonRegisterApi'
+import { stubGetNonAssociations } from '../../../../../integration_tests/mockApis/nonAssocationsApi'
 
 test.describe('/plan-a-transfer/destination unauthorised', () => {
   test('should show unauthorised error', async ({ page }) => {
@@ -50,9 +51,18 @@ test.describe('/plan-a-transfer/destination', () => {
     await page.goto(`/${journeyId}/plan-a-transfer/destination`)
   }
 
-  test('should enter destination for plan-a-transfer', async ({ page }) => {
+  test('should enter destination for plan-a-transfer and proceed to logistics page', async ({ page }) => {
     const journeyId = uuidV4()
     await startJourney(page, journeyId)
+
+    await stubGetNonAssociations({
+      closedCount: '',
+      firstName: '',
+      lastName: '',
+      nonAssociations: [],
+      openCount: '',
+      prisonerNumber: '',
+    })
 
     // verify page content
     const testPage = await new PlanTransferDestinationPage(page).verifyContent()
@@ -72,6 +82,27 @@ test.describe('/plan-a-transfer/destination', () => {
     await page.goBack()
     await page.reload()
     await expect(testPage.destinationInput()).toHaveValue('Prison One')
+  })
+
+  test('should enter destination for plan-a-transfer and proceed to non-associations page', async ({ page }) => {
+    const journeyId = uuidV4()
+    await startJourney(page, journeyId)
+
+    await stubGetNonAssociations(testNonAssociationResponse)
+
+    // verify page content
+    const testPage = await new PlanTransferDestinationPage(page).verifyContent()
+
+    await expect(testPage.destinationInput()).toBeVisible()
+    await expect(testPage.destinationInput()).toHaveValue('')
+    await expect(testPage.button('Continue')).toBeVisible()
+
+    // verify next page routing
+    await testPage.destinationInput().click()
+    await page.getByText('Prison One').first().click()
+    await testPage.clickContinue()
+
+    expect(page.url()).toMatch(/\/plan-a-transfer\/non-associations/)
   })
 
   test('should allow skip entering destination for plan-a-transfer', async ({ page }) => {

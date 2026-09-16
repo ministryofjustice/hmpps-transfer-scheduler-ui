@@ -1,4 +1,5 @@
 import { components } from '../../server/@types/transferSchedulerApi'
+import { PrisonerNonAssociations } from '../../server/@types/nonAssociations'
 
 export const testPrisonerDetails = {
   prisonerNumber: 'A9965EA',
@@ -60,4 +61,40 @@ export const testTransfer: components['schemas']['Transfer'] = {
   schedule: { start: '2001-01-01T09:15:00', comments: 'Lorem ipsum' },
   status: { code: 'SCHEDULED', description: 'Scheduled' },
   stage: 'SCHEDULED',
+}
+
+export const testNonAssociationResponse: PrisonerNonAssociations = {
+  closedCount: '',
+  firstName: '',
+  lastName: '',
+  nonAssociations: [
+    {
+      id: 0,
+      role: 'VICTIM',
+      roleDescription: '',
+      reason: 'BULLYING',
+      reasonDescription: '',
+      restrictionType: 'CELL',
+      restrictionTypeDescription: '',
+      comment: '',
+      authorisedBy: '',
+      whenCreated: '',
+      whenUpdated: '',
+      updatedBy: '',
+      isClosed: false,
+      otherPrisonerDetails: {
+        prisonerNumber: '',
+        role: 'VICTIM',
+        roleDescription: '',
+        firstName: 'Non',
+        lastName: 'Association',
+        prisonId: 'P1',
+        prisonName: 'Prison One',
+        cellLocation: '',
+      },
+      isOpen: true,
+    },
+  ],
+  openCount: '',
+  prisonerNumber: '',
 }

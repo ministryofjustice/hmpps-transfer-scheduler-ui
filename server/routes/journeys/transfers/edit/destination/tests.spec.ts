@@ -14,8 +14,9 @@ import {
   stubGetTransferHistory,
   stubPutTransfer,
 } from '../../../../../../integration_tests/mockApis/transferSchedulerApi'
-import { testTransfer } from '../../../../../../integration_tests/data/testData'
+import { testNonAssociationResponse, testTransfer } from '../../../../../../integration_tests/data/testData'
 import { getApiBody } from '../../../../../../integration_tests/mockApis/wiremock'
+import { stubGetNonAssociations } from '../../../../../../integration_tests/mockApis/nonAssocationsApi'
 
 test.describe('/transfers/edit/destination unauthorised', () => {
   test('should show unauthorised error', async ({ page }) => {
@@ -33,7 +34,7 @@ test.describe('/transfers/edit/destination', () => {
       stubGetPrisonerImage(),
       stubGetPrisonerDetails(),
       stubGetPrisons(),
-      await stubGetTransferHistory(transferId, { content: [] }),
+      stubGetTransferHistory(transferId, { content: [] }),
       stubPutTransfer(transferId, { content: [] }),
     ])
     await login(page)
@@ -44,10 +45,20 @@ test.describe('/transfers/edit/destination', () => {
   })
 
   test('should change destination for a transfer', async ({ page }) => {
-    await stubGetTransfer({
-      ...testTransfer,
-      id: transferId,
-    })
+    await Promise.all([
+      stubGetTransfer({
+        ...testTransfer,
+        id: transferId,
+      }),
+      stubGetNonAssociations({
+        closedCount: '',
+        firstName: '',
+        lastName: '',
+        nonAssociations: [],
+        openCount: '',
+        prisonerNumber: '',
+      }),
+    ])
 
     const journeyId = uuidV4()
     await page.goto(`${journeyId}/transfers/start-edit/${transferId}/destination`)
@@ -79,6 +90,26 @@ test.describe('/transfers/edit/destination', () => {
     expect(await getApiBody(`/transfer-scheduler-api/transfers/${transferId}`, 'PUT')).toContainEqual({
       actions: [{ type: 'ApplyDestination', destinationCode: 'P2' }],
     })
+  })
+
+  test('should select new destination for a transfer and go to non-association page', async ({ page }) => {
+    await Promise.all([
+      stubGetTransfer({
+        ...testTransfer,
+        id: transferId,
+      }),
+      stubGetNonAssociations(testNonAssociationResponse),
+    ])
+
+    const journeyId = uuidV4()
+    await page.goto(`${journeyId}/transfers/start-edit/${transferId}/destination`)
+
+    // verify page content
+    const testPage = await new EditTransferDestinationPage(page).verifyContent()
+
+    // verify next page routing
+    await testPage.clickButton('Save')
+    expect(page.url()).toMatch(/\/transfers\/edit\/non-associations/)
   })
 
   test('should unset destination for a transfer plan', async ({ page }) => {

@@ -13,6 +13,7 @@ import { EditTransferPriorityRoutes } from './priority/routes'
 import { EditTransferReasonRoutes } from './reason/routes'
 import { EditTransferRequestDateRoutes } from './request-date/routes'
 import { SchedulePlanRoutes } from './schedule-a-plan/routes'
+import { EditTransferNonAssociationsRoutes } from './non-associations/routes'
 
 export const EditTransferRoutes = (services: Services) => {
   const { router, get } = BaseRouter()
@@ -36,6 +37,7 @@ export const EditTransferRoutes = (services: Services) => {
   router.use('/comments', EditTransferCommentsRoutes(services))
   router.use('/date-and-time', EditTransferDateTimeRoutes(services))
   router.use('/destination', EditTransferDestinationRoutes(services))
+  router.use('/non-associations', EditTransferNonAssociationsRoutes(services))
   router.use('/logistics', EditTransferLogisticsRoutes(services))
   router.use('/priority', EditTransferPriorityRoutes(services))
   router.use('/reason', EditTransferReasonRoutes(services))

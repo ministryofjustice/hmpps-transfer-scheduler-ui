@@ -1,3 +1,4 @@
+import { Request } from 'express'
 import { Services } from '../../../services'
 import { BaseRouter } from '../../common/routes'
 import { Page } from '../../../services/auditService'
@@ -14,6 +15,7 @@ import { PlanTransferLogisticsRoutes } from './logistics/routes'
 import { PlanTransferCommentsRoutes } from './comments/routes'
 import { PlanTransferCheckAnswersRoutes } from './check-answers/routes'
 import { PlanTransferConfirmationRoutes } from './confirmation/routes'
+import { PlanTransferNonAssociationsRoutes } from './non-associations/routes'
 
 export const PlanTransferRoutes = (services: Services) => {
   const { router, get } = BaseRouter()
@@ -50,7 +52,16 @@ export const PlanTransferRoutes = (services: Services) => {
       next()
     },
     preventNavigationToExpiredJourneys(),
-    journeyStateGuard({}),
+    journeyStateGuard({
+      'non-associations': (req: Request) => {
+        const { destinationWithNonAssociation, destination } = req.journeyData.planTransfer!
+        if (!destinationWithNonAssociation) {
+          if (destination) return 'logistics'
+          return 'destination'
+        }
+        return undefined
+      },
+    }),
   )
 
   router.use('/request-date', PlanTransferRequestDateRoutes())
@@ -58,6 +69,7 @@ export const PlanTransferRoutes = (services: Services) => {
   router.use('/priority', PlanTransferPriorityRoutes(services))
   router.use('/date-and-time', PlanTransferDateTimeRoutes())
   router.use('/destination', PlanTransferDestinationRoutes(services))
+  router.use('/non-associations', PlanTransferNonAssociationsRoutes())
   router.use('/logistics', PlanTransferLogisticsRoutes(services))
   router.use('/comments', PlanTransferCommentsRoutes())
   router.use('/check-answers', PlanTransferCheckAnswersRoutes(services))
