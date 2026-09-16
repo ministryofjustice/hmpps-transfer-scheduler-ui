@@ -7,7 +7,7 @@ import { stubGetPrisonerDetails } from '../../../../../integration_tests/mockApi
 import { stubGetPrisonerImage } from '../../../../../integration_tests/mockApis/prisonApi'
 import { ScheduleTransferDestinationPage } from './test.page'
 import { testNotAuthorisedPage } from '../../../../../integration_tests/steps/testNotAuthorisedPage'
-import { testPrisonerDetails } from '../../../../../integration_tests/data/testData'
+import { testNonAssociationResponse, testPrisonerDetails } from '../../../../../integration_tests/data/testData'
 import { login, resetStubs } from '../../../../../integration_tests/testUtils'
 import { injectJourneyData } from '../../../../../integration_tests/steps/journey'
 import { stubGetPrisons } from '../../../../../integration_tests/mockApis/prisonRegisterApi'
@@ -90,41 +90,7 @@ test.describe('/schedule-a-transfer/destination', () => {
     const journeyId = uuidV4()
     await startJourney(page, journeyId)
 
-    await stubGetNonAssociations({
-      closedCount: '',
-      firstName: '',
-      lastName: '',
-      nonAssociations: [
-        {
-          id: 0,
-          role: 'VICTIM',
-          roleDescription: '',
-          reason: 'BULLYING',
-          reasonDescription: '',
-          restrictionType: 'CELL',
-          restrictionTypeDescription: '',
-          comment: '',
-          authorisedBy: '',
-          whenCreated: '',
-          whenUpdated: '',
-          updatedBy: '',
-          isClosed: false,
-          otherPrisonerDetails: {
-            prisonerNumber: '',
-            role: 'VICTIM',
-            roleDescription: '',
-            firstName: 'Non',
-            lastName: 'Association',
-            prisonId: 'P1',
-            prisonName: 'Prison One',
-            cellLocation: '',
-          },
-          isOpen: true,
-        },
-      ],
-      openCount: '',
-      prisonerNumber: '',
-    })
+    await stubGetNonAssociations(testNonAssociationResponse)
 
     // verify page content
     const testPage = await new ScheduleTransferDestinationPage(page).verifyContent()

@@ -53,6 +53,8 @@ type PlanTransferJourney = {
   startDate: string
   startTime: string
   destination: CodedDescription
+  destinationWithNonAssociation: CodedDescription
+  nonAssociations: OtherPrisonerDetails[]
   reason: CodedDescription
   logistics: CodedDescription
   comments: string | null
@@ -64,6 +66,8 @@ type UpdateTransferJourney = {
   historyQuery: string
   transfer: components['schemas']['Transfer'] & { label: 'scheduled transfer' | 'planned transfer' }
 } & Partial<{
+  destination: CodedDescription
+  nonAssociations: OtherPrisonerDetails[]
   result: components['schemas']['AuditHistory']
   updatedTransfer: components['schemas']['Transfer']
 }>
