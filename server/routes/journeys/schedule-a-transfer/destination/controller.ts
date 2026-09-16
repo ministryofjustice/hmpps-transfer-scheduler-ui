@@ -10,21 +10,20 @@ export class ScheduleTransferDestinationController {
   ) {}
 
   GET = async (req: Request, res: Response) => {
-    const { destination } = req.journeyData.scheduleTransfer!
+    const { destination, destinationWithNonAssociation } = req.journeyData.scheduleTransfer!
 
     const prisons = await this.prisonRegisterService.getPrisons({ res })
     if (!prisons) throw new Error('Unable to get list of prisons')
 
     res.render('schedule-a-transfer/destination/view', {
       backUrl: 'date-and-time',
-      destination: res.locals.formResponses?.['destination'] ?? destination?.code,
+      destination:
+        res.locals.formResponses?.['destination'] ?? destinationWithNonAssociation?.code ?? destination?.code,
       prisons: prisons.filter(({ code }) => code !== res.locals.user.getActiveCaseloadId()),
     })
   }
 
   POST = async (req: Request<unknown, unknown, SchemaType>, res: Response) => {
-    req.journeyData.scheduleTransfer!.destination = req.body.destination
-
     const nonAssociations = await this.nonAssociationsService.getPrisonerNonAssociations(
       { res },
       req.journeyData.prisonerDetails!.prisonerNumber,
@@ -35,8 +34,10 @@ export class ScheduleTransferDestinationController {
       .filter(({ prisonId }) => prisonId === req.body.destination.code)
 
     if (req.journeyData.scheduleTransfer!.nonAssociations.length) {
+      req.journeyData.scheduleTransfer!.destinationWithNonAssociation = req.body.destination
       res.redirect('non-associations')
     } else {
+      req.journeyData.scheduleTransfer!.destination = req.body.destination
       res.redirect('reason')
     }
   }

@@ -1,3 +1,4 @@
+import { Request } from 'express'
 import { Services } from '../../../services'
 import { BaseRouter } from '../../common/routes'
 import { Page } from '../../../services/auditService'
@@ -49,7 +50,16 @@ export const ScheduleTransferRoutes = (services: Services) => {
       next()
     },
     preventNavigationToExpiredJourneys(),
-    journeyStateGuard({}),
+    journeyStateGuard({
+      'non-associations': (req: Request) => {
+        const { destinationWithNonAssociation, destination } = req.journeyData.scheduleTransfer!
+        if (!destinationWithNonAssociation) {
+          if (destination) return 'reason'
+          return 'destination'
+        }
+        return undefined
+      },
+    }),
   )
 
   router.use('/date-and-time', ScheduleTransferDateTimeRoutes())

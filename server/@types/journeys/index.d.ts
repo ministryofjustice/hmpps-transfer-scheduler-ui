@@ -36,6 +36,7 @@ type ScheduleTransferJourney = {
   startDate: string
   startTime: string
   destination: CodedDescription
+  destinationWithNonAssociation: CodedDescription
   nonAssociations: OtherPrisonerDetails[]
   reason: CodedDescription
   logistics: CodedDescription

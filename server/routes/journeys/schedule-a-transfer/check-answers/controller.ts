@@ -7,6 +7,7 @@ export class ScheduleTransferCheckAnswersController {
 
   GET = async (req: Request, res: Response) => {
     req.journeyData.isCheckAnswers = true
+    delete req.journeyData.scheduleTransfer!.destinationWithNonAssociation
 
     const { startDate, startTime, destination, reason, logistics, comments } = req.journeyData.scheduleTransfer!
 

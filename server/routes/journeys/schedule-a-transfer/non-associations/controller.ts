@@ -2,16 +2,20 @@ import { Request, Response } from 'express'
 
 export class ScheduleTransferNonAssociationsController {
   GET = async (req: Request, res: Response) => {
-    const { destination, nonAssociations } = req.journeyData.scheduleTransfer!
+    const { nonAssociations, destinationWithNonAssociation } = req.journeyData.scheduleTransfer!
 
     res.render('schedule-a-transfer/non-associations/view', {
-      backUrl: 'destination',
-      destination,
+      goBackUrl: 'destination',
+      destination: destinationWithNonAssociation,
       nonAssociations,
     })
   }
 
-  POST = async (_req: Request, res: Response) => {
+  POST = async (req: Request, res: Response) => {
+    if (req.journeyData.scheduleTransfer!.destinationWithNonAssociation) {
+      req.journeyData.scheduleTransfer!.destination = req.journeyData.scheduleTransfer!.destinationWithNonAssociation
+      delete req.journeyData.scheduleTransfer!.destinationWithNonAssociation
+    }
     res.redirect('reason')
   }
 }
