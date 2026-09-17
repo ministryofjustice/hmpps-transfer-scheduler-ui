@@ -19,7 +19,11 @@ export class TransferCancelPage extends BaseTestPage {
     return this.radio('No')
   }
 
+  cancellationReasonRadio() {
+    return this.radio('Offence in custody')
+  }
+
   reasonField() {
-    return this.textbox('Enter a reason for cancelling this transfer (optional)')
+    return this.textbox('Enter any further details for this cancellation (optional)')
   }
 }

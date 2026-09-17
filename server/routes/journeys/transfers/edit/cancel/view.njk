@@ -36,20 +36,35 @@
             value: 'NO',
             text: "No"
           }
-        ]
+        ] | setCheckedValue(confirm)
       }) }}
 
-      {{ govukTextarea({
-        id: "reason",
-        name: "reason",
-        errorMessage: validationErrors | findError('reason'),
-        label: {
-          text: "Enter a reason for cancelling this transfer (optional)",
-          classes: "govuk-label--m",
-          isPageHeading: false
-        },
-        value: reason
-      }) }}
+      <div id="additional-inputs">
+        {{ govukRadios({
+          name: "cancellationReason",
+          errorMessage: validationErrors | findError('cancellationReason'),
+          fieldset: {
+            legend: {
+              text: 'Select a reason for cancelling this transfer',
+              classes: "govuk-fieldset__legend--m",
+              isPageHeading: false
+            }
+          },
+          items: cancellationReasons | fromCodedDescription | setCheckedValue(cancellationReason)
+        }) }}
+
+        {{ govukTextarea({
+          id: "reason",
+          name: "reason",
+          errorMessage: validationErrors | findError('reason'),
+          label: {
+            text: "Enter any further details for this cancellation (optional)",
+            classes: "govuk-label--m",
+            isPageHeading: false
+          },
+          value: reason
+        }) }}
+      </div>
 
       <div class="govuk-button-group">
         {{ govukButton({
@@ -59,4 +74,25 @@
       </div>
     </form>
   </div>
+{% endblock %}
+
+{% block pageScripts %}
+<script nonce="{{ cspNonce }}">
+  window.onload = function () {
+    const confirmInputs = Array.from(document.querySelectorAll('input[name=confirm]'))
+
+    const toggleAdditionalInputs = () => {
+      if (confirmInputs[0].checked) {
+        document.getElementById('additional-inputs').classList.remove('govuk-!-display-none')
+      } else {
+        document.getElementById('additional-inputs').classList.add('govuk-!-display-none')
+      }
+    }
+
+    confirmInputs[0].addEventListener('change', toggleAdditionalInputs)
+    confirmInputs[1].addEventListener('change', toggleAdditionalInputs)
+
+    toggleAdditionalInputs()
+  }
+</script>
 {% endblock %}

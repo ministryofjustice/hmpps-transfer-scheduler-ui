@@ -8,7 +8,17 @@ export class TransferCancelController {
   GET = async (req: Request, res: Response) => {
     const { backUrl, transfer } = req.journeyData.updateTransfer!
 
-    res.render('transfers/edit/cancel/view', { backUrl, transfer, reason: res.locals.formResponses?.['reason'] })
+    res.render('transfers/edit/cancel/view', {
+      backUrl,
+      transfer,
+      confirm: res.locals.formResponses?.['confirm'],
+      reason: res.locals.formResponses?.['reason'],
+      cancellationReason: res.locals.formResponses?.['cancellationReason'],
+      cancellationReasons: await this.transferSchedulerService.getReferenceData(
+        { res },
+        'transfer-cancellation-reason',
+      ),
+    })
   }
 
   POST = async (req: Request<unknown, unknown, SchemaType>, res: Response, next: NextFunction) => {
@@ -25,6 +35,7 @@ export class TransferCancelController {
         journey.transfer.id,
         {
           type: 'CancelTransfer',
+          reasonCode: req.body.cancellationReason!.code,
         },
         req.body.reason ?? undefined,
       )

@@ -8,7 +8,11 @@ import { TransferCancelPage } from './test.page'
 
 import { login } from '../../../../../../integration_tests/testUtils'
 import { getApiBody, resetStubs } from '../../../../../../integration_tests/mockApis/wiremock'
-import { stubGetTransfer, stubPutTransfer } from '../../../../../../integration_tests/mockApis/transferSchedulerApi'
+import {
+  stubGetCancellationReasons,
+  stubGetTransfer,
+  stubPutTransfer,
+} from '../../../../../../integration_tests/mockApis/transferSchedulerApi'
 import { testTransfer } from '../../../../../../integration_tests/data/testData'
 import { testNotAuthorisedPage } from '../../../../../../integration_tests/steps/testNotAuthorisedPage'
 
@@ -27,6 +31,7 @@ test.describe('/transfers/edit/cancel', () => {
       stubComponents(),
       stubGetPrisonerImage(),
       stubGetPrisonerDetails(),
+      stubGetCancellationReasons(),
       stubGetTransfer({
         ...testTransfer,
         id: transferId,
@@ -61,24 +66,34 @@ test.describe('/transfers/edit/cancel', () => {
     await expect(testPage.yesRadio()).not.toBeChecked()
     await expect(testPage.noRadio()).toBeVisible()
     await expect(testPage.noRadio()).not.toBeChecked()
-    await expect(testPage.reasonField()).toBeVisible()
-    await expect(testPage.reasonField()).toHaveValue('')
+    await expect(testPage.cancellationReasonRadio()).not.toBeVisible()
+    await expect(testPage.reasonField()).not.toBeVisible()
     await expect(testPage.button('Confirm')).toBeVisible()
 
     // verify validation error
-    await testPage.reasonField().fill('lorem ipsum')
+
     await testPage.clickButton('Confirm')
     await testPage.link('Select if you want to cancel this transfer').click()
     await expect(testPage.yesRadio()).toBeFocused()
 
-    // verify next page routing
     await testPage.yesRadio().click()
+    await expect(testPage.cancellationReasonRadio()).toBeVisible()
+    await expect(testPage.cancellationReasonRadio()).not.toBeChecked()
+    await expect(testPage.reasonField()).toBeVisible()
+    await expect(testPage.reasonField()).toHaveValue('')
+    await testPage.reasonField().fill('lorem ipsum')
+    await testPage.clickButton('Confirm')
+    await testPage.link('Select a cancellation reason').click()
+    await expect(testPage.cancellationReasonRadio()).toBeFocused()
+
+    // verify next page routing
+    await testPage.cancellationReasonRadio().click()
     await testPage.clickButton('Confirm')
     expect(page.url()).toMatch(/\/transfers\/edit\/confirmation/)
 
     // verify API call
     expect(await getApiBody(`/transfer-scheduler-api/transfers/${transferId}`, 'PUT')).toContainEqual({
-      actions: [{ type: 'CancelTransfer' }],
+      actions: [{ type: 'CancelTransfer', reasonCode: 'OIC' }],
       reason: 'lorem ipsum',
     })
   })

@@ -347,16 +347,13 @@ export interface components {
       type: 'ApplyTransit'
     } & (Omit<components['schemas']['TransferAction'], 'type'> & {
       request: components['schemas']['MovementRequest']
-      /** Format: date-time */
-      occurredAt: string
-      destinationCode: string
-      reasonCode: string
-      logisticsCode: string
-      comments?: string | null
+      legacyId?: string | null
     })
     CancelTransfer: {
       type: 'CancelTransfer'
-    } & Omit<components['schemas']['TransferAction'], 'type'>
+    } & (Omit<components['schemas']['TransferAction'], 'type'> & {
+      reasonCode?: string | null
+    })
     CompleteTransfer: {
       type: 'CompleteTransfer'
     } & Omit<components['schemas']['TransferAction'], 'type'>
@@ -451,6 +448,7 @@ export interface components {
       eventId?: number | null
       waitlist?: components['schemas']['SyncWaitlist']
       schedule: components['schemas']['SyncSchedule'] | null
+      cancellationReason?: string | null
     }
     SyncTransferRequest: {
       /** Format: date-time */
@@ -467,12 +465,11 @@ export interface components {
       requestDate: string
       waitListStatus: string
       /** Format: date */
-      statusDate: string
+      statusDate?: string | null
       transferPriority: string
       approved: boolean
       approvedUsername?: string | null
-      /** @enum {string|null} */
-      outcomeReasonCode?: 'OIC' | 'ADMI' | 'TRANS' | null
+      outcomeReasonCode?: string | null
       commentText1?: string | null
     }
     ReferenceId: {
@@ -546,6 +543,7 @@ export interface components {
       from: string
       to: string
       transferIds: string[]
+      unscheduledMovementIds: string[]
     }
     CreatePlanRequest: {
       /** Format: date */
@@ -732,8 +730,12 @@ export interface components {
       items: components['schemas']['CodedDescription'][]
     }
     ReconciliationResponse: {
-      transfers: components['schemas']['SyncTransfer'][]
+      transfers: components['schemas']['ReconciliationTransfer'][]
       unscheduledMovements: components['schemas']['SyncMovement'][]
+    }
+    ReconciliationTransfer: {
+      transfer: components['schemas']['SyncTransfer']
+      movement?: components['schemas']['SyncMovement'] | null
     }
     IntegrationMovement: {
       /** Format: date-time */
@@ -1120,7 +1122,12 @@ export interface operations {
       header?: never
       path: {
         /** @description The reference data domain required. This is case insensitive. */
-        domain: 'transfer-logistics' | 'transfer-priority' | 'transfer-reason' | 'transfer-status'
+        domain:
+          | 'transfer-cancellation-reason'
+          | 'transfer-logistics'
+          | 'transfer-priority'
+          | 'transfer-reason'
+          | 'transfer-status'
       }
       cookie?: never
     }
