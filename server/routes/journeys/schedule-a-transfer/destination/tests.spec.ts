@@ -11,7 +11,7 @@ import { testNonAssociationResponse, testPrisonerDetails } from '../../../../../
 import { login, resetStubs } from '../../../../../integration_tests/testUtils'
 import { injectJourneyData } from '../../../../../integration_tests/steps/journey'
 import { stubGetPrisons } from '../../../../../integration_tests/mockApis/prisonRegisterApi'
-import { stubGetNonAssociations } from '../../../../../integration_tests/mockApis/nonAssocationsApi'
+import { stubGetNonAssociations } from '../../../../../integration_tests/mockApis/nonAssociationsApi'
 
 test.describe('/schedule-a-transfer/destination unauthorised', () => {
   test('should show unauthorised error', async ({ page }) => {

@@ -16,7 +16,7 @@ import {
 } from '../../../../../../integration_tests/mockApis/transferSchedulerApi'
 import { testNonAssociationResponse, testTransfer } from '../../../../../../integration_tests/data/testData'
 import { getApiBody } from '../../../../../../integration_tests/mockApis/wiremock'
-import { stubGetNonAssociations } from '../../../../../../integration_tests/mockApis/nonAssocationsApi'
+import { stubGetNonAssociations } from '../../../../../../integration_tests/mockApis/nonAssociationsApi'
 
 test.describe('/transfers/edit/destination unauthorised', () => {
   test('should show unauthorised error', async ({ page }) => {
