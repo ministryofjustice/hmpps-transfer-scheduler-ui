@@ -7,7 +7,7 @@ import { stubGetPrisonerImage } from '../../../../../../integration_tests/mockAp
 import { TransferCancelPage } from './test.page'
 
 import { login } from '../../../../../../integration_tests/testUtils'
-import { getApiBody, resetStubs } from '../../../../../../integration_tests/mockApis/wiremock'
+import { getApiBody, getAPICallCountMatching, resetStubs } from '../../../../../../integration_tests/mockApis/wiremock'
 import {
   stubGetCancellationReasons,
   stubGetTransfer,
@@ -96,5 +96,23 @@ test.describe('/transfers/edit/cancel', () => {
       actions: [{ type: 'CancelTransfer', reasonCode: 'OIC' }],
       reason: 'lorem ipsum',
     })
+  })
+
+  test('should confirm not to cancel transfer and return to transfer details page', async ({ page }) => {
+    await login(page)
+
+    const journeyId = uuidV4()
+    await page.goto(`${journeyId}/transfers/start-edit/${transferId}/cancel`)
+
+    // verify page content
+    const testPage = await new TransferCancelPage(page).verifyContent()
+
+    // verify next page routing
+    await testPage.noRadio().click()
+    await testPage.clickButton('Confirm')
+    expect(page.url()).toMatch(/\/transfers\/[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}/)
+
+    // verify API call
+    expect(await getAPICallCountMatching(`/transfer-scheduler-api/transfers/${transferId}`, 'PUT')).toEqual(0)
   })
 })
