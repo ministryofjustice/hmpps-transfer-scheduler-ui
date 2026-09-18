@@ -30,7 +30,10 @@
         items: [
           {
             value: 'YES',
-            text: "Yes"
+            text: "Yes",
+            attributes: {
+              'aria-controls': 'additional-inputs'
+            }
           },
           {
             value: 'NO',
@@ -84,8 +87,10 @@
     const toggleAdditionalInputs = () => {
       if (confirmInputs[0].checked) {
         document.getElementById('additional-inputs').classList.remove('govuk-!-display-none')
+        confirmInputs[0].setAttribute('aria-expanded', true)
       } else {
         document.getElementById('additional-inputs').classList.add('govuk-!-display-none')
+        confirmInputs[0].setAttribute('aria-expanded', false)
       }
     }
 
