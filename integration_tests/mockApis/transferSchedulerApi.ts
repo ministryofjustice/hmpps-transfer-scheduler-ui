@@ -74,6 +74,19 @@ export const stubGetPriorities = () =>
     },
   })
 
+export const stubGetCancellationReasons = () =>
+  successStub({
+    method: 'GET',
+    urlPattern: '/transfer-scheduler-api/reference-data/transfer-cancellation-reason',
+    response: {
+      items: [
+        { code: 'OIC', description: 'Offence in custody' },
+        { code: 'ADMI', description: 'Administrative' },
+        { code: 'TRANS', description: 'Insufficient transport' },
+      ],
+    },
+  })
+
 export const stubPostScheduledTransfer = (
   prisonNumber: string,
   result: components['schemas']['Transfer'] = testTransfer,
