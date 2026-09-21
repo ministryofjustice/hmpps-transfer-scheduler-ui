@@ -155,9 +155,14 @@ export const parseAuditHistory = (
               })
               .filter(itm => Boolean(itm))
           : null
+
+        const cancellationReason = action.changes.find(
+          ({ propertyName }) => propertyName === 'cancellationReason',
+        )?.change
+
         return {
           ...eventText,
-          reason: action.reason,
+          reason: [cancellationReason, action.reason].filter(Boolean).join('\n'),
           user: eventText.skipUser ? null : action.user,
           occurredAt: action.occurredAt,
           ...(changes ? { changes } : {}),

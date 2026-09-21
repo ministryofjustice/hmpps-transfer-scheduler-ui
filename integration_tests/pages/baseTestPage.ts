@@ -94,7 +94,7 @@ export class BaseTestPage {
   }
 
   async verifyAnswer(heading: string | RegExp, value: string | RegExp) {
-    const rowHeading = this.page.locator('dt', { hasText: heading })
+    const rowHeading = this.page.locator('dt', { hasText: heading }).nth(0)
     await expect(rowHeading).toBeVisible()
     await expect(rowHeading.locator('//following-sibling::dd').first()).toContainText(value)
   }

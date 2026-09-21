@@ -47,7 +47,7 @@ Parameters:
             <div class="case-note-full">Reason: {{ action.reason | escape | nl2br | safe }}</div>
           </details>
         {% else %}
-          Reason: {{ action.reason | escape }}
+          Reason: {{ action.reason | escape | nl2br }}
         {% endif %}
       {% endif %}
       {% if action.reasonRequested and not action.reason %}

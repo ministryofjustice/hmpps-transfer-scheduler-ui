@@ -108,7 +108,19 @@
               } if transfer.stage === 'PLANNING' and transfer.schedule.comments,
               {
                 key: { text: 'Comments' }, value: { text: transfer.schedule.comments | escape | nl2br }
-              } if transfer.stage === 'PLANNING' and transfer.schedule.comments
+              } if transfer.stage === 'PLANNING' and transfer.schedule.comments,
+              {
+                key: { html: '<h3 class="summary-list-subheading govuk-heading-m govuk-!-static-margin-bottom-1">Previous plan information</h3>' }
+              } if transfer.stage === 'SCHEDULED' and transfer.plan,
+              {
+                key: { text: "Request received" }, value: { text: transfer.plan.requestedOn | formatDate("d MMMM yyyy") }
+              } if transfer.stage === 'SCHEDULED' and transfer.plan,
+              {
+                key: { text: "Priority" }, value: { text: transfer.plan.priority.description }
+              } if transfer.stage === 'SCHEDULED' and transfer.plan,
+              {
+                key: { text: "Comments" }, value: { text: (transfer.plan.comments or 'Not provided') | escape | nl2br }
+              } if transfer.stage === 'SCHEDULED' and transfer.plan
             ] | removeNullish | showChangeLinksIf(user | hasPermission('MANAGE') and editable)
           }) }
           },
