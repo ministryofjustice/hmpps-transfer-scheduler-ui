@@ -116,7 +116,7 @@
                 key: { text: "Request received" }, value: { text: transfer.plan.requestedOn | formatDate("d MMMM yyyy") }
               } if transfer.stage === 'SCHEDULED' and transfer.plan,
               {
-                key: { text: "Prority" }, value: { text: transfer.plan.priority.description }
+                key: { text: "Priority" }, value: { text: transfer.plan.priority.description }
               } if transfer.stage === 'SCHEDULED' and transfer.plan,
               {
                 key: { text: "Comments" }, value: { text: (transfer.plan.comments or 'Not provided') | escape | nl2br }

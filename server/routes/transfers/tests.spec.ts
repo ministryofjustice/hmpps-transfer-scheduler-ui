@@ -49,6 +49,8 @@ test.describe('/transfers/:id', () => {
     await stubGetTransfer({
       ...testTransfer,
       id: transferId,
+      plan: { requestedOn: '1999-12-01', priority: { code: '2', description: 'Medium' } },
+      stage: 'SCHEDULED',
     })
     await stubGetTransferHistory(transferId, {
       content: [
@@ -77,6 +79,9 @@ test.describe('/transfers/:id', () => {
     await testPage.verifyAnswer('Escort details', 'Logistics One')
     await testPage.verifyAnswer('Comments', 'Lorem ipsum')
     await testPage.verifyAnswer('Status', 'Scheduled')
+
+    await testPage.verifyAnswer('Request received', '1 December 1999')
+    await testPage.verifyAnswer('Priority', 'Medium')
 
     await expect(testPage.link('Change date and time (Transfer information)')).toBeVisible()
     await expect(testPage.link('Change destination (Transfer information)')).toBeVisible()
