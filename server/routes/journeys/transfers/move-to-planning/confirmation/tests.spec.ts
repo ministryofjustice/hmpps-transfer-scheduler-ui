@@ -75,8 +75,8 @@ test.describe('/transfers/move-to-planning/confirmation', () => {
     await testPage.verifyAnswer('Request received', '1 January 2001')
     await testPage.verifyAnswer('Priority', 'High')
 
-    await testPage.verifyLink('Back to Transfers homepage', '/')
-    await testPage.verifyLink('View planned transfers', /planned-transfers/)
-    await testPage.verifyLink('Return to the DPS homepage', /localhost:3001$/)
+    await testPage.verifyLink('View and manage scheduled transfers', /scheduled-transfers/)
+    await testPage.verifyLink('View and manage planned transfers', /planned-transfers/)
+    await testPage.verifyLink('Return to Transfers homepage', '/')
   })
 })

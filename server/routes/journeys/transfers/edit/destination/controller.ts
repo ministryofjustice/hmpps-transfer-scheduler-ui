@@ -47,16 +47,18 @@ export class EditTransferDestinationController {
     try {
       const { transfer } = req.journeyData.updateTransfer!
 
-      await this.transferSchedulerService.updateTransfer({ res }, transfer.id, {
+      const result = await this.transferSchedulerService.updateTransfer({ res }, transfer.id, {
         type: 'ApplyDestination',
         destinationCode: req.body.destination?.code ?? null,
       })
 
       req.journeyData.journeyCompleted = true
-      req.flash(
-        FLASH_KEY__SUCCESS_BANNER,
-        transfer.destination ? 'Transfer destination changed' : 'Transfer destination added',
-      )
+      if (result.content.length) {
+        req.flash(
+          FLASH_KEY__SUCCESS_BANNER,
+          transfer.destination ? 'Transfer destination changed' : 'Transfer destination added',
+        )
+      }
       res.redirect(req.journeyData.updateTransfer!.backUrl)
     } catch (e) {
       next(e)

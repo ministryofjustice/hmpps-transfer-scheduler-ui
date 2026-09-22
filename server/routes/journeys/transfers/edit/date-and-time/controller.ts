@@ -32,16 +32,18 @@ export class EditTransferDateTimeController {
     try {
       const { transfer } = req.journeyData.updateTransfer!
 
-      await this.transferSchedulerService.updateTransfer({ res }, transfer.id, {
+      const result = await this.transferSchedulerService.updateTransfer({ res }, transfer.id, {
         type: 'ApplyScheduleStart',
         start: `${req.body.startDate}T${req.body.startTimeHour}:${req.body.startTimeMinute}:00`,
       })
 
       req.journeyData.journeyCompleted = true
-      req.flash(
-        FLASH_KEY__SUCCESS_BANNER,
-        transfer.schedule?.start ? 'Transfer date and time changed' : 'Transfer date and time added',
-      )
+      if (result.content.length) {
+        req.flash(
+          FLASH_KEY__SUCCESS_BANNER,
+          transfer.schedule?.start ? 'Transfer date and time changed' : 'Transfer date and time added',
+        )
+      }
       next()
     } catch (e) {
       next(e)

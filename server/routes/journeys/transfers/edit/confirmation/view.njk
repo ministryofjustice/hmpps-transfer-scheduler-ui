@@ -63,19 +63,19 @@
       <p>As this transfer is now scheduled, it will no longer be visible in planned transfers. It will appear in scheduled transfers.</p>
 
       <p class="govuk-body">
-        <a class="govuk-link govuk-link--no-visited-state" href="/planned-transfers?history={{ historyQuery }}">Search for a planned transfer</a>
+        <a class="govuk-link govuk-link--no-visited-state" href="/scheduled-transfers?history={{ historyQuery }}">View and manage scheduled transfers</a>
       </p>
 
       <p class="govuk-body">
-        <a class="govuk-link govuk-link--no-visited-state" href="/search-prisoner/schedule-a-transfer?history={{ historyQuery }}">Transfer another prisoner</a>
+        <a class="govuk-link govuk-link--no-visited-state" href="/planned-transfers?history={{ historyQuery }}">View and manage planned transfers</a>
       </p>
 
       <p class="govuk-body">
-        <a class="govuk-link govuk-link--no-visited-state" href="/scheduled-transfers?history={{ historyQuery }}">Search for a scheduled transfer</a>
+        <a class="govuk-link govuk-link--no-visited-state" href="/search-prisoner/schedule-a-transfer?history={{ historyQuery }}">Schedule another transfer</a>
       </p>
 
       <p class="govuk-body">
-        <a class="govuk-link govuk-link--no-visited-state" href="{{ digitalPrisonServicesUrl }}">Return to the DPS homepage</a>
+        <a class="govuk-link govuk-link--no-visited-state" href="/">Return to Transfers homepage</a>
       </p>
     {% case 'person.transfer.cancelled' %}
       {{ govukPanel({
@@ -83,27 +83,35 @@
         text: ""
       }) }}
 
-      <p class="govuk-body">
-        <a class="govuk-link govuk-link--no-visited-state" href="/">Back to Transfers homepage</a>
-      </p>
+      <h2 class="govuk-heading-m">What you can do next</h2>
 
       {% if transfer.stage === 'SCHEDULED' %}
         <p class="govuk-body">
-          <a class="govuk-link govuk-link--no-visited-state" href="/scheduled-transfers?history={{ historyQuery }}">Back to View and manage scheduled transfers</a>
+          <a class="govuk-link govuk-link--no-visited-state" href="/scheduled-transfers?history={{ historyQuery }}">View and manage scheduled transfers</a>
         </p>
       {% else %}
         <p class="govuk-body">
-          <a class="govuk-link govuk-link--no-visited-state" href="/planned-transfers?history={{ historyQuery }}">Back to View and manage planned transfers</a>
+          <a class="govuk-link govuk-link--no-visited-state" href="/planned-transfers?history={{ historyQuery }}">View and manage planned transfers</a>
         </p>
       {% endif %}
+
+      <p class="govuk-body">
+        <a class="govuk-link govuk-link--no-visited-state" href="/">Return to Transfers homepage</a>
+      </p>
     {% default %}
       {{ govukPanel({
         titleText: (EVENT_DESCRIPTION[domainEvent] or "Transfer updated") + " for " + prisonerDetails | firstNameSpaceLastName,
         text: ""
       }) }}
 
+      <h2 class="govuk-heading-m">What you can do next</h2>
+
       <p class="govuk-body">
-        <a class="govuk-link govuk-link--no-visited-state" href="/transfers/{{ transfer.id }}?history={{ historyQuery }}">View this transfer</a>
+        <a class="govuk-link govuk-link--no-visited-state" href="/transfers/{{ transfer.id }}?history={{ historyQuery }}">View and manage this transfer</a>
+      </p>
+
+      <p class="govuk-body">
+        <a class="govuk-link govuk-link--no-visited-state" href="/">Return to Transfers homepage</a>
       </p>
     {% endswitch %}
   </div>

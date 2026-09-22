@@ -104,7 +104,7 @@
                 id: "destination",
                 name: "destination",
                 label: { text: "Prison destination", classes: "govuk-label--m" },
-                hint: { text: "For example, London" },
+                hint: { text: "For example, HMP Berwyn" },
                 items: prisons | fromCodedDescription | addSelectValue('') | setSelectedValue(destination),
                 errorMessage: validationErrors | findError('destination')
               }) }}
@@ -113,7 +113,7 @@
                 id: "reason",
                 name: "reason",
                 label: { text: "Reason", classes: "govuk-label--m" },
-                hint: { text: "For example, Police escort" },
+                hint: { text: "For example, Medical" },
                 items: reasons | fromCodedDescription | addSelectValue('') | setSelectedValue(reason),
                 errorMessage: validationErrors | findError('reason')
               }) }}
@@ -202,7 +202,7 @@
                   result.schedule.start | formatDate("HH:mm"),
                   result.reason.description,
                   result.logistics.description,
-                  { html: statusTag(result) }
+                  { html: statusTag(result, 'float-right shift-right-20') }
                 ]
               }
             ), rows) %}
