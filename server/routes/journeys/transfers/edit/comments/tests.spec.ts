@@ -34,7 +34,7 @@ test.describe('/transfers/edit/comments', () => {
       stubGetPrisonerDetails(),
       stubGetPrisons(),
       await stubGetTransferHistory(transferId, { content: [] }),
-      stubPutTransfer(transferId, { content: [] }),
+      stubPutTransfer(transferId),
     ])
     await login(page)
   })

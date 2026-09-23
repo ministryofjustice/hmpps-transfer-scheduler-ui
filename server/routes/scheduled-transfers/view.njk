@@ -190,12 +190,14 @@
 
           {{ simplePagination(paginationParams) }}
 
+          {% set viewLabel = 'View and manage' if user | hasPermission('MANAGE') else 'View details'  %}
+
           {% set rows = [] %}
           {% for result in results %}
             {% set rows = (rows.push(
               {
                 title: { text: result.person | firstNameSpaceLastName + ' - ' + result.person.identifier },
-                action: { text: 'View details', href: '/transfers/' + result.id },
+                action: { text: viewLabel, href: '/transfers/' + result.id },
                 data: [
                   result.destination.name,
                   result.schedule.start | formatDate("d MMMM yyyy"),

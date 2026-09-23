@@ -118,7 +118,19 @@ export const stubGetTransferHistory = (transferId: string, response: components[
     response,
   })
 
-export const stubPutTransfer = (transferId: string, response: components['schemas']['AuditHistory']) =>
+export const stubPutTransfer = (
+  transferId: string,
+  response: components['schemas']['AuditHistory'] = {
+    content: [
+      {
+        user: { username: 'USERNAME', name: 'User Name' },
+        occurredAt: '2025-12-01T17:50:20.421301',
+        domainEvents: ['person.transfer.scheduled'],
+        changes: [{ propertyName: '', previous: '', change: '' }],
+      },
+    ],
+  },
+) =>
   successStub({
     method: 'PUT',
     urlPattern: `/transfer-scheduler-api/transfers/${transferId}`,
