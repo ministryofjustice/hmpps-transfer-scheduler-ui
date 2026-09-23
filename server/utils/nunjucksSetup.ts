@@ -33,6 +33,7 @@ import {
   findErrorMessage,
 } from '../middleware/validation/validationMiddleware'
 import { hasPermissionFilter } from '../middleware/permissions/requirePermissions'
+import { featureEnabled } from './featureFlag'
 
 export default function nunjucksSetup(app: express.Express): void {
   app.set('view engine', 'njk')
@@ -112,6 +113,7 @@ export default function nunjucksSetup(app: express.Express): void {
   njkEnv.addFilter('buildErrorSummaryList', buildErrorSummaryList)
   njkEnv.addFilter('customErrorOrderBuilder', customErrorOrderBuilder)
   njkEnv.addFilter('hasPermission', hasPermissionFilter)
+  njkEnv.addFilter('featureEnabled', featureEnabled)
 
   njkEnv.addFilter(
     'showChangeLinksIf',

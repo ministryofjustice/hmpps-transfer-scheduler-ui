@@ -24,6 +24,7 @@ generic-service:
     ENVIRONMENT_NAME: DEV
     SENTRY_ENVIRONMENT: DEV
     AUDIT_ENABLED: "true"
+    FEAT_BULK_TRANSFERS_PRISONS: MDI
 
 generic-prometheus-alerts:
   alertSeverity: move-and-improve-alerts-non-prod

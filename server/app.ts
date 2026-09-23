@@ -28,6 +28,7 @@ import sentryMiddleware from './middleware/sentryMiddleware'
 import { AuthorisedRoles } from './middleware/permissions/populateUserPermissions'
 import addUsernameAndCaseloadToTelemetry from './utils/azureAppInsights'
 import { serviceEnabledMiddleware } from './middleware/permissions/serviceEnabledMiddleware'
+import { populateEnabledFeatures } from './utils/featureFlag'
 
 export default function createApp(services: Services): express.Application {
   const app = express()
@@ -91,6 +92,8 @@ export default function createApp(services: Services): express.Application {
   )
 
   app.get('/prisoner-image/:prisonNumber', new PrisonerImageController(services.prisonApiService).GET)
+
+  app.use(populateEnabledFeatures)
 
   app.use(addUsernameAndCaseloadToTelemetry())
 

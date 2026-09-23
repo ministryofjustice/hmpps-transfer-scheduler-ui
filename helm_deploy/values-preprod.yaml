@@ -24,6 +24,7 @@ generic-service:
     ENVIRONMENT_NAME: PRE-PRODUCTION
     SENTRY_ENVIRONMENT: PRE-PRODUCTION
     AUDIT_ENABLED: "true"
+    FEAT_BULK_TRANSFERS_PRISONS: ""
 
 generic-prometheus-alerts:
   alertSeverity: move-and-improve-alerts-non-prod
