@@ -69,7 +69,7 @@
               </div>
             {% endif %}
 
-            {% if user | featureEnabled('BULK_TRANSFERS') %}
+            {% if user | hasPermission('MANAGE') and user | featureEnabled('BULK_TRANSFERS') %}
               <div class="govuk-grid-column-one-third card-group__item">
                 <div class="card card--clickable">
                   <h2 class="govuk-heading-m card__heading">
