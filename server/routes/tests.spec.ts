@@ -23,6 +23,8 @@ test.describe('homepage', () => {
     await expect(testPage.link('Plan a transfer')).toBeVisible()
     await expect(testPage.link('Manage scheduled transfers')).toBeVisible()
     await expect(testPage.link('Manage planned transfers')).toBeVisible()
+    await expect(testPage.link('Schedule transfers in bulk')).toBeVisible()
+    await expect(testPage.link('Edit scheduled transfers in bulk')).toBeVisible()
 
     await verifyAuditEvents([
       {
@@ -44,6 +46,8 @@ test.describe('homepage', () => {
 
     await expect(testPage.link('Schedule a transfer')).toHaveCount(0)
     await expect(testPage.link('Plan a transfer')).toHaveCount(0)
+    await expect(testPage.link('Schedule transfers in bulk')).toHaveCount(0)
+    await expect(testPage.link('Edit scheduled transfers in bulk')).toHaveCount(0)
 
     await expect(testPage.link('Manage scheduled transfers')).toBeVisible()
     await expect(testPage.link('Manage planned transfers')).toBeVisible()

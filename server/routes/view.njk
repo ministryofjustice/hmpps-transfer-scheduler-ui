@@ -69,12 +69,32 @@
               </div>
             {% endif %}
 
+            {% if user | hasPermission('MANAGE') and user | featureEnabled('BULK_TRANSFERS') %}
+              <div class="govuk-grid-column-one-third card-group__item">
+                <div class="card card--clickable">
+                  <h2 class="govuk-heading-m card__heading">
+                    <a class="govuk-link govuk-link--no-visited-state card__link" href="/bulk-schedule-transfers">Schedule transfers in bulk</a>
+                  </h2>
+                  <p class="govuk-body card__description">Create multiple transfers that share key details, such as destination prison or transfer date.</p>
+                </div>
+              </div>
+
+              <div class="govuk-grid-column-one-third card-group__item">
+                <div class="card card--clickable">
+                  <h2 class="govuk-heading-m card__heading">
+                    <a class="govuk-link govuk-link--no-visited-state card__link" href="/bulk-edit-transfers">Edit scheduled transfers in bulk</a>
+                  </h2>
+                  <p class="govuk-body card__description">Create and edit lists of scheduled transfers.</p>
+                </div>
+              </div>
+            {% endif %}
+
             <div class="govuk-grid-column-one-third card-group__item">
               <div class="card card--clickable">
                 <h2 class="govuk-heading-m card__heading">
                   <a class="govuk-link govuk-link--no-visited-state card__link" href="/search-prisoner/generate-transfer-checklist">Create and download transfer checklists</a>
                 </h2>
-                <p class="govuk-body card__description">Use a template to create and download a transfer checklist for a prisoner</p>
+                <p class="govuk-body card__description">Use a template to create and download a transfer checklist for a prisoner.</p>
               </div>
             </div>
           </div>

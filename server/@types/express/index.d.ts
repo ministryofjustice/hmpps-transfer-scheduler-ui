@@ -1,6 +1,7 @@
 import { HmppsUser } from '../../interfaces/hmppsUser'
 import { PrisonerDetails, JourneyData } from '../journeys'
 import { components } from '../transferSchedulerApi'
+import { Feature } from '../../utils/featureFlag'
 
 export declare module 'express-session' {
   // Declare that the session will potentially contain these additional fields
@@ -28,6 +29,7 @@ export declare global {
         transfer?: components['schemas']['Transfer'] & { label: 'scheduled transfer' | 'planned transfer' }
         transferHistory?: components['schemas']['AuditHistory']
         documentTemplateId?: string
+        enabledFeatures?: Feature[]
       }
     }
 
