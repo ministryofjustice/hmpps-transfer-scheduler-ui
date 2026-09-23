@@ -52,9 +52,9 @@ test.describe('/schedule-a-transfer/confirmation', () => {
     await testPage.verifyAnswer('Escort details', 'Logistics One')
     await testPage.verifyAnswer('Comments', 'Lorem ipsum')
 
-    await testPage.verifyLink('View and manage transfers', /scheduled-transfers/)
-    await testPage.verifyLink('Transfer another prisoner', /search-prisoner\/schedule-a-transfer/)
-    await testPage.verifyLink('Manage planned transfers', /planned-transfers/)
-    await testPage.verifyLink('Return to the DPS homepage', /localhost:3001$/)
+    await testPage.verifyLink('Schedule another transfer', /search-prisoner\/schedule-a-transfer/)
+    await testPage.verifyLink('View and manage scheduled transfers', /scheduled-transfers/)
+    await testPage.verifyLink('View and manage planned transfers', /planned-transfers/)
+    await testPage.verifyLink('Return to Transfers homepage', '/')
   })
 })

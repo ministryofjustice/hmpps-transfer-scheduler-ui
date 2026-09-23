@@ -20,10 +20,12 @@ export class SchedulePlanController {
     }
 
     try {
-      journey.result = await this.transferSchedulerService.updateTransfer({ res }, journey.transfer.id, {
+      await this.transferSchedulerService.updateTransfer({ res }, journey.transfer.id, {
         type: 'ScheduleTransfer',
         start: journey.transfer.schedule.start,
       })
+      journey.result = { content: [{ domainEvents: 'person.transfer.scheduled' }] }
+
       req.journeyData.journeyCompleted = true
       journey.updatedTransfer = await this.transferSchedulerService.getTransfer({ res }, journey.transfer.id)
       res.redirect(journey.result!.content.length ? 'confirmation' : `/transfers/${journey.transfer.id}`)

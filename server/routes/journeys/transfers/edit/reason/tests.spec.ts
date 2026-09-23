@@ -40,7 +40,7 @@ test.describe('/transfers/edit/reason', () => {
         id: transferId,
       }),
       await stubGetTransferHistory(transferId, { content: [] }),
-      stubPutTransfer(transferId, { content: [] }),
+      stubPutTransfer(transferId),
     ])
     await login(page)
   })

@@ -21,13 +21,13 @@ export class EditTransferRequestDateController {
     try {
       const { transfer } = req.journeyData.updateTransfer!
 
-      await this.transferSchedulerService.updateTransfer({ res }, transfer.id, {
+      const result = await this.transferSchedulerService.updateTransfer({ res }, transfer.id, {
         type: 'ApplyRequestedOn',
         requestedOn: req.body.requestedOn,
       })
 
       req.journeyData.journeyCompleted = true
-      req.flash(FLASH_KEY__SUCCESS_BANNER, 'Transfer request date changed')
+      if (result.content.length) req.flash(FLASH_KEY__SUCCESS_BANNER, 'Transfer request date changed')
       next()
     } catch (e) {
       next(e)

@@ -2,7 +2,7 @@
 {% from "govuk/components/select/macro.njk" import govukSelect %}
 {% from "govuk/components/button/macro.njk" import govukButton %}
 
-{% set pageTitle = 'What type of escorted transfer is this (optional) - Plan a transfer' %}
+{% set pageTitle = 'Which escort type is being used for this transfer (optional) - Plan a transfer' %}
 
 {% block meta %}
   <meta name="autocompleteElements" content="logistics"/>
@@ -18,7 +18,7 @@
       {{ govukSelect({
         id: "logistics",
         name: "logistics",
-        label: { text: "What type of escorted transfer is this? (optional)", classes: "govuk-label--l", isPageHeading: true },
+        label: { text: "Which escort type is being used for this transfer? (optional)", classes: "govuk-label--l", isPageHeading: true },
         items: options | fromCodedDescription | addSelectValue('') | setSelectedValue(logistics),
         errorMessage: validationErrors | findError('logistics')
       }) }}

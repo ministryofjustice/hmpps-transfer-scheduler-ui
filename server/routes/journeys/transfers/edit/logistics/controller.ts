@@ -21,16 +21,18 @@ export class EditTransferLogisticsController {
     try {
       const { transfer } = req.journeyData.updateTransfer!
 
-      await this.transferSchedulerService.updateTransfer({ res }, transfer.id, {
+      const result = await this.transferSchedulerService.updateTransfer({ res }, transfer.id, {
         type: 'ApplyLogistics',
         logisticsCode: req.body.logistics.code,
       })
 
       req.journeyData.journeyCompleted = true
-      req.flash(
-        FLASH_KEY__SUCCESS_BANNER,
-        transfer.logistics ? 'Transfer escort details changed' : 'Transfer escort details added',
-      )
+      if (result.content.length) {
+        req.flash(
+          FLASH_KEY__SUCCESS_BANNER,
+          transfer.logistics ? 'Transfer escort details changed' : 'Transfer escort details added',
+        )
+      }
       next()
     } catch (e) {
       next(e)

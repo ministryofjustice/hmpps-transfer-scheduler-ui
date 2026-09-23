@@ -22,16 +22,18 @@ export class EditTransferCommentsController {
     try {
       const { transfer } = req.journeyData.updateTransfer!
 
-      await this.transferSchedulerService.updateTransfer({ res }, transfer.id, {
+      const result = await this.transferSchedulerService.updateTransfer({ res }, transfer.id, {
         type: transfer.stage === 'PLANNING' ? 'ApplyPlanComments' : 'ApplyScheduleComments',
         comments: req.body.comments,
       })
 
       req.journeyData.journeyCompleted = true
-      req.flash(
-        FLASH_KEY__SUCCESS_BANNER,
-        transfer.stage === 'PLANNING' ? 'Transfer plan comments changed' : 'Transfer schedule comments changed',
-      )
+      if (result.content.length) {
+        req.flash(
+          FLASH_KEY__SUCCESS_BANNER,
+          transfer.stage === 'PLANNING' ? 'Transfer plan comments changed' : 'Transfer schedule comments changed',
+        )
+      }
       next()
     } catch (e) {
       next(e)

@@ -4,14 +4,14 @@ export class PlanTransferLogisticsPage extends BaseTestPage {
   async verifyContent() {
     return this.verify({
       pageUrl: /\/plan-a-transfer\/logistics/,
-      title: 'What type of escorted transfer is this (optional) - Plan a transfer - DPS',
+      title: 'Which escort type is being used for this transfer (optional) - Plan a transfer - DPS',
       caption: 'Plan a transfer',
-      heading: 'What type of escorted transfer is this? (optional)',
+      heading: 'Which escort type is being used for this transfer? (optional)',
       backUrl: /destination/,
     })
   }
 
   logisticsInput() {
-    return this.dropdown('What type of escorted transfer is this? (optional)')
+    return this.dropdown('Which escort type is being used for this transfer? (optional)')
   }
 }

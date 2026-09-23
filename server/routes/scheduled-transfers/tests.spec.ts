@@ -81,7 +81,7 @@ test.describe('/scheduled-transfers', () => {
     await expect(page.locator('strong', { hasText: 'Time' }).locator('..')).toContainText('10:00')
     await expect(page.locator('strong', { hasText: 'Reason' }).locator('..')).toContainText('Reason One')
     await expect(page.locator('strong', { hasText: 'Escort details' }).locator('..')).toContainText('Logistics One')
-    await expect(testPage.link('View details')).toHaveAttribute('href', /\/transfers\/transfer-1/)
+    await expect(testPage.link('View and manage')).toHaveAttribute('href', /\/transfers\/transfer-1/)
 
     await testPage.endDateField().fill('2/2/2001')
     await testPage.clickButton('Apply')

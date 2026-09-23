@@ -68,7 +68,7 @@ test.describe('/transfers/edit/confirmation', () => {
 
     await expect(page.getByText('Transfer cancelled for Prisoner-Name Prisoner-Surname')).toBeVisible()
 
-    await testPage.verifyLink('Back to Transfers homepage', '/')
-    await testPage.verifyLink('Back to View and manage scheduled transfers', '/scheduled-transfers')
+    await testPage.verifyLink('View and manage scheduled transfers', /scheduled-transfers/)
+    await testPage.verifyLink('Return to Transfers homepage', '/')
   })
 })

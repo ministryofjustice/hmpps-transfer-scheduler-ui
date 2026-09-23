@@ -69,8 +69,8 @@ test.describe('/plan-a-transfer/confirmation', () => {
     await testPage.verifyAnswer('Comments (optional)', 'Lorem ipsum')
 
     await testPage.verifyLink('View and manage this planned transfer', /transfers\/transfer-id/)
-    await testPage.verifyLink('View and manage transfers', /scheduled-transfers/)
     await testPage.verifyLink('View and manage planned transfers', /planned-transfers/)
-    await testPage.verifyLink('Return to the DPS homepage', /localhost:3001$/)
+    await testPage.verifyLink('View and manage scheduled transfers', /scheduled-transfers/)
+    await testPage.verifyLink('Return to Transfers homepage', '/')
   })
 })

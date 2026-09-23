@@ -21,13 +21,13 @@ export class EditTransferReasonController {
     try {
       const { transfer } = req.journeyData.updateTransfer!
 
-      await this.transferSchedulerService.updateTransfer({ res }, transfer.id, {
+      const result = await this.transferSchedulerService.updateTransfer({ res }, transfer.id, {
         type: 'ApplyReason',
         reasonCode: req.body.reason.code,
       })
 
       req.journeyData.journeyCompleted = true
-      req.flash(FLASH_KEY__SUCCESS_BANNER, 'Transfer reason changed')
+      if (result.content.length) req.flash(FLASH_KEY__SUCCESS_BANNER, 'Transfer reason changed')
       next()
     } catch (e) {
       next(e)
