@@ -1,0 +1,125 @@
+{% extends "partials/layout.njk" %}
+{% from "govuk/components/button/macro.njk" import govukButton %}
+{% from "partials/miniProfile/macro.njk" import miniProfile %}
+{% from "moj/components/date-picker/macro.njk" import mojDatePicker %}
+{% from "partials/validatedTimeInput/macro.njk" import validatedTimeInput %}
+{% from "govuk/components/select/macro.njk" import govukSelect %}
+{% from "govuk/components/character-count/macro.njk" import govukCharacterCount %}
+
+{% set pageTitle = 'Add transfer details- Schedule transfers in bulk' %}
+{% set fullWidth = true %}
+
+{% block meta %}
+  <meta name="autocompleteElements" content="destination"/>
+  <meta name="autocompleteElements" content="reason"/>
+  <meta name="autocompleteElements" content="logistics"/>
+{% endblock %}
+
+{% block innerContent %}
+  <div class="govuk-width-container">
+    <span class="govuk-caption-l">Schedule transfers in bulk</span>
+    <h1 class="govuk-heading-l govuk-!-margin-bottom-6">Add transfer details</h1>
+
+    <div class="govuk-!-width-two-thirds govuk-!-margin-bottom-0">
+      <p class="govuk-!-margin-bottom-0">The transfer details you enter for this prisoner will be applied to all prisoners in this list. You’ll be able to change individual transfer details later.</p>
+    </div>
+
+    <div class="govuk-grid-row">
+      <div class="govuk-grid-column-one-quarter govuk-!-margin-top-7">
+        <h2 class="govuk-heading-m">Bulk transfer list</h2>
+        {% for transfer in transfers %}
+          <div class="govuk-!-static-margin-bottom-1">
+            <a class="govuk-link govuk-link--no-visited-state" href="{{ transfer.prisoner.prisonerNumber }}">{{ transfer.prisoner | lastNameCommaFirstName }}</a>
+          </div>
+        {% endfor %}
+      </div>
+      <div class="govuk-grid-column-three-quarters">
+        {{ miniProfile(prisoner, originalUrl) }}
+
+
+        <h2 class="govuk-heading-l">Enter the details for {{ prisoner | firstNameSpaceLastName}}</h2>
+
+        <form method="post" class="govuk-!-width-three-quarters">
+          <input type="hidden" name="_csrf" value="{{ csrfToken }}" />
+          {{ mojDatePicker({
+            id: "startDate",
+            name: "startDate",
+            label: {
+              text: 'What date will ' + prisoner | firstNameSpaceLastName | possessiveComma + ' transfer be?',
+              classes: "govuk-fieldset__legend--m"
+            },
+            hint: {
+              text: 'For example, 17/5/2024.'
+            },
+            value: startDate,
+            errorMessage: validationErrors | findError('startDate'),
+            classes: 'hmpps-datepicker--fixed-width govuk-body',
+            minDate: inputDate()
+          }) }}
+
+          {{ validatedTimeInput({
+            id: "startTime",
+            name: "startTime",
+            classes: 'govuk-!-static-margin-bottom-6',
+            fieldset: {
+              legend: {
+                text: 'What time will ' + prisoner | firstNameSpaceLastName | possessiveComma + ' transfer be?',
+                classes: "govuk-fieldset__legend--m"
+              }
+            },
+            hint: {
+              text: 'Use the 24-hour clock. For example, 09 08 or 17 32.'
+            },
+            validationErrors: validationErrors,
+            hour: startTimeHour,
+            minute: startTimeMinute
+          }) }}
+
+          {{ govukSelect({
+            id: "destination",
+            name: "destination",
+            label: { text: "Enter the prison this prisoner is being transferred to", classes: "govuk-label--m", isPageHeading: false },
+            hint: { text: "Start typing a prison name" },
+            items: prisons | fromCodedDescription | addSelectValue('') | setSelectedValue(destination),
+            errorMessage: validationErrors | findError('destination')
+          }) }}
+
+          {{ govukSelect({
+            id: "reason",
+            name: "reason",
+            label: { text: "Enter a reason for this transfer", classes: "govuk-label--m", isPageHeading: false },
+            hint: { text: "Start typing a reason" },
+            items: reasons | fromCodedDescription | addSelectValue('') | setSelectedValue(reason),
+            errorMessage: validationErrors | findError('reason')
+          }) }}
+
+          {{ govukSelect({
+            id: "logistics",
+            name: "logistics",
+            label: { text: "Which escort type is being used for this transfer?", classes: "govuk-label--m", isPageHeading: false },
+            hint: { text: 'Start typing the escorted transfer type' },
+            items: logisticsOptions | fromCodedDescription | addSelectValue('') | setSelectedValue(logistics),
+            errorMessage: validationErrors | findError('logistics')
+          }) }}
+
+          {{ govukCharacterCount({
+            name: "comments",
+            errorMessage: validationErrors | findError('comments'),
+            maxlength: 225,
+            label: {
+              text: "Add any comments for this transfer (optional)",
+              classes: "govuk-label--m",
+              isPageHeading: false
+            },
+            value: comments
+          }) }}
+
+          {{ govukButton({
+            text: "Save and next",
+            preventDoubleClick: true
+          }) }}
+        </form>
+      </div>
+    </div>
+  </div>
+{% endblock %}

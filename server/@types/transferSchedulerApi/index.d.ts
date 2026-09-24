@@ -108,6 +108,26 @@ export interface paths {
     patch?: never
     trace?: never
   }
+  '/bulk/transfers': {
+    parameters: {
+      query?: never
+      header?: never
+      path?: never
+      cookie?: never
+    }
+    get?: never
+    /**
+     * @description Requires one of the following roles:
+     *     * ROLE_TRANSFERS__TRANSFER_SCHEDULER_UI
+     */
+    put: operations['bulkTransfers']
+    post?: never
+    delete?: never
+    options?: never
+    head?: never
+    patch?: never
+    trace?: never
+  }
   '/transfers/{personIdentifier}': {
     parameters: {
       query?: never
@@ -364,11 +384,11 @@ export interface components {
       type: 'MakeUnscheduled'
     } & Omit<components['schemas']['TransferAction'], 'type'>
     MovementRequest: {
+      destinationCode: string
+      logisticsCode: string
+      reasonCode: string
       /** Format: date-time */
       occurredAt: string
-      destinationCode: string
-      reasonCode: string
-      logisticsCode: string
       comments?: string | null
     }
     PlanTransfer: {
@@ -545,23 +565,24 @@ export interface components {
       transferIds: string[]
       unscheduledMovementIds: string[]
     }
-    CreatePlanRequest: {
-      /** Format: date */
-      requestedOn: string
-      priorityCode: string
-      comments?: string | null
-    }
-    CreateScheduleRequest: {
+    BulkTransfer: {
+      personIdentifier: string
+      /** @enum {string} */
+      statusCode: 'PLANNING' | 'READY_TO_SCHEDULE' | 'SCHEDULED' | 'CANCELLED' | 'EXPIRED' | 'IN_TRANSIT' | 'COMPLETED'
+      destinationCode: string
+      logisticsCode: string
+      reasonCode: string
       /** Format: date-time */
       start: string
       comments?: string | null
+      /** Format: uuid */
+      id: string
     }
-    CreateTransferRequest: {
-      reasonCode: string
-      destinationCode?: string | null
-      logisticsCode?: string | null
-      plan?: components['schemas']['CreatePlanRequest'] | null
-      schedule?: components['schemas']['CreateScheduleRequest'] | null
+    BulkTransfersRequest: {
+      transfers: components['schemas']['BulkTransfer'][]
+    }
+    BulkTransfersResponse: {
+      transfers: components['schemas']['Transfer'][]
     }
     CodedDescription: {
       code: string
@@ -609,6 +630,24 @@ export interface components {
       movement?: components['schemas']['Movement'] | null
       /** @enum {string} */
       stage: 'PLANNING' | 'SCHEDULED' | 'UNSCHEDULED'
+    }
+    CreatePlanRequest: {
+      /** Format: date */
+      requestedOn: string
+      priorityCode: string
+      comments?: string | null
+    }
+    CreateScheduleRequest: {
+      /** Format: date-time */
+      start: string
+      comments?: string | null
+    }
+    CreateTransferRequest: {
+      reasonCode: string
+      destinationCode?: string | null
+      logisticsCode?: string | null
+      plan?: components['schemas']['CreatePlanRequest'] | null
+      schedule?: components['schemas']['CreateScheduleRequest'] | null
     }
     PlanningSearchRequest: Omit<
       WithRequired<components['schemas']['PrisonTransferSearchRequest'], 'page' | 'size' | 'sort' | 'stage'>,
@@ -926,6 +965,33 @@ export interface operations {
           [name: string]: unknown
         }
         content?: never
+      }
+    }
+  }
+  bulkTransfers: {
+    parameters: {
+      query?: never
+      header?: {
+        /** @description Relevant caseload id for the client identity in context e.g. the active caseload id of the logged in user. */
+        CaseloadId?: string
+      }
+      path?: never
+      cookie?: never
+    }
+    requestBody: {
+      content: {
+        'application/json': components['schemas']['BulkTransfersRequest']
+      }
+    }
+    responses: {
+      /** @description OK */
+      200: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          '*/*': components['schemas']['BulkTransfersResponse']
+        }
       }
     }
   }

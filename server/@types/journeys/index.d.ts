@@ -21,6 +21,7 @@ export type JourneyData = {
   planTransfer?: PlanTransferJourney
   updateTransfer?: UpdateTransferJourney
   moveTransferToPlanning?: MoveTransferToPlanningJourney
+  bulkScheduleTransfer?: BulkScheduleTransferJourney
 }
 
 type CodedDescription = {
@@ -59,6 +60,22 @@ type PlanTransferJourney = {
   logistics: CodedDescription
   comments: string | null
   result: components['schemas']['Transfer']
+}>
+
+type TransferDetails = Partial<{
+  startDate: string
+  startTime: string
+  destination: CodedDescription
+  reason: CodedDescription
+  logistics: CodedDescription
+  comments: string | null
+}>
+
+type BulkScheduleTransferJourney = Partial<{
+  searchTerm: string
+  transfers: ({ prisoner: PrisonerDetails } & TransferDetails)[]
+  lastEnteredTransfer: TransferDetails
+  result: components['schemas']['BulkTransfersResponse']
 }>
 
 type UpdateTransferJourney = {

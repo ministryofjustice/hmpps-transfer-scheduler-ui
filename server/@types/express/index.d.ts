@@ -1,4 +1,5 @@
 import { HmppsUser } from '../../interfaces/hmppsUser'
+import { Prisoner } from '../../services/apis/model/prisoner'
 import { PrisonerDetails, JourneyData } from '../journeys'
 import { components } from '../transferSchedulerApi'
 import { Feature } from '../../utils/featureFlag'
