@@ -29,7 +29,7 @@
         <h2 class="govuk-heading-m">Bulk transfer list</h2>
         {% for transfer in transfers %}
           <div class="govuk-!-static-margin-bottom-1">
-            <a class="govuk-link govuk-link--no-visited-state" href="{{ transfer.prisoner.prisonerNumber }}">{{ transfer.prisoner | lastNameCommaFirstName }}</a>
+            <a class="govuk-link govuk-link--no-visited-state{{ ' govuk-!-font-weight-bold' if transfer.prisoner.prisonerNumber === prisoner.prisonerNumber }}" href="{{ transfer.prisoner.prisonerNumber }}">{{ transfer.prisoner | lastNameCommaFirstName }}</a>
           </div>
         {% endfor %}
       </div>
