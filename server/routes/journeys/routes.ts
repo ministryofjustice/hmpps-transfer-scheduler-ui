@@ -8,6 +8,7 @@ import { ScheduleTransferRoutes } from './schedule-a-transfer/routes'
 import { UpdateTransferRoutes } from './transfers/routes'
 import { PlanTransferRoutes } from './plan-a-transfer/routes'
 import { BulkScheduleTransfersRoutes } from './bulk-schedule-transfers/routes'
+import { Feature, requireFeatureFlag } from '../../utils/featureFlag'
 
 export const JourneyRoutes = (services: Services) => {
   const router = Router({ mergeParams: true })
@@ -27,6 +28,7 @@ export const JourneyRoutes = (services: Services) => {
   router.use(
     '/bulk-schedule-transfers',
     requirePermissions(UserPermissionLevel.MANAGE),
+    requireFeatureFlag(Feature.BULK_TRANSFERS),
     BulkScheduleTransfersRoutes(services),
   )
 

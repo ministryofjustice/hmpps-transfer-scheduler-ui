@@ -71,12 +71,12 @@ export class BulkScheduleTransfersSearchPrisonersController {
   }
 
   continue = async (req: Request<unknown, unknown, SchemaType>, res: Response) => {
-    const { transfers } = req.journeyData.bulkScheduleTransfer!
-    if (req.journeyData.isCheckAnswers && !transfers!.find(transfer => !transfer.startDate)) {
+    const transferToEnter = req.journeyData.bulkScheduleTransfer!.transfers!.find(transfer => !transfer.startDate)
+    if (req.journeyData.isCheckAnswers && !transferToEnter) {
       res.redirect('../check-answers')
     } else {
       delete req.journeyData.isCheckAnswers
-      res.redirect(`../transfer-details/${transfers![0]!.prisoner.prisonerNumber}`)
+      res.redirect(`../transfer-details/${transferToEnter!.prisoner.prisonerNumber}`)
     }
   }
 }

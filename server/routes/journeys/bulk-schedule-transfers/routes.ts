@@ -6,6 +6,7 @@ import journeyStateGuard from '../../../middleware/journey/journeyStateGuard'
 import { BulkScheduleTransfersSearchPrisonersRoutes } from './search-prisoners/routes'
 import { BulkScheduleTransfersDetailsRoutes } from './transfer-details/routes'
 import { BulkScheduleTransfersCheckAnswersRoutes } from './check-answers/routes'
+import { BulkScheduleTransfersConfirmationRoutes } from './confirmation/routes'
 
 export const BulkScheduleTransfersRoutes = (services: Services) => {
   const { router, get } = BaseRouter()
@@ -31,6 +32,7 @@ export const BulkScheduleTransfersRoutes = (services: Services) => {
   router.use('/search-prisoners', BulkScheduleTransfersSearchPrisonersRoutes(services))
   router.use('/transfer-details', BulkScheduleTransfersDetailsRoutes(services))
   router.use('/check-answers', BulkScheduleTransfersCheckAnswersRoutes(services))
+  router.use('/confirmation', BulkScheduleTransfersConfirmationRoutes())
 
   return router
 }
