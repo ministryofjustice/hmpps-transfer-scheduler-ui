@@ -96,6 +96,12 @@ export default class TransferSchedulerService {
     })
   }
 
+  bulkScheduleTransfers(context: ApiRequestContext, request: components['schemas']['BulkTransfersRequest']) {
+    return this.apiClient
+      .withContext(context)
+      .put<components['schemas']['BulkTransfersResponse']>({ path: '/bulk/transfers', data: request })
+  }
+
   private handleGetError = (error: unknown) => {
     const statusCode = (error as { data?: { status?: number } })?.data?.status
     if (statusCode && statusCode >= 400 && statusCode <= 499) return null

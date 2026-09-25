@@ -1,0 +1,133 @@
+{% extends "partials/layout.njk" %}
+{% from "govuk/components/button/macro.njk" import govukButton %}
+{% from "govuk/components/summary-list/macro.njk" import govukSummaryList %}
+
+{% set pageTitle = 'Check your answers - Schedule transfers in bulk' %}
+
+{% block innerContent %}
+  <div class="govuk-width-container">
+    <span class="govuk-caption-l">Schedule transfers in bulk</span>
+    <h1 class="govuk-heading-l govuk-!-margin-bottom-7">Check your answers</h1>
+
+    <div class="govuk-grid-row">
+      <div class="govuk-grid-column-two-thirds">
+        <h2 class="govuk-heading-m">Prisoners in this bulk transfer</h2>
+      </div>
+      <div class="govuk-grid-column-one-third">
+        <a class="govuk-link govuk-link--no-visited-state float-right" href="search-prisoners">Change<span class="govuk-visually-hidden"> prisoners in this bulk transfer</span></a>
+      </div>
+    </div>
+
+    {% set prisoners = [] %}
+    {% for transfer in transfers %}
+      {% set prisoners = (prisoners.push({ key: { text: transfer.prisoner | lastNameCommaFirstName }, value: { text: '' } }), prisoners) %}
+    {% endfor %}
+
+    {{ govukSummaryList({
+      classes: "govuk-!-margin-bottom-7",
+      rows: prisoners
+    }) }}
+
+    {% for transfer in transfers %}
+      <h2 class="govuk-heading-m">{{ transfer.prisoner | lastNameCommaFirstName }}</h2>
+
+      {{ govukSummaryList({
+        classes: "govuk-!-margin-bottom-7",
+        rows: [
+          {
+            key: { text: "Date" },
+            value: { text: transfer.startDate | formatDate("d MMMM yyyy") },
+            actions: {
+            items: [
+              {
+                href: "transfer-details/" + transfer.prisoner.prisonerNumber + "#startDate",
+                text: "Change",
+                visuallyHiddenText: "date for " + transfer.prisoner | firstNameSpaceLastName,
+                classes: "govuk-link--no-visited-state"
+              }
+            ]
+          }
+          },
+          {
+            key: { text: "Time" },
+            value: { text: transfer.startTime },
+            actions: {
+            items: [
+              {
+                href: "transfer-details/" + transfer.prisoner.prisonerNumber + "#startTimeHour",
+                text: "Change",
+                visuallyHiddenText: "time for " + transfer.prisoner | firstNameSpaceLastName,
+                classes: "govuk-link--no-visited-state"
+              }
+            ]
+          }
+          },
+          {
+            key: { text: "Destination" },
+            value: { text: transfer.destination.description  },
+            actions: {
+            items: [
+              {
+                href: "transfer-details/" + transfer.prisoner.prisonerNumber + "#destination",
+                text: "Change",
+                visuallyHiddenText: "destination for " + transfer.prisoner | firstNameSpaceLastName,
+                classes: "govuk-link--no-visited-state"
+              }
+            ]
+          }
+          },
+          {
+            key: { text: "Reason" },
+            value: { text: transfer.reason.description  },
+            actions: {
+            items: [
+              {
+                href: "transfer-details/" + transfer.prisoner.prisonerNumber + "#reason",
+                text: "Change",
+                visuallyHiddenText: "reason for " + transfer.prisoner | firstNameSpaceLastName,
+                classes: "govuk-link--no-visited-state"
+              }
+            ]
+          }
+          },
+          {
+            key: { text: "Escort details" },
+            value: { text: transfer.logistics.description  },
+            actions: {
+            items: [
+              {
+                href: "transfer-details/" + transfer.prisoner.prisonerNumber + "#logistics",
+                text: "Change",
+                visuallyHiddenText: "escort details for " + transfer.prisoner | firstNameSpaceLastName,
+                classes: "govuk-link--no-visited-state"
+              }
+            ]
+          }
+          },
+          {
+            key: { text: "Comments" },
+            value: { text: (transfer.comments or 'Not provided') | escape | nl2br },
+            actions: {
+            items: [
+              {
+                href: "transfer-details/" + transfer.prisoner.prisonerNumber + "#comments",
+                text: "Change",
+                visuallyHiddenText: "comments for " + transfer.prisoner | firstNameSpaceLastName,
+                classes: "govuk-link--no-visited-state"
+              }
+            ]
+          }
+          }
+        ]
+      }) }}
+    {% endfor %}
+
+    <form method="post">
+      <input type="hidden" name="_csrf" value="{{ csrfToken }}" />
+      {{ govukButton({
+        text: "Confirm and save",
+        preventDoubleClick: true
+      }) }}
+    </form>
+  </div>
+{% endblock %}

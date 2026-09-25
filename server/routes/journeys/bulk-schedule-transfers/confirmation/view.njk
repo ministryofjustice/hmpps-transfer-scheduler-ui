@@ -1,0 +1,67 @@
+{% extends "partials/layout.njk" %}
+{% from "govuk/components/panel/macro.njk" import govukPanel %}
+{% from "govuk/components/summary-list/macro.njk" import govukSummaryList %}
+
+{% set pageTitle = 'Scheduled transfer list created' %}
+
+{% block innerContent %}
+  <div class="govuk-width-container">
+    {{ govukPanel({
+      titleText: "Scheduled transfer list created",
+      text: "",
+      classes: "govuk-!-margin-bottom-7"
+    }) }}
+
+    {% for transfer in result.transfers %}
+      <h2 class="govuk-heading-m">{{ transfer.person | lastNameCommaFirstName }}</h2>
+
+      {{ govukSummaryList({
+        classes: "govuk-!-margin-bottom-7",
+        rows: [
+          {
+            key: { text: "Date" },
+            value: { text: transfer.schedule.start | formatDate("d MMMM yyyy") }
+          },
+          {
+            key: { text: "Time" },
+            value: { text: transfer.schedule.start | formatDate("HH:mm") }
+          },
+          {
+            key: { text: "Destination" },
+            value: { text: transfer.destination.name  }
+          },
+          {
+            key: { text: "Reason" },
+            value: { text: transfer.reason.description  }
+          },
+          {
+            key: { text: "Escort details" },
+            value: { text: transfer.logistics.description  }
+          },
+          {
+            key: { text: "Comments" },
+            value: { text: (transfer.schedule.comments or 'Not provided') | escape | nl2br }
+          }
+        ]
+      }) }}
+    {% endfor %}
+
+    <h2 class="govuk-heading-m">What you can do next</h2>
+
+    <p class="govuk-body">
+      <a class="govuk-link govuk-link--no-visited-state" href="/bulk-schedule-transfers">Create another list of scheduled transfers</a>
+    </p>
+
+    <p class="govuk-body">
+      <a class="govuk-link govuk-link--no-visited-state" href="/scheduled-transfers">View and manage scheduled transfers</a>
+    </p>
+
+    <p class="govuk-body">
+      <a class="govuk-link govuk-link--no-visited-state" href="/planned-transfers">View and manage planned transfers</a>
+    </p>
+
+    <p class="govuk-body">
+      <a class="govuk-link govuk-link--no-visited-state" href="/">Return to Transfers homepage</a>
+    </p>
+  </div>
+{% endblock %}
