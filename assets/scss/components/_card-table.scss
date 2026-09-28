@@ -1,3 +1,19 @@
+.card-table-row-container {
+  display: flex;
+}
+
+.card-table-row-checkbox {
+  width: 50px;
+}
+
+.card-table-row-checkbox .govuk-checkboxes {
+  margin-top: -10px;
+}
+
+.card-table-row-width-90 {
+  width: 90%;
+}
+
 .card-table-row {
   margin-top: 15px;
 }

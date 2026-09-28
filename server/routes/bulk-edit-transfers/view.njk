@@ -1,10 +1,7 @@
 {% extends "partials/layout.njk" %}
 {% from "govuk/components/button/macro.njk" import govukButton %}
-{% from "govuk/components/input/macro.njk" import govukInput %}
 {% from "govuk/components/table/macro.njk" import govukTable %}
 {% from "govuk/components/select/macro.njk" import govukSelect %}
-{% from "govuk/components/checkboxes/macro.njk" import govukCheckboxes %}
-{% from "govuk/components/details/macro.njk" import govukDetails %}
 {% from "moj/components/date-picker/macro.njk" import mojDatePicker %}
 {% from "partials/hiddenInputs/macro.njk" import hiddenInputs %}
 {% from "partials/simplePagination/macro.njk" import simplePagination %}
@@ -13,7 +10,7 @@
 
 {% set fullScreen = true %}
 {% set fullWidth = true %}
-{% set pageTitle = 'Search for a prisoner - Manage scheduled transfers' %}
+{% set pageTitle = 'Create list of scheduled transfers - Edit scheduled transfers in bulk' %}
 
 {% if not hasValidationError %}
   {% set searchResultCount = paginationParams.totalRows %}
@@ -29,37 +26,14 @@
   <div class="govuk-width-container">
     <div class="govuk-grid-row">
       <div class="govuk-grid-column-two-thirds">
-        <span class="govuk-caption-l">Manage scheduled transfers</span>
-        <label for="searchTerm"><h1 class="govuk-heading-l">Search for a prisoner</h1></label>
+        <span class="govuk-caption-l">Edit scheduled transfers in bulk</span>
+        <label for="searchTerm"><h1 class="govuk-heading-l">Create list of scheduled transfers</h1></label>
       </div>
     </div>
   </div>
 
-  <div class="block-background govuk-!-padding-top-6 govuk-!-padding-bottom-1 govuk-!-margin-bottom-7">
-    <div class="govuk-width-container">
-      <search class="moj-search govuk-!-width-two-thirds">
-        <form method="GET">
-          {{ hiddenInputs(query | getQueryEntries(['start','end','destination','reason', 'logistics','status','history'])) }}
-          <div class="search-wrapper moj-search__input-wrapper">
-            {{ govukInput({
-              name: 'searchTerm',
-              classes: "moj-search__input",
-              hint: {
-                text: "Enter prisoner name or prison number."
-              },
-              value: searchTerm,
-              errorMessage: validationErrors | findError('searchTerm')
-            }) }}
-
-            {{ govukButton({
-              classes: "search-button",
-              text: "Search",
-              preventDoubleClick: true
-            }) }}
-          </div>
-        </form>
-      </search>
-    </div>
+  <div class="govuk-width-container">
+    <p class="govuk-body">Use the filters to create a list of scheduled transfers you want to edit.</p>
   </div>
 
   <div class="govuk-width-container">
@@ -71,7 +45,7 @@
             <h2 class="hmpps-side-filter__header">Filter</h2>
 
             {{ govukButton({
-              text: "Apply",
+              text: "Apply filters",
               preventDoubleClick: true
             }) }}
 
@@ -126,41 +100,6 @@
                 items: logisticsOptions | fromCodedDescription | addSelectValue('') | setSelectedValue(logistics),
                 errorMessage: validationErrors | findError('logistics')
               }) }}
-
-              {{ govukCheckboxes({
-                id: "status",
-                name: "status",
-                fieldset: {
-                  legend: {
-                    text: "Status",
-                    classes: "govuk-fieldset__legend--m"
-                  }
-                },
-                classes: "govuk-checkboxes--small",
-                errorMessage: validationErrors | findError('status'),
-                items: [
-                  {
-                    value: 'SCHEDULED',
-                    text: "Scheduled"
-                  },
-                  {
-                    value: 'IN_TRANSIT',
-                    text: "In transit"
-                  },
-                  {
-                    value: 'COMPLETED',
-                    text: "Completed"
-                  },
-                  {
-                    value: 'EXPIRED',
-                    text: "Expired"
-                  },
-                  {
-                    value: 'CANCELLED',
-                    text: "Cancelled"
-                  }
-                ] | setCheckedValue(status or '')
-              }) }}
             </div>
           </form>
         </section>
@@ -172,10 +111,28 @@
         {% elseif not results.length %}
           <p class="govuk-!-margin-bottom-6"><strong>No scheduled transfers match your search.</strong></p>
         {% else %}
+          <div class="moj-interruption-card govuk-!-padding-4">
+            <div class="moj-interruption-card__content">
+              <h1 class="moj-interruption-card__heading govuk-!-font-size-27">Create list based on your filters</h1>
+              <div class="moj-interruption-card__body">
+                Selected filters: {{ selectedFilters }}
+              </div>
+              <form action="bulk-edit-transfers/start" method="POST">
+                <input type="hidden" name="_csrf" value="{{ csrfToken }}" />
+                {{ hiddenInputs(query | getQueryEntries(['start','end','destination','reason', 'logistics'])) }}
+                {{ govukButton({
+                  classes: "govuk-button--inverse govuk-!-static-margin-bottom-0",
+                  text: "Create list",
+                  preventDoubleClick: true
+                }) }}
+              </form>
+            </div>
+          </div>
+
           <div class="govuk-!-display-none-print govuk-!-margin-bottom-5">
             <div>
               <form id="sortForm">
-                {{ hiddenInputs(query | getQueryEntries(['searchTerm','start','end','destination','reason', 'logistics', 'status','history'])) }}
+                {{ hiddenInputs(query | getQueryEntries(['start','end','destination','reason', 'logistics', 'history'])) }}
                 <label class="govuk-label" for="sort">Sort by</label>
                 <select class="govuk-select hmpps-sort-selector__select" id="sort" name="sort" value="{{ sort or 'start,asc' }}">
                   <option value="start,asc" {{ 'selected' if sort === 'start,asc' else '' }}>Start date (oldest)</option>
@@ -190,14 +147,12 @@
 
           {{ simplePagination(paginationParams) }}
 
-          {% set viewLabel = 'View and manage' if user | hasPermission('MANAGE') else 'View details'  %}
 
           {% set rows = [] %}
           {% for result in results %}
             {% set rows = (rows.push(
               {
                 title: { text: result.person | firstNameSpaceLastName + ' - ' + result.person.identifier },
-                action: { text: viewLabel, href: '/transfers/' + result.id },
                 data: [
                   result.destination.name,
                   result.schedule.start | formatDate("d MMMM yyyy"),

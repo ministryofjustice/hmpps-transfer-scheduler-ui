@@ -1,0 +1,65 @@
+{% extends "partials/layout.njk" %}
+{% from "govuk/components/panel/macro.njk" import govukPanel %}
+{% from "govuk/components/summary-list/macro.njk" import govukSummaryList %}
+
+{% set pageTitle = 'Scheduled transfer list updated' %}
+
+{% block innerContent %}
+  <div class="govuk-width-container">
+    {{ govukPanel({
+      titleText: "Scheduled transfer list updated",
+      text: "",
+      classes: "govuk-!-margin-bottom-7"
+    }) }}
+
+    <h2 class="govuk-heading-m">Bulk transfer list details</h2>
+
+    {{ govukSummaryList({
+      classes: "govuk-!-margin-bottom-7",
+      rows: [
+        {
+          key: { text: "Date" },
+          value: { text: startDate | formatDate("d MMMM yyyy") }
+        },
+        {
+          key: { text: "Time" },
+          value: { text: startTime }
+        },
+        {
+          key: { text: "Destination" },
+          value: { text: destination.description  }
+        }
+      ]
+    }) }}
+
+    <h2 class="govuk-heading-m">Prisoners in this bulk transfer</h2>
+
+    {% set prisoners = [] %}
+    {% for transfer in result.transfers %}
+      {% set prisoners = (prisoners.push({ key: { text: transfer.person | lastNameCommaFirstName }, value: { text: '' } }), prisoners) %}
+    {% endfor %}
+
+    {{ govukSummaryList({
+      classes: "govuk-!-margin-bottom-7",
+      rows: prisoners
+    }) }}
+
+    <h2 class="govuk-heading-m">What you can do next</h2>
+
+    <p class="govuk-body">
+      <a class="govuk-link govuk-link--no-visited-state" href="/bulk-edit-transfers">Create and edit another list of scheduled transfers</a>
+    </p>
+
+    <p class="govuk-body">
+      <a class="govuk-link govuk-link--no-visited-state" href="/scheduled-transfers">View and manage scheduled transfers</a>
+    </p>
+
+    <p class="govuk-body">
+      <a class="govuk-link govuk-link--no-visited-state" href="/planned-transfers">View and manage planned transfers</a>
+    </p>
+
+    <p class="govuk-body">
+      <a class="govuk-link govuk-link--no-visited-state" href="/">Return to Transfers homepage</a>
+    </p>
+  </div>
+{% endblock %}

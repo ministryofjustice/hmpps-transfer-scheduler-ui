@@ -1,0 +1,151 @@
+{% extends "partials/layout.njk" %}
+{% from "govuk/components/button/macro.njk" import govukButton %}
+{% from "govuk/components/select/macro.njk" import govukSelect %}
+{% from "moj/components/date-picker/macro.njk" import mojDatePicker %}
+{% from "partials/validatedTimeInput/macro.njk" import validatedTimeInput %}
+{% from "partials/cardTable/macro.njk" import cardTable %}
+{% from "partials/statusTag/macro.njk" import statusTag %}
+
+{% set pageTitle = 'Edit list of scheduled transfers - Edit scheduled transfers in bulk' %}
+{% set fullWidth = true %}
+
+{% block meta %}
+  <meta name="autocompleteElements" content="destination"/>
+{% endblock %}
+
+{% block innerContent %}
+  <div class="govuk-width-container">
+    <div class="govuk-grid-row">
+      <div class="govuk-grid-column-two-thirds">
+        <span class="govuk-caption-l">Edit scheduled transfers in bulk</span>
+        <h1 class="govuk-heading-l govuk-!-margin-bottom-6">Edit list of scheduled transfers</h1>
+        <p>Edit date, time, or prison destination, or add another prisoner to this list of scheduled transfers. You can update the whole list at once or select individual transfers to change.</p>
+      </div>
+    </div>
+
+    <form method="POST">
+      <input type="hidden" name="_csrf" value="{{ csrfToken }}" />
+
+      <div class="govuk-!-width-full">
+        <div class="search-form govuk-!-padding-6">
+          <div class="horizontal-form">
+            {{ mojDatePicker({
+              id: "startDate",
+              name: "startDate",
+              label: {
+                text: 'Date',
+                classes: "govuk-fieldset__legend--s"
+              },
+              hint: { text: 'For example, 17/5/2024.', classes: 'govuk-!-margin-bottom-6' },
+              value: startDate,
+              errorMessage: validationErrors | findError('startDate'),
+              classes: 'hmpps-datepicker--fixed-width'
+            }) }}
+
+            {{ validatedTimeInput({
+              id: "startTime",
+              name: "startTime",
+              classes: 'govuk-!-static-margin-bottom-6',
+              fieldset: {
+                legend: {
+                  text: 'Time',
+                  classes: "govuk-fieldset__legend--s"
+                }
+              },
+              hint: {
+                text: 'For example, 09 08 or 17 32.'
+              },
+              validationErrors: validationErrors,
+              hour: startTimeHour,
+              minute: startTimeMinute
+            }) }}
+
+            <div class="govuk-!-width-one-half">
+            {{ govukSelect({
+              id: "destination",
+              name: "destination",
+              label: { text: "To prison destination", classes: "govuk-label--s", isPageHeading: false },
+              hint: { text: "For example, HMP Bristol", classes: 'govuk-!-margin-bottom-6' },
+              items: prisons | fromCodedDescription | addSelectValue('') | setSelectedValue(destination),
+              errorMessage: validationErrors | findError('destination')
+            }) }}
+            </div>
+          </div>
+          <div class="govuk-button-group govuk-!-margin-top-5 govuk-!-margin-bottom-0">
+            {{ govukButton({
+              classes: 'govuk-button--inverse govuk-!-margin-bottom-1',
+              text: "Add another prisoner",
+              href: "search-prisoner",
+              preventDoubleClick: true
+            }) }}
+
+            {{ govukButton({
+              classes: 'govuk-!-margin-bottom-1',
+              text: "Continue",
+              preventDoubleClick: true
+            }) }}
+          </div>
+        </div>
+      </div>
+
+      <div class="govuk-!-width-three-quarters govuk-!-margin-top-5">
+        <p><a id="selectAll" class="govuk-link govuk-link--no-visited-state govuk-!-font-weight-bold govuk-!-display-none" href="#">Select all</a></p>
+        {% set rows = [] %}
+        {% for result in transfers %}
+          {% set rows = (rows.push(
+            {
+              title: { text: result.prisoner | firstNameSpaceLastName + ' - ' + result.prisoner.identifier },
+              checkboxValue: result.id,
+              checkboxLabel: result.prisoner | firstNameSpaceLastName,
+              action: { text: 'Update manually', href: 'transfer-details/' + result.id },
+              data: [
+              result.destination.description,
+              result.startDate | formatFromInputDate("d MMMM yyyy"),
+              result.startTime,
+              result.reason.description,
+              result.logistics.description,
+              { html: statusTag({ status: { code: 'SCHEDULED', description: 'Scheduled' } }, 'float-right shift-right-20') }
+            ]
+            }
+          ), rows) %}
+        {% endfor %}
+
+        {{ cardTable({
+          checkboxName: 'selectedTransfers',
+          selectedValues: selectedTransfers,
+          columns: [
+            [
+              { text: 'Destination', width: 35 },
+              { text: 'Date', width: 30 },
+              { text: 'Time', width: 35 }
+            ],
+            [
+              { text: 'Reason', width: 35 },
+              { text: 'Escort details', width: 45 },
+              { text: '', width: 20 }
+            ]
+          ],
+          rows: rows
+        }) }}
+      </div>
+    </form>
+  </div>
+{% endblock %}
+
+{% block pageScripts %}
+  <script nonce="{{ cspNonce }}">
+    window.onload = function () {
+      const selectAll = document.getElementById('selectAll')
+      selectAll.classList.remove('govuk-!-display-none')
+
+      const checkBoxes = Array.from(document.querySelectorAll('input[name=selectedTransfers]'))
+
+      selectAll.addEventListener('click', e => {
+        e.preventDefault()
+        for (const checkbox of checkBoxes) {
+          checkbox.checked = true
+        }
+      })
+    }
+  </script>
+{% endblock %}

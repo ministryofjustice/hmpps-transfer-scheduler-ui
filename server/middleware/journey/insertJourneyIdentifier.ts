@@ -5,7 +5,7 @@ export default function insertJourneyIdentifier() {
   return (req: Request, res: Response, next: NextFunction): void => {
     const uuid = req.url.split('/')[1]
     if (!validate(uuid)) {
-      return res.redirect(`${req.baseUrl}/${uuidV4()}${req.url}`)
+      return res.redirect(req.method === 'POST' ? 307 : 302, `${req.baseUrl}/${uuidV4()}${req.url}`)
     }
     return next()
   }
