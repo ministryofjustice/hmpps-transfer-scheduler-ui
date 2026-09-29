@@ -21,7 +21,7 @@ export const BulkEditTransfersRoutes = (services: Services) => {
 
   post('/start', validate(schema), controller.POST)
 
-  get('*any', Page.BULK_SCHEDULE_TRANSFERS, preventNavigationToExpiredJourneys(), journeyStateGuard({}))
+  get('*any', Page.BULK_EDIT_TRANSFERS, preventNavigationToExpiredJourneys(), journeyStateGuard({}))
 
   router.use('/edit-list', BulkEditTransfersEditListRoutes(services))
   router.use('/check-answers', BulkEditTransfersCheckAnswersRoutes(services))
