@@ -18,7 +18,7 @@ import config from '../config'
 import logger from '../../logger'
 import applicationInfo from '../applicationInfo'
 import { historyExtension } from '../middleware/history/historyExtension'
-import { inputDate, formatDate } from './dateTimeUtils'
+import { inputDate, formatDate, formatFromInputDate } from './dateTimeUtils'
 import {
   firstNameSpaceLastName,
   formatRefDataName,
@@ -101,6 +101,7 @@ export default function nunjucksSetup(app: express.Express): void {
   njkEnv.addFilter('getQueryEntries', getQueryEntries)
 
   njkEnv.addFilter('formatDate', formatDate)
+  njkEnv.addFilter('formatFromInputDate', formatFromInputDate)
 
   njkEnv.addFilter('fromCodedDescription', fromCodedDescription)
   njkEnv.addFilter('addSelectValue', addSelectValue)

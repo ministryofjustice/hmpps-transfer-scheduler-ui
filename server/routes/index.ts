@@ -17,6 +17,8 @@ import { BrowseScheduledTransfersRoutes } from './scheduled-transfers/routes'
 import { ManageTransferRoutes } from './transfers/routes'
 import { BrowsePlannedTransfersRoutes } from './planned-transfers/routes'
 import sanitiseUrl from '../middleware/sanitiseUrl'
+import { BulkEditTransfersSearchTransfersRoutes } from './bulk-edit-transfers/routes'
+import { Feature, requireFeatureFlag } from '../utils/featureFlag'
 
 export default function routes(services: Services): Router {
   const { router, get } = BaseRouter()
@@ -77,6 +79,12 @@ export default function routes(services: Services): Router {
     BrowsePlannedTransfersRoutes(services),
   )
   router.use('/transfers', requirePermissions(UserPermissionLevel.VIEW_ONLY), ManageTransferRoutes(services))
+  router.use(
+    '/bulk-edit-transfers',
+    requirePermissions(UserPermissionLevel.MANAGE),
+    requireFeatureFlag(Feature.BULK_TRANSFERS),
+    BulkEditTransfersSearchTransfersRoutes(services),
+  )
 
   router.use(insertJourneyIdentifier())
   router.use('/:journeyId', JourneyRoutes(services))

@@ -22,6 +22,7 @@ export type JourneyData = {
   updateTransfer?: UpdateTransferJourney
   moveTransferToPlanning?: MoveTransferToPlanningJourney
   bulkScheduleTransfer?: BulkScheduleTransferJourney
+  bulkEditTransfer?: BulkEditTransferJourney
 }
 
 type CodedDescription = {
@@ -75,6 +76,19 @@ type BulkScheduleTransferJourney = Partial<{
   searchTerm: string
   transfers: ({ prisoner: PrisonerDetails } & TransferDetails)[]
   lastEnteredTransfer: TransferDetails
+  result: components['schemas']['BulkTransfersResponse']
+}>
+
+type BulkEditTransferJourney = {
+  transfers: ({
+    id?: string
+    prisoner: { identifier: string; firstName: string; lastName: string }
+  } & TransferDetails)[]
+} & Partial<{
+  startDate: string
+  startTime: string
+  destination: CodedDescription
+  selectedTransfers: string[]
   result: components['schemas']['BulkTransfersResponse']
 }>
 
