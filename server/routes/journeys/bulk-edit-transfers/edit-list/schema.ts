@@ -36,6 +36,18 @@ export const schemaFactory = (prisonRegisterService: PrisonRegisterService) => a
     const parsedHour = startTimeHour?.length ? parseHour(startTimeHour) : undefined
     const parsedMinute = startTimeMinute?.length ? parseMinute(startTimeMinute) : undefined
 
+    if (add !== undefined) {
+      const validDateTime = parsedStartDate?.success && parsedHour?.success && parsedMinute?.success
+      return {
+        startDate: validDateTime ? parsedStartDate.data! : null,
+        startTimeHour: validDateTime ? parsedHour!.data : null,
+        startTimeMinute: validDateTime ? parsedMinute!.data : null,
+        destination,
+        selectedTransfers,
+        add,
+      }
+    }
+
     if (!startTimeHour?.length) {
       ctx.addIssue({
         code: 'custom',

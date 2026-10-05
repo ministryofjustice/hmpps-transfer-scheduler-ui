@@ -32,10 +32,11 @@ export class BulkEditTransfersEditListController {
   POST = async (req: Request<unknown, unknown, SchemaType>, res: Response) => {
     const journey = req.journeyData.bulkEditTransfer!
 
-    journey.startDate = req.body.startDate
-    journey.startTime = `${req.body.startTimeHour}:${req.body.startTimeMinute}`
-    journey.destination = req.body.destination
-    journey.selectedTransfers = req.body.selectedTransfers!
+    if (req.body.startDate) journey.startDate = req.body.startDate
+    if (req.body.startTimeHour && req.body.startTimeMinute)
+      journey.startTime = `${req.body.startTimeHour}:${req.body.startTimeMinute}`
+    if (req.body.destination) journey.destination = req.body.destination
+    if (req.body.selectedTransfers) journey.selectedTransfers = req.body.selectedTransfers!
 
     if (req.body.add !== undefined) {
       res.redirect('search-prisoner')
