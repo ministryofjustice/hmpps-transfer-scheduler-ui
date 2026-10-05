@@ -15,7 +15,7 @@ export class BulkEditTransfersEditListController {
         : []
 
     res.render('bulk-edit-transfers/edit-list/view', {
-      backUrl: '/bulk-edit-transfers',
+      backUrl: req.journeyData.isCheckAnswers ? 'check-answers' : '/bulk-edit-transfers',
       transfers,
       prisons:
         (await this.prisonRegisterService.getPrisons({ res }))?.filter(
@@ -37,6 +37,10 @@ export class BulkEditTransfersEditListController {
     journey.destination = req.body.destination
     journey.selectedTransfers = req.body.selectedTransfers!
 
-    res.redirect('check-answers')
+    if (req.body.add !== undefined) {
+      res.redirect('search-prisoner')
+    } else {
+      res.redirect('check-answers')
+    }
   }
 }

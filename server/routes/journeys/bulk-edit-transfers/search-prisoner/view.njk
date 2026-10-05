@@ -6,7 +6,7 @@
 
 {% set fullScreen = true %}
 {% set fullWidth = true %}
-{% set pageTitle = 'Search for a prisoner - Schedule transfers in bulk' %}
+{% set pageTitle = 'Search for a prisoner - Edit scheduled transfers in bulk' %}
 
 {% if searchTerm %}
   {% set searchResultCount = results.length %}
@@ -14,7 +14,7 @@
 
 {% block innerContent %}
   <div class="govuk-width-container govuk-!-static-margin-bottom-6">
-    <span class="govuk-caption-l">Schedule transfers in bulk</span>
+    <span class="govuk-caption-l">Edit scheduled transfers in bulk</span>
     <label for="searchTerm"><h1 class="govuk-heading-l">Search for a prisoner</h1></label>
   </div>
 
@@ -66,7 +66,7 @@
           },
           {
             classes: 'govuk-link govuk-link--no-visited-state',
-            html: ('<a class="govuk-link govuk-link--no-visited-state" href="search-prisoners/' + prisoner.prisonerNumber + '/remove">Remove from bulk list<span class="govuk-visually-hidden"> (' + prisoner | lastNameCommaFirstName + ')</span></a>') if transfersPrisonNumbers[prisoner.prisonerNumber] else ('<a class="govuk-link govuk-link--no-visited-state" href="search-prisoners/' + prisoner.prisonerNumber + '">Add to bulk list<span class="govuk-visually-hidden"> (' + prisoner | lastNameCommaFirstName + ')</span></a>')
+            html: '<a class="govuk-link govuk-link--no-visited-state" href="search-prisoner/' + prisoner.prisonerNumber + '">Add to list<span class="govuk-visually-hidden"> (' + prisoner | lastNameCommaFirstName + ')</span></a>'
           }
         ]), rows) %}
       {% endfor %}
@@ -90,38 +90,6 @@
         rows: rows
       }) }}
     {% endif %}
-    </div>
-    <div class="govuk-grid-column-one-third">
-      <div class="moj-interruption-card">
-        <div class="moj-interruption-card__content">
-          <h1 class="moj-interruption-card__heading govuk-!-font-size-27">Bulk transfer list</h1>
-          <div class="moj-interruption-card__body">
-            {% if transfers.length %}
-              {% for transfer in transfers %}
-                <div class="govuk-grid-row govuk-!-font-size-19 govuk-!-static-margin-bottom-1">
-                  <div class="govuk-grid-column-three-quarters">
-                    {{ transfer.prisoner | lastNameCommaFirstName }}
-                  </div>
-                  <div class="govuk-grid-column-one-quarter">
-                    <a class="govuk-link govuk-link--inverse" href="search-prisoners/{{ transfer.prisoner.prisonerNumber }}/remove">Remove</a>
-                  </div>
-                </div>
-              {% endfor %}
-            {% else %}
-              <p>Prisoners in this list will share the same transfer details.</p>
-            {% endif %}
-          </div>
-          <form method="POST" action="search-prisoners/continue">
-            <input type="hidden" name="_csrf" value="{{ csrfToken }}" />
-            {{ govukButton({
-              classes: "govuk-button--inverse govuk-!-static-margin-bottom-0",
-              text: "Continue",
-              preventDoubleClick: true,
-              disabled: not transfers.length
-            }) }}
-          </form>
-        </div>
-      </div>
     </div>
   </div>
 {% endblock %}

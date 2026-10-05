@@ -35,6 +35,7 @@ export class BulkScheduleTransfersSearchPrisonersController {
         : [],
       validationErrors: res.locals['validationErrors'] ?? getValidationErrors(req),
       transfers,
+      transfersPrisonNumbers: Object.fromEntries(transfers?.map(itm => [itm.prisoner.prisonerNumber, true]) ?? []),
     })
   }
 

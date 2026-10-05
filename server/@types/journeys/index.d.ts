@@ -89,6 +89,8 @@ type BulkEditTransferJourney = {
   startTime: string
   destination: CodedDescription
   selectedTransfers: string[]
+  searchTerm: string
+  prisonerToAdd: { identifier: string; firstName: string; lastName: string }
   result: components['schemas']['BulkTransfersResponse']
 }>
 

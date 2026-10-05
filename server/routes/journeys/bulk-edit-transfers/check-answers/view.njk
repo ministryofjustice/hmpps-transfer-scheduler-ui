@@ -67,7 +67,7 @@
             actions: {
             items: [
               {
-                href: "transfer-details/" + transfer.id + "#reason",
+                href: "transfer-details/" + transfer.prisoner.identifier + "#reason",
                 text: "Change",
                 visuallyHiddenText: "reason for " + transfer.prisoner | firstNameSpaceLastName,
                 classes: "govuk-link--no-visited-state"
@@ -81,7 +81,7 @@
             actions: {
             items: [
               {
-                href: "transfer-details/" + transfer.id + "#logistics",
+                href: "transfer-details/" + transfer.prisoner.identifier + "#logistics",
                 text: "Change",
                 visuallyHiddenText: "escort details for " + transfer.prisoner | firstNameSpaceLastName,
                 classes: "govuk-link--no-visited-state"
@@ -95,7 +95,7 @@
             actions: {
             items: [
               {
-                href: "transfer-details/" + transfer.id + "#comments",
+                href: "transfer-details/" + transfer.prisoner.identifier + "#comments",
                 text: "Change",
                 visuallyHiddenText: "comments for " + transfer.prisoner | firstNameSpaceLastName,
                 classes: "govuk-link--no-visited-state"
