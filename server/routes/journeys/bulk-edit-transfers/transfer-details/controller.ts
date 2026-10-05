@@ -28,6 +28,7 @@ export class BulkEditTransfersDetailsController {
       logistics: res.locals.formResponses?.['logistics'] ?? transfer?.logistics?.code,
       logisticsOptions: await this.transferSchedulerService.getReferenceData({ res }, 'transfer-logistics'),
       comments: res.locals.formResponses?.['comments'] ?? transfer?.comments,
+      prisoner: transfer?.prisoner ?? prisonerToAdd,
     })
   }
 

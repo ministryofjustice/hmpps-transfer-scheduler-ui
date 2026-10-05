@@ -29,10 +29,6 @@ export const schemaFactory = (prisonRegisterService: PrisonRegisterService) => a
       'Transfer date must be today or in the future',
     ).safeParse(startDate)
 
-    parsedStartDate.error?.issues?.forEach(issue =>
-      ctx.addIssue({ ...issue, path: ['startDate'] } as $ZodSuperRefineIssue),
-    )
-
     const parsedHour = startTimeHour?.length ? parseHour(startTimeHour) : undefined
     const parsedMinute = startTimeMinute?.length ? parseMinute(startTimeMinute) : undefined
 
@@ -47,6 +43,10 @@ export const schemaFactory = (prisonRegisterService: PrisonRegisterService) => a
         add,
       }
     }
+
+    parsedStartDate.error?.issues?.forEach(issue =>
+      ctx.addIssue({ ...issue, path: ['startDate'] } as $ZodSuperRefineIssue),
+    )
 
     if (!startTimeHour?.length) {
       ctx.addIssue({
