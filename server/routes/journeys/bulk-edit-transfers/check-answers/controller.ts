@@ -1,4 +1,5 @@
 import { NextFunction, Request, Response } from 'express'
+import { v7 } from 'uuid'
 import TransferSchedulerService from '../../../../services/apis/transferSchedulerService'
 import { components } from '../../../../@types/transferSchedulerApi'
 
@@ -7,6 +8,7 @@ export class BulkEditTransfersCheckAnswersController {
 
   GET = async (req: Request, res: Response) => {
     req.journeyData.isCheckAnswers = true
+    delete req.journeyData.bulkEditTransfer!.prisonerToAdd
 
     const { startDate, startTime, destination, transfers, selectedTransfers } = req.journeyData.bulkEditTransfer!
 
@@ -15,7 +17,7 @@ export class BulkEditTransfersCheckAnswersController {
       startDate,
       startTime,
       destination,
-      transfers: transfers.filter(({ id }) => selectedTransfers!.includes(id ?? '')),
+      transfers: transfers.filter(({ prisoner }) => selectedTransfers!.includes(prisoner.identifier ?? '')),
     })
   }
 
@@ -30,10 +32,10 @@ export class BulkEditTransfersCheckAnswersController {
 
       const request: components['schemas']['BulkTransfersRequest'] = {
         transfers: transfers
-          .filter(({ id }) => selectedTransfers!.includes(id ?? ''))
+          .filter(({ prisoner }) => selectedTransfers!.includes(prisoner.identifier ?? ''))
           .map(itm => {
             const transfer: components['schemas']['BulkTransfer'] = {
-              id: itm.id!,
+              id: itm.id ?? v7(),
               personIdentifier: itm.prisoner.identifier,
               start: `${startDate}T${startTime}:00`,
               destinationCode: destination!.code,

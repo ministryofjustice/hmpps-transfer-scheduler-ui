@@ -75,7 +75,7 @@
             {{ govukButton({
               classes: 'govuk-button--inverse govuk-!-margin-bottom-1',
               text: "Add another prisoner",
-              href: "search-prisoner",
+              name: 'add',
               preventDoubleClick: true
             }) }}
 
@@ -95,9 +95,9 @@
           {% set rows = (rows.push(
             {
               title: { text: result.prisoner | firstNameSpaceLastName + ' - ' + result.prisoner.identifier },
-              checkboxValue: result.id,
+              checkboxValue: result.prisoner.identifier,
               checkboxLabel: result.prisoner | firstNameSpaceLastName,
-              action: { text: 'Update manually', href: 'transfer-details/' + result.id },
+              action: { text: 'Update manually', href: 'transfer-details/' + result.prisoner.identifier },
               data: [
               result.destination.description,
               result.startDate | formatFromInputDate("d MMMM yyyy"),

@@ -17,7 +17,7 @@ export class BulkScheduleTransfersDetailsController {
       ({ prisoner }) => prisoner.prisonerNumber === req.middleware!.prisonerData!.prisonerNumber,
     )
 
-    if (!transfers) {
+    if (!transfer) {
       return res.notFound()
     }
 
