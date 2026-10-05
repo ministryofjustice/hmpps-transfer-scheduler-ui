@@ -1,0 +1,60 @@
+{% extends "partials/layout.njk" %}
+{% from "govuk/components/button/macro.njk" import govukButton %}
+{% from "partials/miniProfile/macro.njk" import miniProfile %}
+{% from "moj/components/date-picker/macro.njk" import mojDatePicker %}
+{% from "partials/validatedTimeInput/macro.njk" import validatedTimeInput %}
+{% from "govuk/components/select/macro.njk" import govukSelect %}
+{% from "govuk/components/character-count/macro.njk" import govukCharacterCount %}
+
+{% set pageTitle = 'Enter transfer details- Edit scheduled transfers in bulk' %}
+
+{% block meta %}
+  <meta name="autocompleteElements" content="reason"/>
+  <meta name="autocompleteElements" content="logistics"/>
+{% endblock %}
+
+{% block innerContent %}
+  <div class="govuk-width-container">
+    <span class="govuk-caption-l">Edit scheduled transfers in bulk</span>
+    <h1 class="govuk-heading-l govuk-!-margin-bottom-6">Enter the details for {{ prisoner | firstNameSpaceLastName}}</h1>
+
+    <form method="post" class="govuk-!-width-three-quarters">
+      <input type="hidden" name="_csrf" value="{{ csrfToken }}" />
+
+      {{ govukSelect({
+        id: "reason",
+        name: "reason",
+        label: { text: "Enter a reason for this transfer", classes: "govuk-label--m", isPageHeading: false },
+        hint: { text: "Start typing a reason" },
+        items: reasons | fromCodedDescription | addSelectValue('') | setSelectedValue(reason),
+        errorMessage: validationErrors | findError('reason')
+      }) }}
+
+      {{ govukSelect({
+        id: "logistics",
+        name: "logistics",
+        label: { text: "Which escort type is being used for this transfer?", classes: "govuk-label--m", isPageHeading: false },
+        hint: { text: 'Start typing the escorted transfer type' },
+        items: logisticsOptions | fromCodedDescription | addSelectValue('') | setSelectedValue(logistics),
+        errorMessage: validationErrors | findError('logistics')
+      }) }}
+
+      {{ govukCharacterCount({
+        name: "comments",
+        errorMessage: validationErrors | findError('comments'),
+        maxlength: 225,
+        label: {
+          text: "Add any comments for this transfer (optional)",
+          classes: "govuk-label--m",
+          isPageHeading: false
+        },
+        value: comments
+      }) }}
+
+      {{ govukButton({
+        text: "Continue",
+        preventDoubleClick: true
+      }) }}
+    </form>
+  </div>
+{% endblock %}

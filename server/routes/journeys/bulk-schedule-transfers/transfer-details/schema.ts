@@ -29,12 +29,17 @@ export const schemaFactory =
       reason: z
         .string()
         .optional()
-        .transform(validateAndTransformOptionalCodedDescription(reasons, 'Enter and select a reason'))
+        .transform(validateAndTransformOptionalCodedDescription(reasons, 'Enter a reason for this transfer'))
         .optional(),
       logistics: z
         .string()
         .optional()
-        .transform(validateAndTransformOptionalCodedDescription(logisticsOptions, 'Enter and select an escort type'))
+        .transform(
+          validateAndTransformOptionalCodedDescription(
+            logisticsOptions,
+            'Enter the escort type being used for this transfer',
+          ),
+        )
         .optional(),
       comments: optionalString(),
     }).transform(({ startDate, startTimeHour, startTimeMinute, destination, reason, logistics, comments }, ctx) => {

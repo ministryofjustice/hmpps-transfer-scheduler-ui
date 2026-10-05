@@ -143,8 +143,11 @@ export class BulkEditTransfersSearchTransfersController {
       return res.redirect('/bulk-edit-transfers')
     }
 
+    const prisonNumbers = Array.from(new Set(results.map(itm => itm.person.identifier)))
+
     req.journeyData.bulkEditTransfer = {
-      transfers: results.map(itm => {
+      transfers: prisonNumbers.map(prisonNumber => {
+        const itm = results.find(({ person }) => person.identifier === prisonNumber)!
         return {
           id: itm.id,
           prisoner: itm.person,

@@ -21,7 +21,8 @@ export const schemaFactory = (prisonRegisterService: PrisonRegisterService) => a
       .transform(validateAndTransformOptionalCodedDescription(prisons, 'Enter and select a prison'))
       .optional(),
     selectedTransfers: z.union([z.string().transform(val => [val]), z.array(z.string())]).optional(),
-  }).transform(({ startDate, startTimeHour, startTimeMinute, destination, selectedTransfers }, ctx) => {
+    add: z.string().optional(),
+  }).transform(({ startDate, startTimeHour, startTimeMinute, destination, selectedTransfers, add }, ctx) => {
     const parsedStartDate = validateTransformDate(
       checkTodayOrFuture,
       'transfer date',
@@ -97,6 +98,7 @@ export const schemaFactory = (prisonRegisterService: PrisonRegisterService) => a
       startTimeMinute: parsedMinute!.data,
       destination: destination!,
       selectedTransfers,
+      add,
     }
   })
 }
