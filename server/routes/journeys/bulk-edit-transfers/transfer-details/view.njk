@@ -9,6 +9,7 @@
 {% set pageTitle = 'Enter transfer details- Edit scheduled transfers in bulk' %}
 
 {% block meta %}
+  <meta name="autocompleteElements" content="destination"/>
   <meta name="autocompleteElements" content="reason"/>
   <meta name="autocompleteElements" content="logistics"/>
 {% endblock %}
@@ -20,6 +21,48 @@
 
     <form method="post" class="govuk-!-width-three-quarters">
       <input type="hidden" name="_csrf" value="{{ csrfToken }}" />
+      {{ mojDatePicker({
+        id: "startDate",
+        name: "startDate",
+        label: {
+          text: 'What date will ' + prisoner | firstNameSpaceLastName | possessiveComma + ' transfer be?',
+          classes: "govuk-fieldset__legend--m"
+        },
+        hint: {
+          text: 'For example, 17/5/2024.'
+        },
+        value: startDate,
+        errorMessage: validationErrors | findError('startDate'),
+        classes: 'hmpps-datepicker--fixed-width govuk-body',
+        minDate: inputDate()
+      }) }}
+
+      {{ validatedTimeInput({
+        id: "startTime",
+        name: "startTime",
+        classes: 'govuk-!-static-margin-bottom-6',
+        fieldset: {
+          legend: {
+            text: 'What time will ' + prisoner | firstNameSpaceLastName | possessiveComma + ' transfer be?',
+            classes: "govuk-fieldset__legend--m"
+          }
+        },
+        hint: {
+          text: 'Use the 24-hour clock. For example, 09 08 or 17 32.'
+        },
+        validationErrors: validationErrors,
+        hour: startTimeHour,
+        minute: startTimeMinute
+      }) }}
+
+      {{ govukSelect({
+        id: "destination",
+        name: "destination",
+        label: { text: "Enter the prison this prisoner is being transferred to", classes: "govuk-label--m", isPageHeading: false },
+        hint: { text: "Start typing a prison name" },
+        items: prisons | fromCodedDescription | addSelectValue('') | setSelectedValue(destination),
+        errorMessage: validationErrors | findError('destination')
+      }) }}
 
       {{ govukSelect({
         id: "reason",

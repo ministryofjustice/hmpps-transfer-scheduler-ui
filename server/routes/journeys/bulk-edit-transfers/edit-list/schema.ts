@@ -7,112 +7,161 @@ import { createSchema } from '../../../../middleware/validation/validationMiddle
 import PrisonRegisterService from '../../../../services/apis/prisonRegisterService'
 import { checkTodayOrFuture, validateTransformDate } from '../../../../utils/validations/validateDatePicker'
 import { parseHour, parseMinute } from '../../../../utils/validations/validateTime'
+import TransferSchedulerService from '../../../../services/apis/transferSchedulerService'
+import { optionalString } from '../../../../utils/validations/validateString'
 
-export const schemaFactory = (prisonRegisterService: PrisonRegisterService) => async (_req: Request, res: Response) => {
-  const prisons = await prisonRegisterService.getPrisons({ res })
+export const schemaFactory =
+  (transferSchedulerService: TransferSchedulerService, prisonRegisterService: PrisonRegisterService) =>
+  async (_req: Request, res: Response) => {
+    const [prisons, reasons, logisticsOptions] = await Promise.all([
+      prisonRegisterService.getPrisons({ res }),
+      transferSchedulerService.getReferenceData({ res }, 'transfer-reason'),
+      transferSchedulerService.getReferenceData({ res }, 'transfer-logistics'),
+    ])
 
-  return createSchema({
-    startDate: z.string().optional(),
-    startTimeHour: z.string().optional(),
-    startTimeMinute: z.string().optional(),
-    destination: z
-      .string()
-      .optional()
-      .transform(validateAndTransformOptionalCodedDescription(prisons, 'Enter and select a prison'))
-      .optional(),
-    selectedTransfers: z.union([z.string().transform(val => [val]), z.array(z.string())]).optional(),
-    add: z.string().optional(),
-  }).transform(({ startDate, startTimeHour, startTimeMinute, destination, selectedTransfers, add }, ctx) => {
-    const parsedStartDate = validateTransformDate(
-      checkTodayOrFuture,
-      'transfer date',
-      'Transfer date must be today or in the future',
-    ).safeParse(startDate)
+    return createSchema({
+      startDate: z.string().optional(),
+      startTimeHour: z.string().optional(),
+      startTimeMinute: z.string().optional(),
+      destination: z
+        .string()
+        .optional()
+        .transform(validateAndTransformOptionalCodedDescription(prisons, 'Enter and select a prison'))
+        .optional(),
+      reason: z
+        .string()
+        .optional()
+        .transform(validateAndTransformOptionalCodedDescription(reasons, 'Enter a reason for this transfer')),
+      logistics: z
+        .string()
+        .optional()
+        .transform(
+          validateAndTransformOptionalCodedDescription(
+            logisticsOptions,
+            'Enter the escort type being used for this transfer',
+          ),
+        ),
+      comments: optionalString(),
+      selectedTransfers: z.union([z.string().transform(val => [val]), z.array(z.string())]).optional(),
+      add: z.string().optional(),
+    }).transform(
+      (
+        { startDate, startTimeHour, startTimeMinute, destination, reason, logistics, comments, selectedTransfers, add },
+        ctx,
+      ) => {
+        const parsedStartDate = validateTransformDate(
+          checkTodayOrFuture,
+          'transfer date',
+          'Transfer date must be today or in the future',
+        ).safeParse(startDate)
 
-    const parsedHour = startTimeHour?.length ? parseHour(startTimeHour) : undefined
-    const parsedMinute = startTimeMinute?.length ? parseMinute(startTimeMinute) : undefined
+        const parsedHour = startTimeHour?.length ? parseHour(startTimeHour) : undefined
+        const parsedMinute = startTimeMinute?.length ? parseMinute(startTimeMinute) : undefined
 
-    if (add !== undefined) {
-      const validDateTime = parsedStartDate?.success && parsedHour?.success && parsedMinute?.success
-      return {
-        startDate: validDateTime ? parsedStartDate.data! : null,
-        startTimeHour: validDateTime ? parsedHour!.data : null,
-        startTimeMinute: validDateTime ? parsedMinute!.data : null,
-        destination,
-        selectedTransfers,
-        add,
-      }
-    }
+        if (add !== undefined) {
+          const validDateTime = parsedStartDate?.success && parsedHour?.success && parsedMinute?.success
+          return {
+            startDate: validDateTime ? parsedStartDate.data! : null,
+            startTimeHour: validDateTime ? parsedHour!.data : null,
+            startTimeMinute: validDateTime ? parsedMinute!.data : null,
+            destination,
+            reason,
+            logistics,
+            comments,
+            selectedTransfers,
+            add,
+          }
+        }
 
-    parsedStartDate.error?.issues?.forEach(issue =>
-      ctx.addIssue({ ...issue, path: ['startDate'] } as $ZodSuperRefineIssue),
+        if (startDate?.length || startTimeHour?.length || startTimeMinute?.length) {
+          parsedStartDate.error?.issues?.forEach(issue =>
+            ctx.addIssue({ ...issue, path: ['startDate'] } as $ZodSuperRefineIssue),
+          )
+
+          if (!startTimeHour?.length) {
+            ctx.addIssue({
+              code: 'custom',
+              message: 'Enter a transfer time',
+              path: ['startTimeHour'],
+            })
+            if (!startTimeMinute?.length) {
+              // empty error message to highlight both input fields with error
+              ctx.addIssue({ code: 'custom', message: '', path: ['startTime'] })
+            }
+          } else if (!startTimeMinute?.length) {
+            ctx.addIssue({
+              code: 'custom',
+              message: 'Enter a transfer time',
+              path: ['startTimeMinute'],
+            })
+          }
+        }
+
+        if (parsedHour?.error) {
+          ctx.addIssue({
+            code: 'custom',
+            message: 'Transfer hour must be between 00 and 23',
+            path: ['startTimeHour'],
+          })
+        }
+        if (parsedMinute?.error) {
+          ctx.addIssue({
+            code: 'custom',
+            message: 'Transfer minute must be between 00 and 59',
+            path: ['startTimeMinute'],
+          })
+        }
+
+        if (parsedStartDate?.success && parsedHour?.success && parsedMinute?.success) {
+          if (
+            isToday(new Date(parsedStartDate.data)) &&
+            `${parsedHour.data}:${parsedMinute.data}` <= new Date().toLocaleTimeString('en-GB').substring(0, 5)
+          ) {
+            ctx.addIssue({
+              code: 'custom',
+              message: 'Start time must be in the future',
+              path: ['startTimeHour'],
+            })
+            // empty error message to highlight both input fields with error
+            ctx.addIssue({ code: 'custom', message: '', path: ['startTime'] })
+          }
+        }
+
+        if (comments && comments.length > 225) {
+          ctx.addIssue({
+            code: 'custom',
+            message: 'The maximum character limit for comments is 225',
+            path: ['comments'],
+          })
+        }
+
+        if (!selectedTransfers?.length)
+          ctx.addIssue({ code: 'custom', message: 'Select transfers to be edited', path: ['selectedTransfers-1'] })
+
+        if (!startDate && !startTimeHour && !startTimeMinute && !destination && !reason && !logistics && !comments) {
+          ctx.addIssue({
+            code: 'custom',
+            message: 'Select at least one set of details to edit',
+            path: ['startDate'],
+          })
+        }
+
+        if (ctx.issues.length) {
+          return z.NEVER
+        }
+        return {
+          startDate: parsedStartDate?.data,
+          startTimeHour: parsedHour?.data,
+          startTimeMinute: parsedMinute?.data,
+          destination,
+          reason,
+          logistics,
+          comments,
+          selectedTransfers,
+          add,
+        }
+      },
     )
-
-    if (!startTimeHour?.length) {
-      ctx.addIssue({
-        code: 'custom',
-        message: 'Enter a transfer time',
-        path: ['startTimeHour'],
-      })
-      if (!startTimeMinute?.length) {
-        // empty error message to highlight both input fields with error
-        ctx.addIssue({ code: 'custom', message: '', path: ['startTime'] })
-      }
-    } else if (!startTimeMinute?.length) {
-      ctx.addIssue({
-        code: 'custom',
-        message: 'Enter a transfer time',
-        path: ['startTimeMinute'],
-      })
-    }
-
-    if (parsedHour?.error) {
-      ctx.addIssue({
-        code: 'custom',
-        message: 'Transfer hour must be between 00 and 23',
-        path: ['startTimeHour'],
-      })
-    }
-    if (parsedMinute?.error) {
-      ctx.addIssue({
-        code: 'custom',
-        message: 'Transfer minute must be between 00 and 59',
-        path: ['startTimeMinute'],
-      })
-    }
-
-    if (parsedStartDate?.success && parsedHour?.success && parsedMinute?.success) {
-      if (
-        isToday(new Date(parsedStartDate.data)) &&
-        `${parsedHour.data}:${parsedMinute.data}` <= new Date().toLocaleTimeString('en-GB').substring(0, 5)
-      ) {
-        ctx.addIssue({
-          code: 'custom',
-          message: 'Start time must be in the future',
-          path: ['startTimeHour'],
-        })
-        // empty error message to highlight both input fields with error
-        ctx.addIssue({ code: 'custom', message: '', path: ['startTime'] })
-        return z.NEVER
-      }
-    }
-
-    if (!destination) ctx.addIssue({ code: 'custom', message: 'Enter and select a prison', path: ['destination'] })
-    if (!selectedTransfers?.length)
-      ctx.addIssue({ code: 'custom', message: 'Select transfers to be edited', path: ['selectedTransfers-1'] })
-
-    if (ctx.issues.length) {
-      return z.NEVER
-    }
-    return {
-      startDate: parsedStartDate.data!,
-      startTimeHour: parsedHour!.data,
-      startTimeMinute: parsedMinute!.data,
-      destination: destination!,
-      selectedTransfers,
-      add,
-    }
-  })
-}
+  }
 
 export type SchemaType = z.infer<Awaited<ReturnType<ReturnType<typeof schemaFactory>>>>

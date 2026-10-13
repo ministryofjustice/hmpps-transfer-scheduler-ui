@@ -11,6 +11,8 @@ import { BulkEditTransfersCheckAnswersRoutes } from './check-answers/routes'
 import { BulkEditTransfersConfirmationRoutes } from './confirmation/routes'
 import { BulkEditTransfersDetailsRoutes } from './transfer-details/routes'
 import { BulkEditTransfersSearchPrisonersRoutes } from './search-prisoner/routes'
+import { BulkEditTransfersChangeDetailsRoutes } from './change-details/routes'
+import { BulkEditTransfersNonAssociationsRoutes } from './non-associations/routes'
 
 export const BulkEditTransfersRoutes = (services: Services) => {
   const { router, get, post } = BaseRouter()
@@ -25,7 +27,9 @@ export const BulkEditTransfersRoutes = (services: Services) => {
   router.use('/edit-list', BulkEditTransfersEditListRoutes(services))
   router.use('/transfer-details', BulkEditTransfersDetailsRoutes(services))
   router.use('/search-prisoner', BulkEditTransfersSearchPrisonersRoutes(services))
+  router.use('/non-associations', BulkEditTransfersNonAssociationsRoutes())
   router.use('/check-answers', BulkEditTransfersCheckAnswersRoutes(services))
+  router.use('/change-details', BulkEditTransfersChangeDetailsRoutes(services))
   router.use('/confirmation', BulkEditTransfersConfirmationRoutes())
 
   return router

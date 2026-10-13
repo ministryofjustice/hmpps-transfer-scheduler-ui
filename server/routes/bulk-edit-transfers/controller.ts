@@ -151,7 +151,7 @@ export class BulkEditTransfersSearchTransfersController {
         return {
           id: itm.id,
           prisoner: itm.person,
-          startDate: formatInputDate(itm.schedule!.start)!,
+          startDate: format(itm.schedule!.start, 'yyyy-MM-dd')!,
           startTime: format(itm.schedule!.start, 'HH:mm'),
           destination: { code: itm.destination!.code, description: itm.destination!.name },
           reason: itm.reason!,

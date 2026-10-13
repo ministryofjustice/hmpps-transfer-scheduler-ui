@@ -5,6 +5,7 @@
 {% from "partials/validatedTimeInput/macro.njk" import validatedTimeInput %}
 {% from "govuk/components/select/macro.njk" import govukSelect %}
 {% from "govuk/components/character-count/macro.njk" import govukCharacterCount %}
+{% from "govuk/components/task-list/macro.njk" import govukTaskList %}
 
 {% set pageTitle = 'Add transfer details- Schedule transfers in bulk' %}
 {% set fullWidth = true %}
@@ -27,11 +28,20 @@
     <div class="govuk-grid-row">
       <div class="govuk-grid-column-one-quarter govuk-!-margin-top-7">
         <h2 class="govuk-heading-m">Bulk transfer list</h2>
+
+        {% set tasks = [] %}
+
         {% for transfer in transfers %}
-          <div class="govuk-!-static-margin-bottom-1">
-            <a class="govuk-link govuk-link--no-visited-state{{ ' govuk-!-font-weight-bold' if transfer.prisoner.prisonerNumber === prisoner.prisonerNumber }}" href="{{ transfer.prisoner.prisonerNumber }}">{{ transfer.prisoner | lastNameCommaFirstName }}</a>
-          </div>
+          {% set tasks = (tasks.push(
+            {
+              title: { text: transfer.prisoner | lastNameCommaFirstName, classes: 'govuk-!-font-weight-bold govuk-link--no-visited-state' if transfer.prisoner.prisonerNumber === prisoner.prisonerNumber else 'govuk-link--no-visited-state' },
+              href: transfer.prisoner.prisonerNumber,
+              status: { text: "Completed" } if transfer.startTime else { tag: { text: "Incomplete", classes: "govuk-tag--blue" } }
+            }
+          ), tasks) %}
         {% endfor %}
+        {{ govukTaskList({ items: tasks }) }}
+
       </div>
       <div class="govuk-grid-column-three-quarters">
         {{ miniProfile(prisoner, originalUrl) }}

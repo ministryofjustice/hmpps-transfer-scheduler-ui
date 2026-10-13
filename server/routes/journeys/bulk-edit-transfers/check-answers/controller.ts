@@ -10,13 +10,15 @@ export class BulkEditTransfersCheckAnswersController {
     req.journeyData.isCheckAnswers = true
     delete req.journeyData.bulkEditTransfer!.prisonerToAdd
 
-    const { startDate, startTime, destination, transfers, selectedTransfers } = req.journeyData.bulkEditTransfer!
+    const { startDate, startTime, destination, logistics, transfers, selectedTransfers } =
+      req.journeyData.bulkEditTransfer!
 
     res.render('bulk-edit-transfers/check-answers/view', {
       backUrl: 'check-answers/back',
       startDate,
       startTime,
       destination,
+      logistics,
       transfers: transfers.filter(({ prisoner }) => selectedTransfers!.includes(prisoner.identifier ?? '')),
     })
   }
@@ -28,7 +30,8 @@ export class BulkEditTransfersCheckAnswersController {
 
   submitToApi = async (req: Request, res: Response, next: NextFunction) => {
     try {
-      const { startDate, startTime, destination, transfers, selectedTransfers } = req.journeyData.bulkEditTransfer!
+      const { startDate, startTime, destination, logistics, transfers, selectedTransfers } =
+        req.journeyData.bulkEditTransfer!
 
       const request: components['schemas']['BulkTransfersRequest'] = {
         transfers: transfers
@@ -37,10 +40,10 @@ export class BulkEditTransfersCheckAnswersController {
             const transfer: components['schemas']['BulkTransfer'] = {
               id: itm.id ?? v7(),
               personIdentifier: itm.prisoner.identifier,
-              start: `${startDate}T${startTime}:00`,
-              destinationCode: destination!.code,
+              start: startDate && startTime ? `${startDate}T${startTime}:00` : `${itm.startDate}T${itm.startTime}:00`,
+              destinationCode: destination?.code ?? itm.destination!.code,
               reasonCode: itm.reason!.code,
-              logisticsCode: itm.logistics!.code,
+              logisticsCode: logistics?.code ?? itm.logistics!.code,
               statusCode: 'SCHEDULED',
             }
 

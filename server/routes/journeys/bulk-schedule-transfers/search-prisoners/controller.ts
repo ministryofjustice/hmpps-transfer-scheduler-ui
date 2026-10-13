@@ -72,9 +72,21 @@ export class BulkScheduleTransfersSearchPrisonersController {
   }
 
   continue = async (req: Request<unknown, unknown, SchemaType>, res: Response) => {
-    const transferToEnter = req.journeyData.bulkScheduleTransfer!.transfers!.find(transfer => !transfer.startDate)
+    const journey = req.journeyData.bulkScheduleTransfer!
+
+    const transferToEnter = journey.transfers!.find(transfer => !transfer.startDate)
     if (!transferToEnter) {
-      res.redirect('../check-answers')
+      if (journey.nonAssociations?.length) {
+        journey.nonAssociations = journey.nonAssociations.filter(({ prisoner }) =>
+          journey.transfers!.find(transfer => transfer.prisoner.prisonerNumber === prisoner.prisonerNumber),
+        )
+      }
+
+      if (journey.nonAssociations?.length) {
+        res.redirect('../non-associations')
+      } else {
+        res.redirect('../check-answers')
+      }
     } else {
       delete req.journeyData.isCheckAnswers
       res.redirect(`../transfer-details/${transferToEnter.prisoner.prisonerNumber}`)
