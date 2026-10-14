@@ -181,6 +181,7 @@ test.describe('/transfers/:id', () => {
       ...testTransfer,
       id: transferId,
       status: { code: 'READY_TO_SCHEDULE', description: 'Ready to schedule' },
+      schedule: { start: '2047-01-01T09:15:00', comments: 'Lorem ipsum' },
       plan: { requestedOn: '2001-01-01', comments: 'Lorem ipsum', priority: { code: '1', description: 'High' } },
       stage: 'PLANNING',
     })
@@ -190,7 +191,7 @@ test.describe('/transfers/:id', () => {
     // verify page content
     const testPage = await new ManageTransferPage(page).verifyContent()
 
-    await testPage.verifyAnswer('Date and time', '1 January 2001 at 09:15')
+    await testPage.verifyAnswer('Date and time', '1 January 2047 at 09:15')
     await testPage.verifyAnswer('Request received', '1 January 2001')
     await testPage.verifyAnswer('Destination', 'Prison One')
     await testPage.verifyAnswer('Reason', 'Reason One')
@@ -208,5 +209,27 @@ test.describe('/transfers/:id', () => {
 
     await expect(testPage.button('Schedule this plan')).toBeVisible()
     await expect(testPage.button('Cancel this plan')).toBeVisible()
+  })
+
+  test('should show planned transfer with an expired transfer date', async ({ page }) => {
+    await login(page)
+
+    const transferId = uuidV4()
+    await stubGetTransfer({
+      ...testTransfer,
+      id: transferId,
+      status: { code: 'READY_TO_SCHEDULE', description: 'Ready to schedule' },
+      plan: { requestedOn: '2001-01-01', comments: 'Lorem ipsum', priority: { code: '1', description: 'High' } },
+      stage: 'PLANNING',
+    })
+    await stubGetTransferHistory(transferId, { content: [] })
+    await page.goto(`/transfers/${transferId}`)
+
+    // verify page content
+    const testPage = await new ManageTransferPage(page).verifyContent()
+
+    await expect(testPage.button('Schedule this plan')).toHaveCount(0)
+    await expect(testPage.button('Cancel this plan')).toBeVisible()
+    await expect(page.getByText('Transfer date and time must be in the future.')).toBeVisible()
   })
 })

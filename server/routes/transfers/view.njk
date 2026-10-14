@@ -4,6 +4,7 @@
 {% from "govuk/components/button/macro.njk" import govukButton %}
 {% from "partials/auditHistory/macro.njk" import auditHistory %}
 {% from "partials/statusTag/macro.njk" import statusTag %}
+{%- from "moj/components/alert/macro.njk" import mojAlert -%}
 
 {% set fullWidth = true %}
 {% set caption = 'Manage ' + transfer.label + 's' %}
@@ -25,7 +26,7 @@
       {% set baseEditUrl = "/transfers/start-edit/" + transfer.id %}
 
       <div class="govuk-button-group">
-        {% if transfer.status.code === 'READY_TO_SCHEDULE' and user | hasPermission('MANAGE') %}
+        {% if transfer.status.code === 'READY_TO_SCHEDULE' and not expiredPlannedTransferDate and user | hasPermission('MANAGE') %}
           {{ govukButton({
             text: "Schedule this plan",
             href:  baseEditUrl + "/schedule-a-plan",
@@ -49,6 +50,10 @@
           }) }}
         {% endif %}
       </div>
+
+      {% if transfer.stage === 'PLANNING' and expiredPlannedTransferDate and user | hasPermission('MANAGE') %}
+        {{ mojAlert({ variant: "warning", title: 'Transfer date', text: 'Transfer date and time must be in the future.', showTitleAsHeading: true }) }}
+      {% endif %}
 
       {{ govukTabs({
         items: [
