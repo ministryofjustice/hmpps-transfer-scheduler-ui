@@ -1,4 +1,5 @@
 import { Request, Response } from 'express'
+import { isPast } from 'date-fns'
 import { isTransferCancellable, isTransferEditable } from '../../utils/utils'
 import { parseAuditHistory } from '../../views/partials/auditHistory/parseAuditHistory'
 import PrisonRegisterService from '../../services/apis/prisonRegisterService'
@@ -18,6 +19,8 @@ export class ManageTransferController {
     res.render('transfers/view', {
       showBreadcrumbs: true,
       transfer: req.middleware!.transfer,
+      expiredPlannedTransferDate:
+        req.middleware!.transfer?.schedule?.start && isPast(req.middleware!.transfer.schedule.start),
       auditedActions: parseAuditHistory(
         req.middleware!.transferHistory!.content.sort((a, b) => b.occurredAt.localeCompare(a.occurredAt)),
         { prisons: prisons ?? [] },
