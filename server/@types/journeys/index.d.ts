@@ -75,6 +75,7 @@ type TransferDetails = Partial<{
 type BulkScheduleTransferJourney = Partial<{
   searchTerm: string
   transfers: ({ prisoner: PrisonerDetails } & TransferDetails)[]
+  nonAssociations: { prisoner: PrisonerDetails; destination: string; otherPrisoners: OtherPrisonerDetails[] }[]
   lastEnteredTransfer: TransferDetails
   result: components['schemas']['BulkTransfersResponse']
 }>
@@ -88,9 +89,17 @@ type BulkEditTransferJourney = {
   startDate: string
   startTime: string
   destination: CodedDescription
+  reason: CodedDescription
+  logistics: CodedDescription
+  comments: string | null
   selectedTransfers: string[]
   searchTerm: string
   prisonerToAdd: { identifier: string; firstName: string; lastName: string }
+  nonAssociations: {
+    prisoner: { identifier: string; firstName: string; lastName: string }
+    destination: string
+    otherPrisoners: OtherPrisonerDetails[]
+  }[]
   result: components['schemas']['BulkTransfersResponse']
 }>
 

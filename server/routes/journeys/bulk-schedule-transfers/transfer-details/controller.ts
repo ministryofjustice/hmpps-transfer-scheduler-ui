@@ -3,11 +3,13 @@ import PrisonRegisterService from '../../../../services/apis/prisonRegisterServi
 import TransferSchedulerService from '../../../../services/apis/transferSchedulerService'
 import { formatInputDate } from '../../../../utils/dateTimeUtils'
 import { SchemaType } from './schema'
+import NonAssociationsService from '../../../../services/apis/nonAssociationsService'
 
 export class BulkScheduleTransfersDetailsController {
   constructor(
     private readonly transferSchedulerService: TransferSchedulerService,
     private readonly prisonRegisterService: PrisonRegisterService,
+    private readonly nonAssociationsService: NonAssociationsService,
   ) {}
 
   GET = async (req: Request, res: Response) => {
@@ -58,28 +60,50 @@ export class BulkScheduleTransfersDetailsController {
 
     const transfer = journey.transfers!.find(({ prisoner }) => prisoner.prisonerNumber === req.params.prisonNumber)!
 
-    journey.lastEnteredTransfer = {
-      startDate: req.body.startDate,
-      startTime: `${req.body.startTimeHour}:${req.body.startTimeMinute}`,
-      destination: req.body.destination,
-      reason: req.body.reason,
-      logistics: req.body.logistics,
-      comments: req.body.comments,
+    if (!journey.lastEnteredTransfer) {
+      journey.lastEnteredTransfer = {
+        startDate: req.body.startDate,
+        startTime: `${req.body.startTimeHour}:${req.body.startTimeMinute}`,
+        destination: req.body.destination,
+        reason: req.body.reason,
+        logistics: req.body.logistics,
+        comments: req.body.comments,
+      }
     }
 
-    transfer.startDate = journey.lastEnteredTransfer.startDate!
-    transfer.startTime = journey.lastEnteredTransfer.startTime!
-    transfer.destination = journey.lastEnteredTransfer.destination!
-    transfer.reason = journey.lastEnteredTransfer.reason!
-    transfer.logistics = journey.lastEnteredTransfer.logistics!
-    transfer.comments = journey.lastEnteredTransfer.comments ?? null
+    transfer.startDate = req.body.startDate!
+    transfer.startTime = `${req.body.startTimeHour}:${req.body.startTimeMinute}`
+    transfer.destination = req.body.destination!
+    transfer.reason = req.body.reason!
+    transfer.logistics = req.body.logistics!
+    transfer.comments = req.body.comments ?? null
 
     const nextTransfer = journey.transfers!.find(({ startDate }) => !startDate)
 
     if (nextTransfer) {
       res.redirect(nextTransfer.prisoner.prisonerNumber)
     } else {
-      res.redirect('../check-answers')
+      journey.nonAssociations = (
+        await Promise.all(
+          journey.transfers!.map(({ prisoner, destination }) =>
+            this.nonAssociationsService
+              .getPrisonerNonAssociations({ res }, prisoner.prisonerNumber)
+              .then(({ nonAssociations }) => ({
+                prisoner,
+                destination: destination!.description,
+                otherPrisoners: nonAssociations
+                  .map(({ otherPrisonerDetails }) => otherPrisonerDetails)
+                  .filter(({ prisonId }) => prisonId === destination!.code),
+              })),
+          ),
+        )
+      ).filter(({ otherPrisoners }) => otherPrisoners.length)
+
+      if (journey.nonAssociations?.length) {
+        res.redirect('../non-associations')
+      } else {
+        res.redirect('../check-answers')
+      }
     }
   }
 }

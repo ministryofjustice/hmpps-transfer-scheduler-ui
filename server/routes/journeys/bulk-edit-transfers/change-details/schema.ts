@@ -9,16 +9,12 @@ import { optionalString } from '../../../../utils/validations/validateString'
 export const schemaFactory =
   (transferSchedulerService: TransferSchedulerService) => async (_req: Request, res: Response) => {
     const reasons = await transferSchedulerService.getReferenceData({ res }, 'transfer-reason')
-    const logisticsOptions = await transferSchedulerService.getReferenceData({ res }, 'transfer-logistics')
 
     return createSchema({
       reason: z.string().transform(validateAndTransformCodedDescription(reasons, 'Enter a reason for this transfer')),
-      logistics: z
-        .string()
-        .transform(
-          validateAndTransformCodedDescription(logisticsOptions, 'Enter the escort type being used for this transfer'),
-        ),
-      comments: optionalString(),
+      comments: optionalString({
+        maxChar: { count: 225, errorMessage: 'The maximum character limit for comments is 225' },
+      }),
     })
   }
 

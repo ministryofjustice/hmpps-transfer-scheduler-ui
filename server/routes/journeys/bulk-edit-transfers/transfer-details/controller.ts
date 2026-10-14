@@ -1,59 +1,73 @@
 import { Request, Response } from 'express'
 import TransferSchedulerService from '../../../../services/apis/transferSchedulerService'
-import { SchemaType } from './schema'
+import { SchemaType } from '../../bulk-schedule-transfers/transfer-details/schema'
+import PrisonRegisterService from '../../../../services/apis/prisonRegisterService'
+import { formatInputDate } from '../../../../utils/dateTimeUtils'
+import { FLASH_KEY__SUCCESS_BANNER } from '../../../../utils/constants'
+import { firstNameSpaceLastName } from '../../../../utils/formatUtils'
 
 export class BulkEditTransfersDetailsController {
-  constructor(private readonly transferSchedulerService: TransferSchedulerService) {}
+  constructor(
+    private readonly transferSchedulerService: TransferSchedulerService,
+    private readonly prisonRegisterService: PrisonRegisterService,
+  ) {}
 
   GET = async (req: Request, res: Response) => {
-    const { transfers, prisonerToAdd } = req.journeyData.bulkEditTransfer!
+    const { prisonerToAdd, startDate, startTime, destination, reason, logistics, comments } =
+      req.journeyData.bulkEditTransfer!
 
-    const transfer = transfers!.find(
-      ({ prisoner }) => prisoner.identifier === req.middleware!.prisonerData!.prisonerNumber,
-    )
-
-    if (!transfer && prisonerToAdd?.identifier !== req.middleware!.prisonerData!.prisonerNumber) {
+    if (prisonerToAdd?.identifier !== req.middleware!.prisonerData!.prisonerNumber) {
       return res.notFound()
     }
 
+    const prisons = await this.prisonRegisterService.getPrisons({ res })
+    if (!prisons) throw new Error('Unable to get list of prisons')
+
+    const [startTimeHour, startTimeMinute] =
+      !res.locals.formResponses?.['startTimeHour'] && !res.locals.formResponses?.['startTimeMinute'] && startTime
+        ? startTime.split(':')
+        : []
+
     return res.render('bulk-edit-transfers/transfer-details/view', {
-      // eslint-disable-next-line no-nested-ternary
-      backUrl: prisonerToAdd
-        ? '../search-prisoner'
-        : req.journeyData.isCheckAnswers
-          ? '../check-answers'
-          : '../edit-list',
-      reason: res.locals.formResponses?.['reason'] ?? transfer?.reason?.code,
+      backUrl: '../search-prisoner',
+      startDate: res.locals.formResponses?.['startDate'] ?? (startDate ? formatInputDate(startDate) : null),
+      startTimeHour: res.locals.formResponses?.['startTimeHour'] ?? startTimeHour,
+      startTimeMinute: res.locals.formResponses?.['startTimeMinute'] ?? startTimeMinute,
+      destination: res.locals.formResponses?.['destination'] ?? destination?.code,
+      prisons: prisons.filter(({ code }) => code !== res.locals.user.getActiveCaseloadId()),
+      reason: res.locals.formResponses?.['reason'] ?? reason?.code,
       reasons: await this.transferSchedulerService.getReferenceData({ res }, 'transfer-reason'),
-      logistics: res.locals.formResponses?.['logistics'] ?? transfer?.logistics?.code,
+      logistics: res.locals.formResponses?.['logistics'] ?? logistics?.code,
       logisticsOptions: await this.transferSchedulerService.getReferenceData({ res }, 'transfer-logistics'),
-      comments: res.locals.formResponses?.['comments'] ?? transfer?.comments,
-      prisoner: transfer?.prisoner ?? prisonerToAdd,
+      comments: res.locals.formResponses?.['comments'] ?? comments,
+      prisoner: prisonerToAdd,
     })
   }
 
   POST = async (req: Request<{ prisonNumber: string }, unknown, SchemaType>, res: Response) => {
     const journey = req.journeyData.bulkEditTransfer!
 
-    const transfer = journey.transfers!.find(({ prisoner }) => prisoner.identifier === req.params.prisonNumber)
-
-    if (transfer) {
-      transfer.reason = req.body.reason!
-      transfer.logistics = req.body.logistics!
-      transfer.comments = req.body.comments ?? null
-    } else if (journey.prisonerToAdd?.identifier === req.params.prisonNumber) {
+    if (journey.prisonerToAdd?.identifier === req.params.prisonNumber) {
       journey.transfers.push({
         prisoner: journey.prisonerToAdd,
+        startDate: req.body.startDate,
+        startTime: `${req.body.startTimeHour}:${req.body.startTimeMinute}`,
+        destination: req.body.destination,
         reason: req.body.reason!,
         logistics: req.body.logistics!,
         comments: req.body.comments ?? null,
       })
       journey.selectedTransfers ??= []
       journey.selectedTransfers.push(journey.prisonerToAdd.identifier)
+
+      req.flash(
+        FLASH_KEY__SUCCESS_BANNER,
+        `${firstNameSpaceLastName(journey.prisonerToAdd)} has been added to this list of scheduled transfers`,
+      )
     } else {
       return res.notFound()
     }
 
-    return res.redirect(req.journeyData.isCheckAnswers ? '../check-answers' : '../edit-list')
+    return res.redirect('../edit-list')
   }
 }

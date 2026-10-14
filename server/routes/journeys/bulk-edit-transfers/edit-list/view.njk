@@ -5,12 +5,15 @@
 {% from "partials/validatedTimeInput/macro.njk" import validatedTimeInput %}
 {% from "partials/cardTable/macro.njk" import cardTable %}
 {% from "partials/statusTag/macro.njk" import statusTag %}
+{% from "govuk/components/input/macro.njk" import govukInput %}
 
 {% set pageTitle = 'Edit list of scheduled transfers - Edit scheduled transfers in bulk' %}
 {% set fullWidth = true %}
 
 {% block meta %}
   <meta name="autocompleteElements" content="destination"/>
+  <meta name="autocompleteElements" content="reason"/>
+  <meta name="autocompleteElements" content="logistics"/>
 {% endblock %}
 
 {% block innerContent %}
@@ -19,7 +22,7 @@
       <div class="govuk-grid-column-two-thirds">
         <span class="govuk-caption-l">Edit scheduled transfers in bulk</span>
         <h1 class="govuk-heading-l govuk-!-margin-bottom-6">Edit list of scheduled transfers</h1>
-        <p>Edit date, time, or prison destination, or add another prisoner to this list of scheduled transfers. You can update the whole list at once or select individual transfers to change.</p>
+        <p>Edit details for this list of scheduled transfers. You can select all or choose individual ones to update. Transfers you do not select will be removed from the edited list.</p>
       </div>
     </div>
 
@@ -28,7 +31,7 @@
 
       <div class="govuk-!-width-full">
         <div class="search-form govuk-!-padding-6">
-          <div class="horizontal-form">
+          <div class="horizontal-form govuk-!-margin-bottom-4">
             {{ mojDatePicker({
               id: "startDate",
               name: "startDate",
@@ -60,17 +63,50 @@
               minute: startTimeMinute
             }) }}
 
-            <div class="govuk-!-width-one-half">
-            {{ govukSelect({
-              id: "destination",
-              name: "destination",
-              label: { text: "To prison destination", classes: "govuk-label--s", isPageHeading: false },
-              hint: { text: "For example, HMP Bristol", classes: 'govuk-!-margin-bottom-6' },
-              items: prisons | fromCodedDescription | addSelectValue('') | setSelectedValue(destination),
-              errorMessage: validationErrors | findError('destination')
-            }) }}
+            <div class="govuk-!-margin-left-9">
+              {{ govukSelect({
+                formGroup: { classes: 'govuk-!-margin-left-8' },
+                id: "destination",
+                name: "destination",
+                label: { text: "To prison destination", classes: "govuk-label--s", isPageHeading: false },
+                hint: { text: "For example, HMP Bristol", classes: 'govuk-!-margin-bottom-6' },
+                items: prisons | fromCodedDescription | addSelectValue('') | setSelectedValue(destination),
+                errorMessage: validationErrors | findError('destination')
+              }) }}
             </div>
           </div>
+
+          <div class="horizontal-form">
+            {{ govukSelect({
+              id: "reason",
+              name: "reason",
+              label: { text: "Reason", classes: "govuk-label--s", isPageHeading: false },
+              hint: { text: "For example, Medical" },
+              items: reasons | fromCodedDescription | addSelectValue('') | setSelectedValue(reason),
+              errorMessage: validationErrors | findError('reason')
+            }) }}
+
+            {{ govukSelect({
+              id: "logistics",
+              name: "logistics",
+              label: { text: "Escort details", classes: "govuk-label--s", isPageHeading: false },
+              hint: { text: 'For example, Accompanied' },
+              items: logisticsOptions | fromCodedDescription | addSelectValue('') | setSelectedValue(logistics),
+              errorMessage: validationErrors | findError('logistics')
+            }) }}
+
+            {{ govukInput({
+              name: 'comments',
+              label: {
+                text: "Comments",
+                classes: "govuk-label--s"
+              },
+              hint: { text: 'Add any details needed ' },
+              value: comments,
+              errorMessage: validationErrors | findError('comments')
+            }) }}
+          </div>
+
           <div class="govuk-button-group govuk-!-margin-top-5 govuk-!-margin-bottom-0">
             {{ govukButton({
               classes: 'govuk-button--inverse govuk-!-margin-bottom-1',
@@ -81,7 +117,7 @@
 
             {{ govukButton({
               classes: 'govuk-!-margin-bottom-1',
-              text: "Continue",
+              text: "Apply edits",
               preventDoubleClick: true
             }) }}
           </div>
@@ -97,10 +133,9 @@
               title: { text: result.prisoner | firstNameSpaceLastName + ' - ' + result.prisoner.identifier },
               checkboxValue: result.prisoner.identifier,
               checkboxLabel: result.prisoner | firstNameSpaceLastName,
-              action: { text: 'Update manually', href: 'transfer-details/' + result.prisoner.identifier },
               data: [
               result.destination.description,
-              result.startDate | formatFromInputDate("d MMMM yyyy"),
+              result.startDate | formatDate("d MMMM yyyy"),
               result.startTime,
               result.reason.description,
               result.logistics.description,

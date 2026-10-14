@@ -19,15 +19,19 @@
       rows: [
         {
           key: { text: "Date" },
-          value: { text: startDate | formatDate("d MMMM yyyy") }
+          value: { text: startDate | formatDate("d MMMM yyyy") } if startDate else { text: 'No change', classes: 'govuk-hint' }
         },
         {
           key: { text: "Time" },
-          value: { text: startTime }
+          value: { text: startTime } if startTime else { text: 'No change', classes: 'govuk-hint' }
         },
         {
           key: { text: "Destination" },
-          value: { text: destination.description  }
+          value: { text: destination.description  } if destination else { text: 'No change', classes: 'govuk-hint' }
+        },
+        {
+          key: { text: "Escort details" },
+          value: { text: logistics.description  } if logistics else { text: 'No change', classes: 'govuk-hint' }
         }
       ]
     }) }}
