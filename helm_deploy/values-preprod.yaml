@@ -27,5 +27,4 @@ generic-service:
     FEAT_BULK_TRANSFERS_PRISONS: ""
 
 generic-prometheus-alerts:
-  alertSeverity: move-and-improve-alerts-non-prod
   businessHoursOnly: true
