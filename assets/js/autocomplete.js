@@ -37,6 +37,7 @@ function AutoComplete(meta) {
       selectElement,
       showAllValues: true,
       preserveNullOptions: true,
+      displayMenu: 'overlay',
       templates: {
         suggestion: option => escapeHtml(option), // escape html which may have been injected to the component
       },

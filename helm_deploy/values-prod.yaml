@@ -24,6 +24,3 @@ generic-service:
     SENTRY_ENVIRONMENT: PRODUCTION
     AUDIT_ENABLED: "true"
     FEAT_BULK_TRANSFERS_PRISONS: ""
-
-generic-prometheus-alerts:
-  alertSeverity: move-and-improve-alerts
