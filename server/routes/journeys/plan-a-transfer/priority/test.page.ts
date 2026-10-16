@@ -14,4 +14,8 @@ export class PlanTransferPriorityPage extends BaseTestPage {
   priorityRadio() {
     return this.radio('High')
   }
+
+  priorityLowRadio() {
+    return this.radio('Low')
+  }
 }
