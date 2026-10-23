@@ -39,7 +39,7 @@
     <div class="govuk-width-container">
       <search class="moj-search govuk-!-width-two-thirds">
         <form method="GET">
-          {{ hiddenInputs(query | getQueryEntries(['start','end','destination','reason', 'logistics','status','history'])) }}
+          {{ hiddenInputs(query | getQueryEntries(['start','end','destination','reason', 'logistics','status','size','history'])) }}
           <div class="search-wrapper moj-search__input-wrapper">
             {{ govukInput({
               name: 'searchTerm',
@@ -67,7 +67,7 @@
       <div class="govuk-grid-column-one-quarter">
         <section role="region" aria-label="Search Filters">
           <form class="hmpps-side-filter" method="GET">
-            {{ hiddenInputs(query | getQueryEntries(['searchTerm', 'history'])) }}
+            {{ hiddenInputs(query | getQueryEntries(['searchTerm','size', 'history'])) }}
             <h2 class="hmpps-side-filter__header">Filter</h2>
 
             {{ govukButton({
@@ -172,10 +172,10 @@
         {% elseif not results.length %}
           <p class="govuk-!-margin-bottom-6"><strong>No scheduled transfers match your search.</strong></p>
         {% else %}
-          <div class="govuk-!-display-none-print govuk-!-margin-bottom-5">
-            <div>
+          <div class="govuk-!-display-none-print govuk-!-margin-bottom-5 govuk-grid-row">
+            <div class="govuk-grid-column-one-third">
               <form id="sortForm">
-                {{ hiddenInputs(query | getQueryEntries(['searchTerm','start','end','destination','reason', 'logistics', 'status','history'])) }}
+                {{ hiddenInputs(query | getQueryEntries(['searchTerm','start','end','destination','reason', 'logistics', 'status','size','history'])) }}
                 <label class="govuk-label" for="sort">Sort by</label>
                 <select class="govuk-select hmpps-sort-selector__select" id="sort" name="sort" value="{{ sort or 'start,asc' }}">
                   <option value="start,asc" {{ 'selected' if sort === 'start,asc' else '' }}>Start date (oldest)</option>
@@ -183,6 +183,22 @@
                 </select>
                 <button type="submit" data-prevent-double-click="true" class="govuk-button hmpps-sort-selector__sort-button">
                   Sort
+                </button>
+              </form>
+            </div>
+
+            <div class="govuk-grid-column-one-third">
+              <form id="sizeForm">
+                {{ hiddenInputs(query | getQueryEntries(['searchTerm','start','end','destination','reason', 'logistics', 'status','sort','history'])) }}
+                <label class="govuk-label" for="size">Show results</label>
+                <select class="govuk-select hmpps-sort-selector__select" id="size" name="size" value="{{ size }}">
+                  <option value="10" {{ 'selected' if size == '10' }}>10 per page</option>
+                  <option value="25" {{ 'selected' if size == '25' }}>25 page</option>
+                  <option value="50" {{ 'selected' if size == '50' }}>50 per page</option>
+                  <option value="100" {{ 'selected' if size == '100' }}>100 per page</option>
+                </select>
+                <button type="submit" data-prevent-double-click="true" class="govuk-button hmpps-sort-selector__sort-button">
+                  Reload
                 </button>
               </form>
             </div>

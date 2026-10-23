@@ -50,7 +50,7 @@ export class BulkScheduleTransfersDetailsController {
       logisticsOptions: await this.transferSchedulerService.getReferenceData({ res }, 'transfer-logistics'),
       comments: res.locals.formResponses?.['comments'] ?? preFillValues?.comments,
       transfers,
-      prisoner: req.middleware?.prisonerData,
+      prisoner: res.locals.prisonerDetails,
       prisonerDetails: null, // suppress miniProfile from layout.njk
     })
   }

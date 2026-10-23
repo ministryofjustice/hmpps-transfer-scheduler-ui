@@ -8,6 +8,13 @@ export interface PrisonerDetails {
   prisonName?: string | undefined
   cellLocation?: string | undefined
   prisonId?: string
+  alerts?: {
+    alertType: string
+    alertCode: string
+    active: boolean
+    expired: boolean
+  }[]
+  alertFlags?: AlertFlagLabel[]
 }
 
 export type JourneyData = {

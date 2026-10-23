@@ -14,8 +14,6 @@ export class BrowsePlannedTransfersController {
     private readonly prisonRegisterService: PrisonRegisterService,
   ) {}
 
-  private PAGE_SIZE = 10
-
   private DEFAULT_SORT = 'requestedOn,asc'
 
   GET = async (_req: Request, res: Response) => {
@@ -35,7 +33,7 @@ export class BrowsePlannedTransfersController {
         const requestBody: components['schemas']['PlanningSearchRequest'] = {
           sort: resQuery.validated.sort ?? this.DEFAULT_SORT,
           page: resQuery.validated.page || 1,
-          size: this.PAGE_SIZE,
+          size: resQuery.validated.size ?? 50,
           stage: 'PLANNING',
           startAndEndType: resQuery.validated.dateType ?? 'REQUESTED_ON',
           priorityCodes: [],
@@ -65,11 +63,12 @@ export class BrowsePlannedTransfersController {
 
       setPaginationLocals(
         res,
-        this.PAGE_SIZE,
+        resQuery?.validated?.size ?? 50,
         resQuery?.validated?.page ?? 1,
         searchResponse?.metadata?.totalElements ?? 0,
         results.length,
         `?page={page}&sort=${resQuery?.sort ?? this.DEFAULT_SORT}&${[
+          `size=${resQuery?.validated?.size ?? 50}`,
           `searchTerm=${resQuery?.searchTerm ?? ''}`,
           `dateType=${resQuery?.dateType ?? 'REQUESTED_ON'}`,
           `start=${resQuery?.start ?? ''}`,
@@ -120,6 +119,7 @@ export class BrowsePlannedTransfersController {
       status: resQuery.status,
       priority: resQuery.priority,
       sort: resQuery?.sort ?? this.DEFAULT_SORT,
+      size: resQuery?.validated?.size ?? 50,
     })
   }
 }
