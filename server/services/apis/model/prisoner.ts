@@ -20,4 +20,11 @@ export default interface Prisoner {
   pncNumber?: string
   bookNumber?: string
   category?: string
+
+  alerts?: {
+    alertType: string
+    alertCode: string
+    active: boolean
+    expired: boolean
+  }[]
 }

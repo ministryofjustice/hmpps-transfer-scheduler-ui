@@ -14,8 +14,6 @@ export class BrowseScheduledTransfersController {
     private readonly prisonRegisterService: PrisonRegisterService,
   ) {}
 
-  private PAGE_SIZE = 10
-
   private DEFAULT_SORT = 'start,asc'
 
   GET = async (_req: Request, res: Response) => {
@@ -35,7 +33,7 @@ export class BrowseScheduledTransfersController {
           end: resQuery.validated.end,
           sort: resQuery.validated.sort ?? this.DEFAULT_SORT,
           page: resQuery.validated.page || 1,
-          size: this.PAGE_SIZE,
+          size: resQuery.validated.size ?? 50,
           stage: 'SCHEDULED',
         }
 
@@ -53,11 +51,12 @@ export class BrowseScheduledTransfersController {
 
       setPaginationLocals(
         res,
-        this.PAGE_SIZE,
+        resQuery?.validated?.size ?? 50,
         resQuery?.validated?.page ?? 1,
         searchResponse?.metadata?.totalElements ?? 0,
         results.length,
         `?page={page}&sort=${resQuery?.sort ?? this.DEFAULT_SORT}&${[
+          `size=${resQuery?.validated?.size ?? 50}`,
           `searchTerm=${resQuery?.searchTerm ?? ''}`,
           `start=${resQuery?.start ?? ''}`,
           `end=${resQuery?.end ?? ''}`,
@@ -94,6 +93,7 @@ export class BrowseScheduledTransfersController {
       logistics: resQuery.logistics,
       status: resQuery.status,
       sort: resQuery?.sort ?? this.DEFAULT_SORT,
+      size: resQuery?.validated?.size ?? 50,
     })
   }
 }

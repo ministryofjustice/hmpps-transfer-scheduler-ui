@@ -6,6 +6,7 @@ import {
 import { Request, Response, NextFunction } from 'express'
 import Prisoner from '../services/apis/model/prisoner'
 import { PrisonerDetails } from '../@types/journeys'
+import { getAlertFlags } from '../utils/alertFlags'
 
 export const populatePrisonerDetails = (prisonPermissionsService: PermissionsService) => [
   prisonerPermissionsGuard(prisonPermissionsService, {
@@ -25,4 +26,5 @@ export const toPrisonerDetails = (prisoner: Prisoner): PrisonerDetails => ({
   dateOfBirth: prisoner.dateOfBirth,
   prisonName: prisoner.prisonName,
   cellLocation: prisoner.cellLocation,
+  ...(prisoner.alerts?.length ? { alertFlags: getAlertFlags(prisoner.alerts) } : {}),
 })

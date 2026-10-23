@@ -37,6 +37,15 @@ export const schemaFactory =
           if (!Number.isNaN(num)) return num
           return 1
         }),
+      size: z
+        .enum(['10', '25', '50', '100'])
+        .optional()
+        .transform(val => {
+          if (!val) return 50
+          const num = Number(val)
+          if (!Number.isNaN(num)) return num
+          return 50
+        }),
     }).transform(({ start, end, requestStart, requestEnd, ...otherProps }, ctx) => {
       if (otherProps.dateType === 'REQUESTED_ON' || !otherProps.dateType) {
         if (requestStart === null && requestEnd === null) {
