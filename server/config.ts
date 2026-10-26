@@ -140,6 +140,24 @@ export default {
       },
       agent: new AgentConfig(Number(get('NON_ASSOCIATIONS_API_TIMEOUT_RESPONSE', 5000))),
     },
+    courtAppearanceScheduler: {
+      url: get('COURT_APPEARANCE_SCHEDULER_API_URL', 'http://localhost:8080', requiredInProduction),
+      healthPath: '/health/ping',
+      timeout: {
+        response: Number(get('COURT_APPEARANCE_SCHEDULER_API_TIMEOUT_RESPONSE', 5000)),
+        deadline: Number(get('COURT_APPEARANCE_SCHEDULER_API_TIMEOUT_DEADLINE', 5000)),
+      },
+      agent: new AgentConfig(Number(get('COURT_APPEARANCE_SCHEDULER_API_TIMEOUT_RESPONSE', 5000))),
+    },
+    externalMovements: {
+      url: get('EXTERNAL_MOVEMENTS_API_URL', 'http://localhost:8080', requiredInProduction),
+      healthPath: '/health/ping',
+      timeout: {
+        response: Number(get('EXTERNAL_MOVEMENTS_API_TIMEOUT_RESPONSE', 5000)),
+        deadline: Number(get('EXTERNAL_MOVEMENTS_API_TIMEOUT_DEADLINE', 5000)),
+      },
+      agent: new AgentConfig(Number(get('EXTERNAL_MOVEMENTS_API_TIMEOUT_RESPONSE', 5000))),
+    },
   },
   sqs: {
     audit: auditConfig(),

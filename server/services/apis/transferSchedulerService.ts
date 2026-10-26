@@ -102,6 +102,17 @@ export default class TransferSchedulerService {
       .put<components['schemas']['BulkTransfersResponse']>({ path: '/bulk/transfers', data: request })
   }
 
+  getClashes(context: ApiRequestContext, prisonNumber: string, start: string, end: string) {
+    const data: components['schemas']['ClashRequest'] = {
+      personIdentifiers: [{ type: 'PRISON_NUMBER', value: prisonNumber }],
+      ranges: [{ start, end }],
+    }
+    return this.apiClient.withContext({ ...context, readOnly: true }).post<components['schemas']['ClashResponse']>({
+      path: '/search/people/clashes',
+      data,
+    })
+  }
+
   private handleGetError = (error: unknown) => {
     const statusCode = (error as { data?: { status?: number } })?.data?.status
     if (statusCode && statusCode >= 400 && statusCode <= 499) return null

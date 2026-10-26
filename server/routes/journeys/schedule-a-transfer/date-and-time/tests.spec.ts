@@ -10,6 +10,9 @@ import { ScheduleTransferDateTimePage } from './test.page'
 import { testNotAuthorisedPage } from '../../../../../integration_tests/steps/testNotAuthorisedPage'
 import { testPrisonerDetails } from '../../../../../integration_tests/data/testData'
 import { login, resetStubs } from '../../../../../integration_tests/testUtils'
+import { stubGetCourtAppearanceClashes } from '../../../../../integration_tests/mockApis/courtAppearanceSchedulerApi'
+import { stubGetTemporaryAbsenceClashes } from '../../../../../integration_tests/mockApis/externalMovementsApi'
+import { stubGetTransferClashes } from '../../../../../integration_tests/mockApis/transferSchedulerApi'
 
 test.describe('/schedule-a-transfer/date-and-time unauthorised', () => {
   test('should show unauthorised error', async ({ page }) => {
@@ -35,6 +38,12 @@ test.describe('/schedule-a-transfer/date-and-time', () => {
   test('should enter date and time for schedule-a-transfer', async ({ page }) => {
     const journeyId = uuidV4()
     await startJourney(page, journeyId)
+
+    await Promise.all([
+      stubGetCourtAppearanceClashes([]),
+      stubGetTemporaryAbsenceClashes([]),
+      stubGetTransferClashes([]),
+    ])
 
     // verify page content
     const testPage = await new ScheduleTransferDateTimePage(page).verifyContent()
@@ -97,5 +106,51 @@ test.describe('/schedule-a-transfer/date-and-time', () => {
     await expect(testPage.dateField()).toHaveValue(today)
     await expect(testPage.hourField()).toHaveValue('23')
     await expect(testPage.minuteField()).toHaveValue('59')
+  })
+
+  test('should enter date and time for schedule-a-transfer and proceed to clashes page', async ({ page }) => {
+    const journeyId = uuidV4()
+    await startJourney(page, journeyId)
+
+    await Promise.all([
+      stubGetCourtAppearanceClashes([
+        {
+          start: '2001-01-01T10:00:00',
+          end: '2001-01-01T17:00:00',
+          description: {
+            full: 'Police production',
+            short: '',
+          },
+          location: {
+            description: '',
+          },
+          additionalInformation: {
+            prisonCode: '',
+          },
+        },
+      ]),
+      stubGetTemporaryAbsenceClashes([]),
+      stubGetTransferClashes([]),
+    ])
+
+    // verify page content
+    const testPage = await new ScheduleTransferDateTimePage(page).verifyContent()
+
+    await expect(testPage.dateField()).toBeVisible()
+    await expect(testPage.dateField()).toHaveValue('')
+    await expect(testPage.hourField()).toBeVisible()
+    await expect(testPage.hourField()).toHaveValue('')
+    await expect(testPage.minuteField()).toBeVisible()
+    await expect(testPage.minuteField()).toHaveValue('')
+    await expect(testPage.button('Continue')).toBeVisible()
+
+    // verify next page routing
+    const today = formatInputDate(new Date().toISOString())!
+    await testPage.dateField().fill(today)
+    await testPage.hourField().fill('23')
+    await testPage.minuteField().fill('59')
+    await testPage.clickContinue()
+
+    expect(page.url()).toMatch(/\/schedule-a-transfer\/clashes/)
   })
 })
