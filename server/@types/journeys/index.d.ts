@@ -117,6 +117,7 @@ type UpdateTransferJourney = {
   historyQuery: string
   transfer: components['schemas']['Transfer'] & { label: 'scheduled transfer' | 'planned transfer' }
 } & Partial<{
+  clashes: Clash[] | null
   destination: CodedDescription
   nonAssociations: OtherPrisonerDetails[]
   result: components['schemas']['AuditHistory']
