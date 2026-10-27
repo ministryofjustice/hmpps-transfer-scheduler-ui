@@ -1,0 +1,38 @@
+{% extends "partials/layout.njk" %}
+{%- from "moj/components/interruption-card/macro.njk" import interruptionCard -%}
+
+{% set fullWidth = true %}
+
+{% set pageTitle = 'This prisoner has a conflict - Manage scheduled transfers' %}
+
+{% block innerContent %}
+  <form method="post">
+    <input type="hidden" name="_csrf" value="{{ csrfToken }}"/>
+    {% call interruptionCard({
+      heading: "This prisoner has a conflict",
+      primaryAction: {
+        text: "Continue"
+      },
+      secondaryAction: {
+        text: "Go back",
+        href: 'date-and-time'
+      }
+    }) -%}
+      <p>
+        {{ prisonerDetails | firstNameSpaceLastName }} has a conflict on the date or time of the transfer you have entered.
+      </p>
+      {% for clash in clashes %}
+        <p>
+          Conflict details:
+          <ul class="govuk-list govuk-list--bullet">
+            <li>Date: {{ clash.start | formatDate("d MMMM yyyy") }}</li>
+            <li>Time: {{ clash.start | formatDate("HH:mm") }}</li>
+            <li>Schedule type: {{ clash.type }}</li>
+            <li>Schedule reason: {{ clash.description.full }}</li>
+          </ul>
+        </p>
+      {% endfor %}
+      <p>Go back to change the transfer, or continue to schedule the transfer taking the conflict into consideration.</p>
+    {%- endcall %}
+  </form>
+{% endblock %}

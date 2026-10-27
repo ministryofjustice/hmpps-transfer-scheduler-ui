@@ -4,9 +4,9 @@ import { validate } from '../../../../../middleware/validation/validationMiddlew
 import { schema } from './schema'
 import { Services } from '../../../../../services'
 
-export const EditTransferDateTimeRoutes = ({ transferSchedulerService }: Services) => {
+export const EditTransferDateTimeRoutes = ({ transferSchedulerService, checkClashesService }: Services) => {
   const { router, get, post } = BaseRouter()
-  const controller = new EditTransferDateTimeController(transferSchedulerService)
+  const controller = new EditTransferDateTimeController(transferSchedulerService, checkClashesService)
 
   get('/', controller.GET)
   post('/', validate(schema), controller.submitToApi, controller.POST)

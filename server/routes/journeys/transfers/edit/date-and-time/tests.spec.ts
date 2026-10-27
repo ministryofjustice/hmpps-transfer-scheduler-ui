@@ -38,7 +38,7 @@ test.describe('/transfers/edit/date-and-time', () => {
         ...testTransfer,
         id: transferId,
       }),
-      await stubGetTransferHistory(transferId, { content: [] }),
+      stubGetTransferHistory(transferId, { content: [] }),
       stubPutTransfer(transferId, {
         content: [
           {

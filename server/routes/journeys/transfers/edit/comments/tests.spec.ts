@@ -33,7 +33,7 @@ test.describe('/transfers/edit/comments', () => {
       stubGetPrisonerImage(),
       stubGetPrisonerDetails(),
       stubGetPrisons(),
-      await stubGetTransferHistory(transferId, { content: [] }),
+      stubGetTransferHistory(transferId, { content: [] }),
       stubPutTransfer(transferId),
     ])
     await login(page)

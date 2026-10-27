@@ -1,7 +1,7 @@
 import type { SuperAgentRequest } from 'superagent'
 import { stubFor, successStub } from './wiremock'
 import { components } from '../../server/@types/transferSchedulerApi'
-import { testTransfer } from '../data/testData'
+import { testPrisonerDetails, testTransfer } from '../data/testData'
 
 export const stubTransferSchedulerPing = (httpStatus = 200): SuperAgentRequest =>
   stubFor({
@@ -135,4 +135,14 @@ export const stubPutTransfer = (
     method: 'PUT',
     urlPattern: `/transfer-scheduler-api/transfers/${transferId}`,
     response,
+  })
+
+export const stubGetTransferClashes = (clashes: components['schemas']['ClashResponse']['data'][0]['clashes'][0][]) =>
+  successStub({
+    method: 'POST',
+    urlPattern: '/transfer-scheduler-api/search/people/clashes',
+    response: {
+      origin: { productId: '', name: '' },
+      data: [{ personIdentifier: { type: 'PRISON_NUMBER', value: testPrisonerDetails.prisonerNumber }, clashes }],
+    },
   })

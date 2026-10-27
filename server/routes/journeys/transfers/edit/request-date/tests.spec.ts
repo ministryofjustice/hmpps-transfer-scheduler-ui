@@ -39,7 +39,7 @@ test.describe('/transfers/edit/request-date', () => {
         id: transferId,
         plan: { requestedOn: '2001-01-01', comments: 'Lorem ipsum', priority: { code: '1', description: 'High' } },
       }),
-      await stubGetTransferHistory(transferId, { content: [] }),
+      stubGetTransferHistory(transferId, { content: [] }),
       stubPutTransfer(transferId),
     ])
     await login(page)

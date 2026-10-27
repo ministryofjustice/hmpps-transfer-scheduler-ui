@@ -17,6 +17,9 @@ import { populateTransfer } from '../middleware/permissions/populateTransfer'
 import { populateDocumentTemplate } from '../middleware/permissions/populateDocumentTemplate'
 import DocumentGenerationService from './apis/documentGenerationService'
 import NonAssociationsService from './apis/nonAssociationsService'
+import CheckClashesService from './checkClashesService'
+import CourtAppearanceSchedulerService from './apis/courtAppearanceSchedulerService'
+import ExternalMovementsService from './apis/externalMovementsService'
 
 export const services = () => {
   const { applicationInfo, hmppsAuditClient, hmppsAuthClient } = dataAccess()
@@ -34,6 +37,8 @@ export const services = () => {
 
   const prisonerSearchService = new PrisonerSearchApiService(hmppsAuthClient, prisonPermissionsService)
   const transferSchedulerService = new TransferSchedulerService(hmppsAuthClient)
+  const courtAppearanceSchedulerService = new CourtAppearanceSchedulerService(hmppsAuthClient)
+  const externalMovementsService = new ExternalMovementsService(hmppsAuthClient)
 
   return {
     applicationInfo,
@@ -41,6 +46,11 @@ export const services = () => {
     prisonApiService: new PrisonApiService(hmppsAuthClient, prisonerSearchService),
     prisonRegisterService: new PrisonRegisterService(hmppsAuthClient, cacheStore),
     nonAssociationsService: new NonAssociationsService(hmppsAuthClient),
+    checkClashesService: new CheckClashesService(
+      courtAppearanceSchedulerService,
+      externalMovementsService,
+      transferSchedulerService,
+    ),
     transferSchedulerService,
     prisonerSearchService,
     cacheStore,

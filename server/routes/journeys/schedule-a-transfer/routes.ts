@@ -14,11 +14,12 @@ import { ScheduleTransferCommentsRoutes } from './comments/routes'
 import { ScheduleTransferCheckAnswersRoutes } from './check-answers/routes'
 import { ScheduleTransferConfirmationRoutes } from './confirmation/routes'
 import { ScheduleTransferNonAssociationsRoutes } from './non-associations/routes'
+import { ScheduleTransferClashesRoutes } from './clashes/routes'
 
 export const ScheduleTransferRoutes = (services: Services) => {
   const { router, get } = BaseRouter()
 
-  router.use(redirectCheckAnswersMiddleware([/check-answers/, /confirmation/]))
+  router.use(redirectCheckAnswersMiddleware([/check-answers/, /confirmation/], [/clashes/]))
 
   const START_ENTRY_PAGES: string[] = [Page.SEARCH_PRISONER]
 
@@ -62,7 +63,8 @@ export const ScheduleTransferRoutes = (services: Services) => {
     }),
   )
 
-  router.use('/date-and-time', ScheduleTransferDateTimeRoutes())
+  router.use('/date-and-time', ScheduleTransferDateTimeRoutes(services))
+  router.use('/clashes', ScheduleTransferClashesRoutes())
   router.use('/destination', ScheduleTransferDestinationRoutes(services))
   router.use('/non-associations', ScheduleTransferNonAssociationsRoutes())
   router.use('/reason', ScheduleTransferReasonRoutes(services))

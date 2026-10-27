@@ -1,8 +1,11 @@
 import { Request, Response } from 'express'
 import { SchemaType } from './schema'
 import { formatInputDate } from '../../../../utils/dateTimeUtils'
+import CheckClashesService from '../../../../services/checkClashesService'
 
 export class ScheduleTransferDateTimeController {
+  constructor(private readonly checkClashesService: CheckClashesService) {}
+
   GET = async (req: Request, res: Response) => {
     const { backUrl, startDate, startTime } = req.journeyData.scheduleTransfer!
 
@@ -20,8 +23,16 @@ export class ScheduleTransferDateTimeController {
   }
 
   POST = async (req: Request<unknown, unknown, SchemaType>, res: Response) => {
-    req.journeyData.scheduleTransfer!.startDate = req.body.startDate
-    req.journeyData.scheduleTransfer!.startTime = `${req.body.startTimeHour}:${req.body.startTimeMinute}`
-    res.redirect('destination')
+    const journey = req.journeyData.scheduleTransfer!
+    journey.startDate = req.body.startDate
+    journey.startTime = `${req.body.startTimeHour}:${req.body.startTimeMinute}`
+    journey.clashes = await this.checkClashesService.getClashes(
+      { res },
+      req.journeyData.prisonerDetails!.prisonerNumber,
+      `${journey.startDate}T00:00:00`,
+      `${journey.startDate}T23:59:59`,
+    )
+
+    res.redirect(journey.clashes?.length ? 'clashes' : 'destination')
   }
 }

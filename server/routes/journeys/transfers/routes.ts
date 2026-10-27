@@ -1,4 +1,5 @@
 import { Request, Response } from 'express'
+import { format } from 'date-fns'
 import { Services } from '../../../services'
 import { BaseRouter } from '../../common/routes'
 import { createBackUrlFor } from '../../../middleware/history/historyMiddleware'
@@ -9,7 +10,7 @@ import { MoveTransferToPlanningRoutes } from './move-to-planning/routes'
 
 export const UpdateTransferRoutes = (services: Services) => {
   const { router, get } = BaseRouter()
-  const { populateTransferMiddleware } = services
+  const { populateTransferMiddleware, checkClashesService } = services
 
   get(
     '/start-edit/:id/:property',
@@ -29,7 +30,24 @@ export const UpdateTransferRoutes = (services: Services) => {
         ),
         historyQuery: encodeURIComponent(String(req.query['history'])),
       }
+
       req.journeyData.prisonerDetails = toPrisonerDetails(req.middleware!.prisonerData!)
+
+      if (req.params.property === 'schedule-a-plan') {
+        const startDate = format(req.journeyData.updateTransfer!.transfer.schedule.start, 'yyyy-MM-dd')
+        req.journeyData.updateTransfer!.clashes = await checkClashesService.getClashes(
+          { res },
+          req.middleware!.prisonerData!.prisonerNumber,
+          `${startDate}T00:00:00`,
+          `${startDate}T23:59:59`,
+        )
+
+        if (req.journeyData.updateTransfer!.clashes?.length) {
+          res.redirect('../../edit/clashes')
+          return
+        }
+      }
+
       res.redirect(`../../edit/${req.params.property}`)
     },
   )

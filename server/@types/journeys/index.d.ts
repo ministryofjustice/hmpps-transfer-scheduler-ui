@@ -1,4 +1,5 @@
 import { OtherPrisonerDetails } from '../nonAssociations'
+import { Clash } from '../../services/apis/model/clash'
 
 export interface PrisonerDetails {
   prisonerNumber: string
@@ -44,6 +45,7 @@ type ScheduleTransferJourney = {
 } & Partial<{
   startDate: string
   startTime: string
+  clashes: Clash[] | null
   destination: CodedDescription
   destinationWithNonAssociation: CodedDescription
   nonAssociations: OtherPrisonerDetails[]
@@ -115,6 +117,9 @@ type UpdateTransferJourney = {
   historyQuery: string
   transfer: components['schemas']['Transfer'] & { label: 'scheduled transfer' | 'planned transfer' }
 } & Partial<{
+  startDate: string
+  startTime: string
+  clashes: Clash[] | null
   destination: CodedDescription
   nonAssociations: OtherPrisonerDetails[]
   result: components['schemas']['AuditHistory']
