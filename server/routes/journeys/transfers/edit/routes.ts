@@ -15,6 +15,7 @@ import { EditTransferRequestDateRoutes } from './request-date/routes'
 import { SchedulePlanRoutes } from './schedule-a-plan/routes'
 import { EditTransferNonAssociationsRoutes } from './non-associations/routes'
 import { EditTransferClashesRoutes } from './clashes/routes'
+import { EditTransferClashesEditDateRoutes } from './clashes-edit-date/routes'
 
 export const EditTransferRoutes = (services: Services) => {
   const { router, get } = BaseRouter()
@@ -34,6 +35,7 @@ export const EditTransferRoutes = (services: Services) => {
 
   router.use('/schedule-a-plan', SchedulePlanRoutes(services))
   router.use('/clashes', EditTransferClashesRoutes())
+  router.use('/clashes-edit-date', EditTransferClashesEditDateRoutes(services))
   router.use('/cancel', TransferCancelRoutes(services))
   router.use('/confirmation', EditTransferConfirmationRoutes())
   router.use('/comments', EditTransferCommentsRoutes(services))
