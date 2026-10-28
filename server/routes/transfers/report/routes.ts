@@ -6,11 +6,18 @@ import { Page } from '../../../services/auditService'
 export const TransferReportRoutes = ({
   populateTransferMiddleware,
   nonAssociationsService,
+  prisonerAlertsService,
+  caseNotesService,
   shareLinkStore,
 }: Services) => {
   const { router, get, post } = BaseRouter()
 
-  const controller = new TransferReportController(nonAssociationsService, shareLinkStore)
+  const controller = new TransferReportController(
+    nonAssociationsService,
+    prisonerAlertsService,
+    caseNotesService,
+    shareLinkStore,
+  )
 
   get('/', Page.TRANSFER_REPORT, populateTransferMiddleware({ withHistory: false }), controller.GET)
   post('/', populateTransferMiddleware({ withHistory: false }), controller.POST)

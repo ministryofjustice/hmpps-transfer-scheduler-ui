@@ -24,6 +24,10 @@
           value: { text: transfer.plan.requestedOn | formatDate("d MMMM yyyy") }
         } if transfer.stage === 'PLANNING',
         {
+          key: { text: "Transferred from" },
+          value: { text: transfer.prison.name }
+        },
+        {
           key: { text: "Destination" },
           value: { text: transfer.destination.name or 'Not entered' }
         },
@@ -69,18 +73,18 @@
     }) }}
 
     <h2 class="govuk-heading-m">Alerts</h2>
-    {% if prisoner.alerts.length %}
+    {% if alerts.content.length %}
       {% set rows = [] %}
-      {% for alert in prisoner.alerts %}
+      {% for alert in alerts.content %}
         {% set rows = (rows.push([
           {
-            text: alert.alertType
+            text: alert.alertCode.alertTypeDescription
           },
           {
-            text: alert.alertCode
+            text: alert.alertCode.description
           },
           {
-            text: 'Active' if alert.active and not alert.expired else 'Expired'
+            text: alert.activeFrom | formatDate('d MMMM yyyy')
           }
         ]), rows) %}
       {% endfor %}
@@ -93,7 +97,7 @@
             text: "Alert"
           },
           {
-            text: 'Status'
+            text: 'Active from'
           }
         ],
         rows: rows
@@ -143,7 +147,38 @@
     {% endif %}
 
     <h2 class="govuk-heading-m">Case notes</h2>
-    <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.</p>
+    {% if caseNotes.content.length %}
+      {% set rows = [] %}
+      {% for caseNote in caseNotes.content %}
+        {{ govukSummaryList({
+          card: {
+            title: {
+              text: caseNote.typeDescription + ': ' + caseNote.subTypeDescription
+            }
+          },
+          rows: [
+            {
+              key: { text: "Date and time" },
+              value: { text: caseNote.occurrenceDateTime | formatDate("d MMMM yyyy 'at' HH:mm") }
+            },
+            {
+              key: { text: 'Source' },
+              value: { text: 'System' if caseNote.systemGenerated else 'Staff' }
+            },
+            {
+              key: { text: 'Staff name' },
+              value: { text: caseNote.authorName }
+            },
+            {
+              key: { text: 'Content' },
+              value: { html: caseNote.text | escape | nl2br }
+            }
+          ]
+        })}}
+      {% endfor %}
+    {% else %}
+      <p>No case notes have been recorded within the last month</p>
+    {% endif %}
   </div>
 </div>
 

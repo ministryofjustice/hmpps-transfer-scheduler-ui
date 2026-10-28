@@ -11,7 +11,7 @@ export const dataAccess = () => {
   const hmppsAuthClient = new AuthenticationClient(
     config.apis.hmppsAuth,
     logger,
-    config.redis.enabled ? new RedisTokenStore(createRedisClient()) : new InMemoryTokenStore(),
+    config.redis.enabled ? new RedisTokenStore(createRedisClient(), '__') : new InMemoryTokenStore(),
   )
 
   return {

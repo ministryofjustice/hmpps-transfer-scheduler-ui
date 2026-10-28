@@ -158,6 +158,24 @@ export default {
       },
       agent: new AgentConfig(Number(get('EXTERNAL_MOVEMENTS_API_TIMEOUT_RESPONSE', 5000))),
     },
+    prisonerAlerts: {
+      url: get('PRISONER_ALERTS_API_URL', 'http://localhost:8080', requiredInProduction),
+      healthPath: '/health/ping',
+      timeout: {
+        response: Number(get('PRISONER_ALERTS_API_TIMEOUT_RESPONSE', 5000)),
+        deadline: Number(get('PRISONER_ALERTS_API_TIMEOUT_DEADLINE', 5000)),
+      },
+      agent: new AgentConfig(Number(get('PRISONER_ALERTS_API_TIMEOUT_RESPONSE', 5000))),
+    },
+    caseNotes: {
+      url: get('CASE_NOTES_API_URL', 'http://localhost:8080', requiredInProduction),
+      healthPath: '/health/ping',
+      timeout: {
+        response: Number(get('CASE_NOTES_API_TIMEOUT_RESPONSE', 5000)),
+        deadline: Number(get('CASE_NOTES_API_TIMEOUT_DEADLINE', 5000)),
+      },
+      agent: new AgentConfig(Number(get('CASE_NOTES_API_TIMEOUT_RESPONSE', 5000))),
+    },
   },
   sqs: {
     audit: auditConfig(),
