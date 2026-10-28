@@ -24,11 +24,7 @@ export class TransferReportController {
       prisonerDetails: null, // suppress miniProfile from layout.njk
       nonAssociations: await this.nonAssociationsService
         .getPrisonerNonAssociations({ res }, res.locals.prisonerDetails!.prisonerNumber)
-        .then(({ nonAssociations }) =>
-          nonAssociations
-            .map(({ otherPrisonerDetails }) => otherPrisonerDetails)
-            .filter(({ prisonId }) => prisonId === req.middleware!.transfer!.destination?.code),
-        ),
+        .then(({ nonAssociations }) => nonAssociations.map(({ otherPrisonerDetails }) => otherPrisonerDetails)),
       alerts: await this.prisonerAlertsService.getAlerts({ res }, res.locals.prisonerDetails!.prisonerNumber),
       caseNotes: await this.caseNotesService.getCaseNotes({ res }, res.locals.prisonerDetails!.prisonerNumber),
       shareLink: req.flash(FLASH_KEY__SHARE_LINK)[0],
