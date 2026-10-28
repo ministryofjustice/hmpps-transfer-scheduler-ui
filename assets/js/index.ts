@@ -7,6 +7,7 @@ import { nodeListForEach } from './utils'
 import { initPreventDoubleClickHyperlink } from './prevent-double-click-hyperlink'
 import { AutoComplete } from './autocomplete'
 import { initHmppsSortSelector } from './hmpps-sort-selector'
+import { initPrintButton } from './print-button'
 
 govukFrontend.initAll()
 mojFrontend.initAll()
@@ -24,3 +25,4 @@ nodeListForEach($autoCompleteElements, function ($autoCompleteElements) {
 
 initPreventDoubleClickHyperlink()
 initHmppsSortSelector()
+initPrintButton()

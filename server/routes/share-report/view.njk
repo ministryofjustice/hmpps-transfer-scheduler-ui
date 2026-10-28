@@ -1,0 +1,26 @@
+{% extends "partials/layout.njk" %}
+
+{% set fullWidth = true %}
+{% set caption = 'Manage ' + transfer.label + 's' %}
+{% set pageTitle = 'Transfer report - ' + caption %}
+
+{% set containerClasses = "placeholder-background" %}
+
+{% block innerContent %}
+  <div class="govuk-grid-row">
+    <h1 class="govuk-heading-l govuk-grid-column-two-thirds">Transfer report</h1>
+    <div id="print-options" class="govuk-!-display-none-print govuk-!-display-none govuk-grid-column-one-third govuk-!-padding-top-5">
+      <div class="float-right">
+        <svg width="19" height="21" viewBox="0 0 19 21" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <path d="M14.6005 11.4603C14.6005 11.2835 14.7433 11.1402 14.9193 11.1402H15.5569C15.7329 11.1402 15.8757 11.2835 15.8757 11.4603V12.1006C15.8757 12.2774 15.7329 12.4207 15.5569 12.4207H14.9193C14.7433 12.4207 14.6005 12.2774 14.6005 12.1006V11.4603Z" fill="black"/>
+          <path fill-rule="evenodd" clip-rule="evenodd" d="M9.23601 0C9.55725 2.56085e-05 9.86558 0.128274 10.0927 0.356377L13.5446 3.82262C13.7717 4.05072 13.8994 4.36034 13.8995 4.68292V8.32297H17.1508C18.1719 8.32297 19 9.15448 19 10.1799V15.3017C19 16.3271 18.1719 17.1586 17.1508 17.1586H13.8995V19.7833C13.8995 20.4551 13.3569 21 12.6878 21H6.31216C5.64314 21 5.10054 20.4551 5.10054 19.7833V17.1586H1.84919C0.82805 17.1586 2.05351e-08 16.3271 0 15.3017V10.1799C8.21417e-08 9.15448 0.82805 8.32297 1.84919 8.32297H5.10054V1.21668C5.10054 0.544866 5.64314 4.12395e-08 6.31216 0H9.23601ZM6.24866 19.7833C6.24866 19.8187 6.27695 19.8471 6.31216 19.8471H12.6878C12.723 19.8471 12.7513 19.8187 12.7513 19.7833V14.5977H6.24866V19.7833ZM1.84919 9.47588C1.46186 9.47588 1.14812 9.79094 1.14812 10.1799V15.3017C1.14812 15.6907 1.46186 16.0057 1.84919 16.0057H5.10054V13.4448H13.8995V16.0057H17.1508C17.5381 16.0057 17.8519 15.6907 17.8519 15.3017V10.1799C17.8519 9.79094 17.5381 9.47588 17.1508 9.47588H1.84919ZM6.31216 1.15291C6.27695 1.15291 6.24866 1.18133 6.24866 1.21668V8.32297H12.7513V4.99428H10.1376C9.46854 4.99428 8.92594 4.44942 8.92594 3.7776V1.15291H6.31216ZM10.0741 3.7776C10.0741 3.81296 10.1024 3.84137 10.1376 3.84137H11.9394L10.0741 1.9682V3.7776Z" fill="black"/>
+          <path d="M12.0503 15.4618V16.4221H6.94973V15.4618H12.0503Z" fill="black"/>
+          <path d="M12.0503 17.3825V18.3428H6.94973V17.3825H12.0503Z" fill="black"/>
+        </svg>
+        <a id="print-options-button" class="govuk-link govuk-link--no-visited-state" href="#">Print report</a>
+      </div>
+    </div>
+  </div>
+
+  {% include 'transfers/report/partials/transfer-report.njk' %}
+{% endblock %}

@@ -175,5 +175,6 @@ export default {
   },
   featureToggles: {
     enableBulkTransfers: get('FEAT_BULK_TRANSFERS_PRISONS', '').split(','),
+    enableDevLedFeatures: get('FEAT_DEV_LED_PRISONS', '').split(','),
   },
 }

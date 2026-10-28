@@ -11,7 +11,8 @@
         <ul class="mini-profile-info">
           <li>
             <p class="govuk-heading-s govuk-!-margin-bottom-1">
-              <a id="mini-profile-link" class="govuk-link--no-visited-state" href="{{ prisonerProfileBacklink(originalUrl, prisonerDetails.prisonerNumber) }}" data-qa="mini-profile-person-profile-link">{{ formattedName }}</a>
+              <a id="mini-profile-link" class="govuk-link--no-visited-state govuk-!-display-none-print" href="{{ prisonerProfileBacklink(originalUrl, prisonerDetails.prisonerNumber) }}" data-qa="mini-profile-person-profile-link">{{ formattedName }}</a>
+              <span class="print-only">{{ formattedName }}</span>
             </p>
             <span class="govuk-body" data-qa="mini-profile-prisoner-number">{{ prisonerDetails.prisonerNumber }}</span>
           </li>
@@ -36,7 +37,7 @@
         </ul>
 
         {% if prisonerDetails.alertFlags %}
-          <div class="govuk-!-margin-top-4">
+          <div class="govuk-!-margin-top-4 govuk-!-display-none-print">
             {% for alert in prisonerDetails.alertFlags %}
               {{ alertFlag({
                 alert: alert,
@@ -47,6 +48,11 @@
               }) }}
             {% endfor %}
           </div>
+          <ul class="print-only">
+            {% for alert in prisonerDetails.alertFlags %}
+              <li>{{ alert.label }}</li>
+            {% endfor %}
+          </ul>
         {% endif %}
 
       </div>

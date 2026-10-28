@@ -19,6 +19,7 @@ import { BrowsePlannedTransfersRoutes } from './planned-transfers/routes'
 import sanitiseUrl from '../middleware/sanitiseUrl'
 import { BulkEditTransfersSearchTransfersRoutes } from './bulk-edit-transfers/routes'
 import { Feature, requireFeatureFlag } from '../utils/featureFlag'
+import { TransferShareReportRoutes } from './share-report/routes'
 
 export default function routes(services: Services): Router {
   const { router, get } = BaseRouter()
@@ -47,6 +48,11 @@ export default function routes(services: Services): Router {
         matcher: /^\/planned-transfers/,
         text: 'Manage planned transfers',
         alias: Page.BROWSE_PLANNED_TRANSFERS,
+      },
+      {
+        matcher: /^\/transfers\/[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/,
+        text: 'Manage transfer',
+        alias: Page.MANAGE_TRANSFER,
       },
     ]),
   )
@@ -79,6 +85,7 @@ export default function routes(services: Services): Router {
     BrowsePlannedTransfersRoutes(services),
   )
   router.use('/transfers', requirePermissions(UserPermissionLevel.VIEW_ONLY), ManageTransferRoutes(services))
+  router.use('/share-report', requireFeatureFlag(Feature.DEV_LED), TransferShareReportRoutes(services))
   router.use(
     '/bulk-edit-transfers',
     requirePermissions(UserPermissionLevel.MANAGE),
