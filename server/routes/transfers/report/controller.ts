@@ -5,10 +5,14 @@ import { SchemaType } from './schema'
 import config from '../../../config'
 import CacheInterface from '../../../data/cache/cacheInterface'
 import { ShareLink } from '../../../interfaces/shareLink'
+import PrisonerAlertsService from '../../../services/apis/prisonerAlertsService'
+import CaseNotesService from '../../../services/apis/caseNotesService'
 
 export class TransferReportController {
   constructor(
     private readonly nonAssociationsService: NonAssociationsService,
+    private readonly prisonerAlertsService: PrisonerAlertsService,
+    private readonly caseNotesService: CaseNotesService,
     private readonly shareLinkStore: CacheInterface<ShareLink>,
   ) {}
 
@@ -20,11 +24,9 @@ export class TransferReportController {
       prisonerDetails: null, // suppress miniProfile from layout.njk
       nonAssociations: await this.nonAssociationsService
         .getPrisonerNonAssociations({ res }, res.locals.prisonerDetails!.prisonerNumber)
-        .then(({ nonAssociations }) =>
-          nonAssociations
-            .map(({ otherPrisonerDetails }) => otherPrisonerDetails)
-            .filter(({ prisonId }) => prisonId === req.middleware!.transfer!.destination?.code),
-        ),
+        .then(({ nonAssociations }) => nonAssociations.map(({ otherPrisonerDetails }) => otherPrisonerDetails)),
+      alerts: await this.prisonerAlertsService.getAlerts({ res }, res.locals.prisonerDetails!.prisonerNumber),
+      caseNotes: await this.caseNotesService.getCaseNotes({ res }, res.locals.prisonerDetails!.prisonerNumber),
       shareLink: req.flash(FLASH_KEY__SHARE_LINK)[0],
       ingressUrl: config.ingressUrl,
     })

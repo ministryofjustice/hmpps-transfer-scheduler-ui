@@ -7,6 +7,8 @@ export const TransferShareReportRoutes = ({
   transferSchedulerService,
   prisonerSearchService,
   nonAssociationsService,
+  prisonerAlertsService,
+  caseNotesService,
   shareLinkStore,
 }: Services) => {
   const { router, get } = BaseRouter()
@@ -15,6 +17,8 @@ export const TransferShareReportRoutes = ({
     transferSchedulerService,
     prisonerSearchService,
     nonAssociationsService,
+    prisonerAlertsService,
+    caseNotesService,
     shareLinkStore,
   )
 

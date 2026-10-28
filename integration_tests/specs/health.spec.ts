@@ -11,6 +11,8 @@ import { stubDocumentGenerationPing } from '../mockApis/documentGenerationApi'
 import { stubNonAssociationsPing } from '../mockApis/nonAssociationsApi'
 import { stubCourtAppearanceSchedulerPing } from '../mockApis/courtAppearanceSchedulerApi'
 import { stubExternalMovementsPing } from '../mockApis/externalMovementsApi'
+import { stubPrisonAlertsPing } from '../mockApis/prisonerAlertsApi'
+import { stubCaseNotesPing } from '../mockApis/caseNotesApi'
 
 test.describe('Health', () => {
   test.afterEach(async () => {
@@ -30,6 +32,8 @@ test.describe('Health', () => {
         stubNonAssociationsPing(),
         stubCourtAppearanceSchedulerPing(),
         stubExternalMovementsPing(),
+        stubPrisonAlertsPing(),
+        stubCaseNotesPing(),
       ])
     })
 

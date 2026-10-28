@@ -4,12 +4,16 @@ import CacheInterface from '../../data/cache/cacheInterface'
 import { ShareLink } from '../../interfaces/shareLink'
 import TransferSchedulerService from '../../services/apis/transferSchedulerService'
 import PrisonerSearchApiService from '../../services/apis/prisonerSearchService'
+import PrisonerAlertsService from '../../services/apis/prisonerAlertsService'
+import CaseNotesService from '../../services/apis/caseNotesService'
 
 export class TransferShareReportController {
   constructor(
     private readonly transferSchedulerService: TransferSchedulerService,
     private readonly prisonerSearchService: PrisonerSearchApiService,
     private readonly nonAssociationsService: NonAssociationsService,
+    private readonly prisonerAlertsService: PrisonerAlertsService,
+    private readonly caseNotesService: CaseNotesService,
     private readonly shareLinkStore: CacheInterface<ShareLink>,
   ) {}
 
@@ -38,11 +42,9 @@ export class TransferShareReportController {
       prisoner,
       nonAssociations: await this.nonAssociationsService
         .getPrisonerNonAssociations({ res }, prisoner.prisonerNumber)
-        .then(({ nonAssociations }) =>
-          nonAssociations
-            .map(({ otherPrisonerDetails }) => otherPrisonerDetails)
-            .filter(({ prisonId }) => prisonId === transfer.destination?.code),
-        ),
+        .then(({ nonAssociations }) => nonAssociations.map(({ otherPrisonerDetails }) => otherPrisonerDetails)),
+      alerts: await this.prisonerAlertsService.getAlerts({ res }, prisoner.prisonerNumber),
+      caseNotes: await this.caseNotesService.getCaseNotes({ res }, prisoner.prisonerNumber),
     })
   }
 }

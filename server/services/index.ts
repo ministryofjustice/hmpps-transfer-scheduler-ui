@@ -21,6 +21,8 @@ import CheckClashesService from './checkClashesService'
 import CourtAppearanceSchedulerService from './apis/courtAppearanceSchedulerService'
 import ExternalMovementsService from './apis/externalMovementsService'
 import { ShareLink } from '../interfaces/shareLink'
+import PrisonerAlertsService from './apis/prisonerAlertsService'
+import CaseNotesService from './apis/caseNotesService'
 
 export const services = () => {
   const { applicationInfo, hmppsAuditClient, hmppsAuthClient } = dataAccess()
@@ -54,6 +56,8 @@ export const services = () => {
     ),
     transferSchedulerService,
     prisonerSearchService,
+    prisonerAlertsService: new PrisonerAlertsService(hmppsAuthClient),
+    caseNotesService: new CaseNotesService(hmppsAuthClient),
     cacheStore,
     populatePrisonerMiddleware: populatePrisonerDetails(prisonPermissionsService),
     populateTransferMiddleware: populateTransfer(transferSchedulerService, prisonerSearchService),
