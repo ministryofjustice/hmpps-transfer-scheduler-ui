@@ -6,10 +6,6 @@ export const populateTransfer =
   (transferSchedulerService: TransferSchedulerService, prisonerSearchApiService: PrisonerSearchApiService) =>
   ({ withHistory }: { withHistory: boolean }): RequestHandler<{ id: string }> => {
     return async (req, res, next) => {
-      if (!req.method.match(/GET/i)) {
-        return next()
-      }
-
       const [transfer, transferHistory] = await Promise.all([
         transferSchedulerService.getTransfer({ res }, req.params.id),
         withHistory ? transferSchedulerService.getTransferAuditHistory({ res }, req.params.id) : null,

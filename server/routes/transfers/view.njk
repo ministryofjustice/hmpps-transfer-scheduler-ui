@@ -115,7 +115,7 @@
                 key: { text: 'Comments' }, value: { text: transfer.schedule.comments | escape | nl2br }
               } if transfer.stage === 'PLANNING' and transfer.schedule.comments,
               {
-                key: { html: '<h3 class="summary-list-subheading govuk-heading-m govuk-!-static-margin-bottom-1">Previous plan information</h3>' }
+                key: { html: '<h3 class="summary-list-subheading govuk-heading-m govuk-!-static-margin-bottom-1">Plan information</h3>' }
               } if transfer.stage === 'SCHEDULED' and transfer.plan,
               {
                 key: { text: "Request received" }, value: { text: transfer.plan.requestedOn | formatDate("d MMMM yyyy") }
@@ -137,5 +137,12 @@
         ]
       }) }}
     </div>
+
+    {% if user | featureEnabled('DEV_LED') %}
+      <div class="govuk-grid-column-one-quarter float-right placeholder-background">
+        <h2 class="govuk-heading-m">Related tasks</h2>
+        <p><a class="govuk-link govuk-link--no-visited-state" href="/transfers/{{ transfer.id }}/report">Generate transfer report</a></p>
+      </div>
+    {% endif %}
   </div>
 {% endblock %}

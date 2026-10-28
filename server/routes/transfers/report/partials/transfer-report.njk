@@ -1,0 +1,163 @@
+{% from "govuk/components/summary-list/macro.njk" import govukSummaryList %}
+{% from "partials/statusTag/macro.njk" import statusTag %}
+{% from "govuk/components/table/macro.njk" import govukTable %}
+{% from "partials/miniProfile/macro.njk" import miniProfile %}
+
+{{ miniProfile(prisoner, originalUrl, prisonerProfileUrl) }}
+
+<div class="govuk-grid-row">
+  <div class="govuk-grid-column-two-thirds print-full-width">
+    {{ govukSummaryList({
+      card: {
+        classes: "govuk-!-margin-bottom-7",
+        title: {
+          text: "Transfer information"
+        }
+      },
+      rows: [
+        {
+          key: { text: "Date and time" },
+          value: { text: transfer.schedule.start | formatDate("d MMMM yyyy 'at' HH:mm") or 'Not entered' }
+        },
+        {
+          key: { text: "Request received" },
+          value: { text: transfer.plan.requestedOn | formatDate("d MMMM yyyy") }
+        } if transfer.stage === 'PLANNING',
+        {
+          key: { text: "Destination" },
+          value: { text: transfer.destination.name or 'Not entered' }
+        },
+        {
+          key: { text: "Reason" },
+          value: { text: transfer.reason.description }
+        },
+        {
+          key: { text: "Escort details" },
+          value: { text: transfer.logistics.description or 'Not entered' }
+        },
+        {
+          key: { text: "Priority" },
+          value: { text: transfer.plan.priority.description }
+        } if transfer.stage === 'PLANNING',
+        {
+          key: { text: "Comments" },
+          value: { text: ((transfer.plan.comments if transfer.stage === 'PLANNING' else transfer.schedule.comments) or 'Not provided') | escape | nl2br }
+        },
+        {
+          key: { text: 'Status' },
+          value: { html: statusTag(transfer) }
+        },
+        {
+          key: { html: '<h3 class="summary-list-subheading govuk-heading-m govuk-!-static-margin-bottom-1">Previous transfer information</h3>' }
+        } if transfer.stage === 'PLANNING' and transfer.schedule.comments,
+        {
+          key: { text: 'Comments' }, value: { text: transfer.schedule.comments | escape | nl2br }
+        } if transfer.stage === 'PLANNING' and transfer.schedule.comments,
+        {
+          key: { html: '<h3 class="summary-list-subheading govuk-heading-m govuk-!-static-margin-bottom-1">Plan information</h3>' }
+        } if transfer.stage === 'SCHEDULED' and transfer.plan,
+        {
+          key: { text: "Request received" }, value: { text: transfer.plan.requestedOn | formatDate("d MMMM yyyy") }
+        } if transfer.stage === 'SCHEDULED' and transfer.plan,
+        {
+          key: { text: "Priority" }, value: { text: transfer.plan.priority.description }
+        } if transfer.stage === 'SCHEDULED' and transfer.plan,
+        {
+          key: { text: "Comments" }, value: { text: (transfer.plan.comments or 'Not provided') | escape | nl2br }
+        } if transfer.stage === 'SCHEDULED' and transfer.plan
+      ] | removeNullish
+    }) }}
+
+    <h2 class="govuk-heading-m">Alerts</h2>
+    {% if prisoner.alerts.length %}
+      {% set rows = [] %}
+      {% for alert in prisoner.alerts %}
+        {% set rows = (rows.push([
+          {
+            text: alert.alertType
+          },
+          {
+            text: alert.alertCode
+          },
+          {
+            text: 'Active' if alert.active and not alert.expired else 'Expired'
+          }
+        ]), rows) %}
+      {% endfor %}
+      {{ govukTable({
+        head: [
+          {
+            text: "Alert type"
+          },
+          {
+            text: "Alert"
+          },
+          {
+            text: 'Status'
+          }
+        ],
+        rows: rows
+      }) }}
+    {% else %}
+      <p>No alerts have been recorded</p>
+    {% endif %}
+
+    <h2 class="govuk-heading-m">Non-associations</h2>
+    {% if nonAssociations.length %}
+      {% set rows = [] %}
+      {% for nonAssociation in nonAssociations %}
+        {% set rows = (rows.push([
+          {
+            text: nonAssociation | lastNameCommaFirstName
+          },
+          {
+            text: nonAssociation.roleDescription
+          },
+          {
+            text: nonAssociation.prisonName
+          },
+          {
+            text: nonAssociation.cellLocation
+          }
+        ]), rows) %}
+      {% endfor %}
+      {{ govukTable({
+        head: [
+          {
+            text: "Prisoner"
+          },
+          {
+            text: "Role"
+          },
+          {
+            text: 'Prison'
+          },
+          {
+            text: 'Cell location'
+          }
+        ],
+        rows: rows
+      }) }}
+    {% else %}
+      <p>No relevant non-associations have been recorded</p>
+    {% endif %}
+
+    <h2 class="govuk-heading-m">Case notes</h2>
+    <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.</p>
+  </div>
+</div>
+
+<style nonce="{{ cspNonce }}">
+  @media print {
+    @page {
+      @top-center {
+        content: 'RESTRICTED - MOJ USE ONLY';
+        font-weight: bold;
+      }
+      @bottom-center {
+        content: 'RESTRICTED - MOJ USE ONLY';
+        font-weight: bold;
+      }
+    }
+  }
+</style>

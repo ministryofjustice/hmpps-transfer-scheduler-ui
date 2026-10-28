@@ -20,6 +20,7 @@ import NonAssociationsService from './apis/nonAssociationsService'
 import CheckClashesService from './checkClashesService'
 import CourtAppearanceSchedulerService from './apis/courtAppearanceSchedulerService'
 import ExternalMovementsService from './apis/externalMovementsService'
+import { ShareLink } from '../interfaces/shareLink'
 
 export const services = () => {
   const { applicationInfo, hmppsAuditClient, hmppsAuthClient } = dataAccess()
@@ -57,6 +58,7 @@ export const services = () => {
     populatePrisonerMiddleware: populatePrisonerDetails(prisonPermissionsService),
     populateTransferMiddleware: populateTransfer(transferSchedulerService, prisonerSearchService),
     populateDocumentTemplateMiddleware: populateDocumentTemplate(new DocumentGenerationService(hmppsAuthClient)),
+    shareLinkStore: cacheStore('shareLink') as CacheInterface<ShareLink>,
   }
 }
 
