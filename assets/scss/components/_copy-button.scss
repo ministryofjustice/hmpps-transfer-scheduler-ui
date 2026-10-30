@@ -1,0 +1,9 @@
+// Hide copy text links if Javascript is disabled
+.copy-button { display: none }
+.copy-button.js-enabled { display: inline }
+
+.disable-click {
+  pointer-events: none;
+  background-color: transparent;
+  box-shadow: none;
+}
