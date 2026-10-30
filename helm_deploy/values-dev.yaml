@@ -31,5 +31,13 @@ generic-service:
     FEAT_BULK_TRANSFERS_PRISONS: MDI
     FEAT_DEV_LED_PRISONS: MDI
 
+  allowlist:
+    kmpg: 195.68.59.74
+    groups:
+      - digital_staff_and_mojo
+      - moj_cloud_platform
+      - prisons
+      - private_prisons
+
 generic-prometheus-alerts:
   businessHoursOnly: true
