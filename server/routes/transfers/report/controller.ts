@@ -19,7 +19,6 @@ export class TransferReportController {
     res.render('transfers/report/view', {
       showBreadcrumbs: true,
       transfer: req.middleware!.transfer,
-      prisoner: res.locals.prisonerDetails,
       nonAssociations: await this.nonAssociationsService
         .getPrisonerNonAssociations({ res }, res.locals.prisonerDetails!.prisonerNumber)
         .then(({ nonAssociations }) => nonAssociations.map(({ otherPrisonerDetails }) => otherPrisonerDetails)),
