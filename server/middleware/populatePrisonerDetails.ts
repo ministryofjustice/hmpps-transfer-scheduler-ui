@@ -26,5 +26,6 @@ export const toPrisonerDetails = (prisoner: Prisoner): PrisonerDetails => ({
   dateOfBirth: prisoner.dateOfBirth,
   prisonName: prisoner.prisonName,
   cellLocation: prisoner.cellLocation,
+  ...(prisoner.csra ? { csra: prisoner.csra } : {}),
   ...(prisoner.alerts?.length ? { alertFlags: getAlertFlags(prisoner.alerts) } : {}),
 })

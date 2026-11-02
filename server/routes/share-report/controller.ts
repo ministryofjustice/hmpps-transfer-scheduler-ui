@@ -24,11 +24,15 @@ export class TransferShareReportController {
     }
 
     const transfer = await this.transferSchedulerService.getTransfer({ res }, shareLink.transferId)
-    if (!transfer) {
+    if (transfer?.stage !== 'SCHEDULED') {
       return res.notFound()
     }
 
-    if (!res.locals.user.caseLoads?.find(caseLoad => caseLoad.caseLoadId === transfer.destination?.code)) {
+    if (
+      !res.locals.user.caseLoads?.find(
+        ({ caseLoadId }) => caseLoadId === transfer.destination?.code || caseLoadId === transfer.prison.code,
+      )
+    ) {
       return res.notAuthorised()
     }
 
@@ -39,7 +43,7 @@ export class TransferShareReportController {
         ...transfer,
         label: transfer.stage === 'SCHEDULED' ? 'scheduled transfer' : 'planned transfer',
       },
-      prisoner,
+      prisonerDetails: prisoner,
       nonAssociations: await this.nonAssociationsService
         .getPrisonerNonAssociations({ res }, prisoner.prisonerNumber)
         .then(({ nonAssociations }) => nonAssociations.map(({ otherPrisonerDetails }) => otherPrisonerDetails)),
