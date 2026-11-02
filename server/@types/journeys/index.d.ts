@@ -16,6 +16,7 @@ export interface PrisonerDetails {
     expired: boolean
   }[]
   alertFlags?: AlertFlagLabel[]
+  csra?: string
 }
 
 export type JourneyData = {
