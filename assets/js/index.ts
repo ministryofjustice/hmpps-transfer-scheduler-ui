@@ -8,6 +8,7 @@ import { initPreventDoubleClickHyperlink } from './prevent-double-click-hyperlin
 import { AutoComplete } from './autocomplete'
 import { initHmppsSortSelector } from './hmpps-sort-selector'
 import { initPrintButton } from './print-button'
+import { copyText } from './copy-button'
 
 govukFrontend.initAll()
 mojFrontend.initAll()
@@ -26,3 +27,4 @@ nodeListForEach($autoCompleteElements, function ($autoCompleteElements) {
 initPreventDoubleClickHyperlink()
 initHmppsSortSelector()
 initPrintButton()
+copyText('#share-link','#copy-share-link', 'Share link copied', 'Copy')

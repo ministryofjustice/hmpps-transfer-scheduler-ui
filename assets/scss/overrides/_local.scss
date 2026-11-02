@@ -67,3 +67,14 @@
     display: none;
   }
 }
+
+.share-link {
+  span {
+    display: inline-block;
+    margin-top: 7px;
+  }
+
+  button {
+    margin-left: 10px;
+  }
+}

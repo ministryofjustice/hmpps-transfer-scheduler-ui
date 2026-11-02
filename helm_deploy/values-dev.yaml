@@ -32,6 +32,7 @@ generic-service:
     FEAT_DEV_LED_PRISONS: MDI
 
   allowlist:
+    kmpg: 195.68.59.74
     groups:
       - digital_staff_and_mojo
       - moj_cloud_platform

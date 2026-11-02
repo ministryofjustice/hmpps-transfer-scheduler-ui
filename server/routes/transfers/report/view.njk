@@ -26,9 +26,11 @@
 
   <div class="govuk-!-display-none-print">
     {% if shareLink %}
-      <p>
+      <p class="share-link">
+        <span id="copy-alert" class="govuk-visually-hidden" aria-live="polite"></span>
         <span>Send this link to share this transfer report:</span>
-        <span>{{ ingressUrl }}/share-report/{{ shareLink }}</span>
+        <span id="share-link">{{ ingressUrl }}/share-report/{{ shareLink }}</span>
+        <button class="govuk-button govuk-button--secondary copy-button" id="copy-share-link">Copy</button>
       </p>
     {% else %}
     <search class="moj-search govuk-!-width-one-half">
