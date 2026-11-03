@@ -98,3 +98,27 @@ export const testNonAssociationResponse: PrisonerNonAssociations = {
   openCount: '',
   prisonerNumber: '',
 }
+
+export const prisoner1 = {
+  prisonerNumber: 'A1234EA',
+  firstName: 'Name',
+  lastName: 'One',
+  cellLocation: 'Loc-1',
+  prisonId: 'LEI',
+  dateOfBirth: '',
+  status: '',
+  prisonName: '',
+  restrictedPatient: false,
+}
+
+export const prisoner2 = {
+  prisonerNumber: 'A2345EA',
+  firstName: 'Another',
+  lastName: 'Two',
+  cellLocation: 'Loc-2',
+  prisonId: 'LEI',
+  dateOfBirth: '',
+  status: '',
+  prisonName: '',
+  restrictedPatient: false,
+}
