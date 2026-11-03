@@ -59,11 +59,11 @@ export default function createApp(services: Services): express.Application {
     }),
     (_req, res) => {
       res.status(401)
-      return res.render('autherror')
+      return res.render('pages/service-not-authorised')
     },
   )
 
-  app.use(authorisationMiddleware([AuthorisedRoles.TRANSFER_SCHEDULER_RW, AuthorisedRoles.TRANSFER_SCHEDULER_RO]))
+  app.use(authorisationMiddleware([AuthorisedRoles.TRANSFER_SCHEDULER_RO, AuthorisedRoles.TRANSFER_SCHEDULER_RW]))
   app.use(setUpCsrf())
   app.use(setUpCurrentUser())
 
