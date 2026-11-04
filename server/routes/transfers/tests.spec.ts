@@ -91,6 +91,7 @@ test.describe('/transfers/:id', () => {
 
     await expect(testPage.button('Cancel this transfer')).toBeVisible()
     await expect(testPage.button('Move to planned transfers')).toBeVisible()
+    await expect(testPage.link('Create transfer report')).toBeVisible()
 
     // verify history tab
     await testPage.clickTab('Transfer history')
@@ -109,6 +110,7 @@ test.describe('/transfers/:id', () => {
     await stubGetTransfer({
       ...testTransfer,
       id: transferId,
+      stage: 'SCHEDULED',
     })
     await stubGetTransferHistory(transferId, { content: [] })
     await page.goto(`/transfers/${transferId}`)
@@ -131,6 +133,7 @@ test.describe('/transfers/:id', () => {
 
     await expect(testPage.button('Cancel this transfer')).toHaveCount(0)
     await expect(testPage.button('Move to planned transfers')).toHaveCount(0)
+    await expect(testPage.link('Create transfer report')).toBeVisible()
   })
 
   test('should show planned transfer details (awaiting details) and edit links', async ({ page }) => {
@@ -171,6 +174,7 @@ test.describe('/transfers/:id', () => {
 
     await expect(testPage.button('Schedule this plan')).toHaveCount(0)
     await expect(testPage.button('Cancel this plan')).toBeVisible()
+    await expect(testPage.link('Create transfer report')).toHaveCount(0)
   })
 
   test('should show planned transfer details (ready to schedule) and edit links', async ({ page }) => {
@@ -209,6 +213,7 @@ test.describe('/transfers/:id', () => {
 
     await expect(testPage.button('Schedule this plan')).toBeVisible()
     await expect(testPage.button('Cancel this plan')).toBeVisible()
+    await expect(testPage.link('Create transfer report')).toHaveCount(0)
   })
 
   test('should show planned transfer with an expired transfer date', async ({ page }) => {
@@ -230,6 +235,7 @@ test.describe('/transfers/:id', () => {
 
     await expect(testPage.button('Schedule this plan')).toHaveCount(0)
     await expect(testPage.button('Cancel this plan')).toBeVisible()
+    await expect(testPage.link('Create transfer report')).toHaveCount(0)
     await expect(page.getByText('Transfer date and time must be in the future.')).toBeVisible()
   })
 })
