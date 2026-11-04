@@ -138,10 +138,10 @@
       }) }}
     </div>
 
-    {% if user | featureEnabled('DEV_LED') %}
-      <div class="govuk-grid-column-one-quarter float-right placeholder-background">
+    {% if transfer.stage === 'SCHEDULED' %}
+      <div class="govuk-grid-column-one-quarter float-right">
         <h2 class="govuk-heading-m">Related tasks</h2>
-        <p><a class="govuk-link govuk-link--no-visited-state" href="/transfers/{{ transfer.id }}/report">Generate transfer report</a></p>
+        <p><a class="govuk-link govuk-link--no-visited-state" href="/transfers/{{ transfer.id }}/report">Create transfer report</a></p>
       </div>
     {% endif %}
   </div>

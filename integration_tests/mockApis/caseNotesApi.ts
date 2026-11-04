@@ -1,5 +1,5 @@
 import type { SuperAgentRequest } from 'superagent'
-import { stubFor } from './wiremock'
+import { stubFor, successStub } from './wiremock'
 
 export const stubCaseNotesPing = (httpStatus = 200): SuperAgentRequest =>
   stubFor({
@@ -12,4 +12,11 @@ export const stubCaseNotesPing = (httpStatus = 200): SuperAgentRequest =>
       headers: { 'Content-Type': 'application/json;charset=UTF-8' },
       jsonBody: { status: httpStatus === 200 ? 'UP' : 'DOWN' },
     },
+  })
+
+export const stubSearchCaseNotes = () =>
+  successStub({
+    method: 'POST',
+    urlPattern: '/case-notes-api/search/case-notes/([a-zA-Z0-9]*)',
+    response: { content: [] },
   })

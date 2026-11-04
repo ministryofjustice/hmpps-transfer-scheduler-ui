@@ -21,6 +21,8 @@ export default interface Prisoner {
   bookNumber?: string
   category?: string
 
+  csra?: string
+
   alerts?: {
     alertType: string
     alertCode: string

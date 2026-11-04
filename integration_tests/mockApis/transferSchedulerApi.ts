@@ -146,3 +146,12 @@ export const stubGetTransferClashes = (clashes: components['schemas']['ClashResp
       data: [{ personIdentifier: { type: 'PRISON_NUMBER', value: testPrisonerDetails.prisonerNumber }, clashes }],
     },
   })
+
+export const stubPutBulkTransfers = (
+  result: components['schemas']['BulkTransfersResponse'] = { transfers: [testTransfer] },
+) =>
+  successStub({
+    method: 'PUT',
+    urlPattern: '/transfer-scheduler-api/bulk/transfers',
+    response: result,
+  })

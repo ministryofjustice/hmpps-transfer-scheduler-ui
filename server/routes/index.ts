@@ -3,7 +3,6 @@ import { Router } from 'express'
 import type { Services } from '../services'
 import { Page } from '../services/auditService'
 import { BaseRouter } from './common/routes'
-import { populateUserPermissions } from '../middleware/permissions/populateUserPermissions'
 import breadcrumbs from '../middleware/history/breadcrumbs'
 import { historyMiddleware } from '../middleware/history/historyMiddleware'
 import populateValidationErrors from '../middleware/validation/populateValidationErrors'
@@ -19,13 +18,11 @@ import { BrowsePlannedTransfersRoutes } from './planned-transfers/routes'
 import sanitiseUrl from '../middleware/sanitiseUrl'
 import { BulkEditTransfersSearchTransfersRoutes } from './bulk-edit-transfers/routes'
 import { Feature, requireFeatureFlag } from '../utils/featureFlag'
-import { TransferShareReportRoutes } from './share-report/routes'
 
 export default function routes(services: Services): Router {
   const { router, get } = BaseRouter()
 
   router.use(sanitiseUrl)
-  router.use(populateUserPermissions)
   router.use(breadcrumbs())
   router.use(
     historyMiddleware(() => [
@@ -85,7 +82,6 @@ export default function routes(services: Services): Router {
     BrowsePlannedTransfersRoutes(services),
   )
   router.use('/transfers', requirePermissions(UserPermissionLevel.VIEW_ONLY), ManageTransferRoutes(services))
-  router.use('/share-report', requireFeatureFlag(Feature.DEV_LED), TransferShareReportRoutes(services))
   router.use(
     '/bulk-edit-transfers',
     requirePermissions(UserPermissionLevel.MANAGE),
