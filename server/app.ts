@@ -26,9 +26,12 @@ import config from './config'
 import PrisonerImageController from './routes/prisonerImageController'
 import { handleApiError } from './middleware/validation/handleApiError'
 import sentryMiddleware from './middleware/sentryMiddleware'
-import { AuthorisedRoles } from './middleware/permissions/populateUserPermissions'
+import { AuthorisedRoles, populateUserPermissions } from './middleware/permissions/populateUserPermissions'
 import { serviceEnabledMiddleware } from './middleware/permissions/serviceEnabledMiddleware'
 import { populateEnabledFeatures } from './utils/featureFlag'
+import { requirePermissions } from './middleware/permissions/requirePermissions'
+import { UserPermissionLevel } from './interfaces/hmppsUser'
+import { TransferShareReportRoutes } from './routes/share-report/routes'
 
 export default function createApp(services: Services): express.Application {
   const app = express()
@@ -100,6 +103,10 @@ export default function createApp(services: Services): express.Application {
       getAttributes: (req: Request) => ({ username: req.user?.username }),
     }),
   )
+
+  app.use(populateUserPermissions)
+  // this route is placed here instead of the usual /server/routes/index.ts because it needs to be accessed by users outside the beta
+  app.use('/share-report', requirePermissions(UserPermissionLevel.VIEW_ONLY), TransferShareReportRoutes(services))
 
   app.get(/(.*)/, serviceEnabledMiddleware)
 

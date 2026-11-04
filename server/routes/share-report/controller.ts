@@ -49,6 +49,7 @@ export class TransferShareReportController {
         .then(({ nonAssociations }) => nonAssociations.map(({ otherPrisonerDetails }) => otherPrisonerDetails)),
       alerts: await this.prisonerAlertsService.getAlerts({ res }, prisoner.prisonerNumber),
       caseNotes: await this.caseNotesService.getCaseNotes({ res }, prisoner.prisonerNumber),
+      originalUrl: req.originalUrl, // needed for miniProfile
     })
   }
 }
