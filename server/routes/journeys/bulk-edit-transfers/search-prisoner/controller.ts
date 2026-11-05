@@ -11,7 +11,7 @@ export class BulkEditTransfersSearchPrisonerController {
   constructor(readonly prisonerSearchApiService: PrisonerSearchApiService) {}
 
   GET = async (req: Request, res: Response) => {
-    const { searchTerm } = req.journeyData.bulkEditTransfer!
+    const { searchTerm, transfers } = req.journeyData.bulkEditTransfer!
 
     let searchResponse: Prisoner[] = []
 
@@ -30,6 +30,7 @@ export class BulkEditTransfersSearchPrisonerController {
         ? searchResponse.map(prisoner => ({
             ...prisoner,
             backLink: prisonerProfileBacklink(req.originalUrl, prisoner.prisonerNumber),
+            alreadyInList: transfers.find(transfer => transfer.prisoner.identifier === prisoner.prisonerNumber),
           }))
         : [],
       validationErrors: res.locals['validationErrors'] ?? getValidationErrors(req),

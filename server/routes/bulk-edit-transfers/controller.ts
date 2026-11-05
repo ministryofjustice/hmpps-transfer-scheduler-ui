@@ -16,7 +16,7 @@ export class BulkEditTransfersSearchTransfersController {
     private readonly prisonRegisterService: PrisonRegisterService,
   ) {}
 
-  private PAGE_SIZE = 10
+  private PAGE_SIZE = 50
 
   private DEFAULT_SORT = 'start,asc'
 

@@ -4,7 +4,7 @@ export class BulkEditTransfersNonAssociationsController {
   GET = async (req: Request, res: Response) => {
     const { nonAssociations } = req.journeyData.bulkEditTransfer!
 
-    res.render('bulk-schedule-transfers/non-associations/view', {
+    res.render('bulk-edit-transfers/non-associations/view', {
       backUrl: 'edit-list',
       goBackUrl: 'edit-list',
       nonAssociations,
