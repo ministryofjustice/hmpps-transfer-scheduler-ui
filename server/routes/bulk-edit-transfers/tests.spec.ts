@@ -1,8 +1,6 @@
 import { expect, test } from '@playwright/test'
 import auth from '../../../integration_tests/mockApis/hmppsAuth'
 import { stubComponents } from '../../../integration_tests/mockApis/componentsApi'
-import { stubGetPrisonerImage } from '../../../integration_tests/mockApis/prisonApi'
-import { stubGetPrisonerDetails } from '../../../integration_tests/mockApis/prisonerSearchApi'
 import { stubGetPrisons } from '../../../integration_tests/mockApis/prisonRegisterApi'
 import {
   stubGetReasons,
@@ -18,8 +16,6 @@ test.describe('/bulk-edit-transfers', () => {
     await Promise.all([
       auth.stubSignInPage(),
       stubComponents(),
-      stubGetPrisonerImage(),
-      stubGetPrisonerDetails(),
       stubGetPrisons(),
       stubGetReasons(),
       stubGetLogistics(),

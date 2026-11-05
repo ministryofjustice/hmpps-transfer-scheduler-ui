@@ -65,6 +65,8 @@
             text: prisoner.cellLocation
           },
           {
+            text: 'Already in list'
+          } if prisoner.alreadyInList else {
             classes: 'govuk-link govuk-link--no-visited-state',
             html: '<a class="govuk-link govuk-link--no-visited-state" href="search-prisoner/' + prisoner.prisonerNumber + '">Add to list<span class="govuk-visually-hidden"> (' + prisoner | lastNameCommaFirstName + ')</span></a>'
           }

@@ -11,7 +11,7 @@ export const schemaFactory =
     const reasons = await transferSchedulerService.getReferenceData({ res }, 'transfer-reason')
 
     return createSchema({
-      reason: z.string().transform(validateAndTransformCodedDescription(reasons, 'Enter a reason for this transfer')),
+      reason: z.string().transform(validateAndTransformCodedDescription(reasons, 'Enter and select a reason')),
       comments: optionalString({
         maxChar: { count: 225, errorMessage: 'The maximum character limit for comments is 225' },
       }),

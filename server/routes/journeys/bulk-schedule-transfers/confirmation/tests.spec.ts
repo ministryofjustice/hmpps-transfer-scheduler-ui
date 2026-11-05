@@ -2,8 +2,6 @@ import { v4 as uuidV4 } from 'uuid'
 import { test, Page, expect } from '@playwright/test'
 import auth from '../../../../../integration_tests/mockApis/hmppsAuth'
 import { stubComponents } from '../../../../../integration_tests/mockApis/componentsApi'
-import { stubGetPrisonerDetails } from '../../../../../integration_tests/mockApis/prisonerSearchApi'
-import { stubGetPrisonerImage } from '../../../../../integration_tests/mockApis/prisonApi'
 import { BulkScheduleTransfersConfirmationPage } from './test.page'
 import { testNotAuthorisedPage } from '../../../../../integration_tests/steps/testNotAuthorisedPage'
 import { testPrisonerDetails, testTransfer } from '../../../../../integration_tests/data/testData'
@@ -18,7 +16,7 @@ test.describe('/bulk-schedule-transfers/confirmation unauthorised', () => {
 
 test.describe('/bulk-schedule-transfers/confirmation', () => {
   test.beforeEach(async ({ page }) => {
-    await Promise.all([auth.stubSignInPage(), stubComponents(), stubGetPrisonerImage(), stubGetPrisonerDetails()])
+    await Promise.all([auth.stubSignInPage(), stubComponents()])
     await login(page)
   })
 

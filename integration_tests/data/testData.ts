@@ -122,3 +122,45 @@ export const prisoner2 = {
   prisonName: '',
   restrictedPatient: false,
 }
+
+export const transfer1 = {
+  id: 'transfer-1',
+  person: {
+    identifier: 'A1234EA',
+    firstName: 'Name',
+    lastName: 'One',
+  },
+  prison: {
+    code: 'LEI',
+    name: 'LEEDS',
+  },
+  status: { code: 'SCHEDULED', description: 'Scheduled' },
+  schedule: {
+    start: '2001-01-01T10:00:00',
+  },
+  destination: { code: 'P1', name: 'Prison One' },
+  reason: { code: 'R1', description: 'Reason One' },
+  logistics: { code: 'L1', description: 'Logistics One' },
+  stage: 'SCHEDULED' as 'SCHEDULED' | 'PLANNING' | 'UNSCHEDULED',
+}
+
+export const transfer2 = {
+  id: 'transfer-2',
+  person: {
+    identifier: 'A2345EA',
+    firstName: 'Another',
+    lastName: 'Two',
+  },
+  prison: {
+    code: 'LEI',
+    name: 'LEEDS',
+  },
+  status: { code: 'SCHEDULED', description: 'Scheduled' },
+  schedule: {
+    start: '2001-01-01T10:00:00',
+  },
+  destination: { code: 'P1', name: 'Prison One' },
+  reason: { code: 'R1', description: 'Reason One' },
+  logistics: { code: 'L1', description: 'Logistics One' },
+  stage: 'SCHEDULED' as 'SCHEDULED' | 'PLANNING' | 'UNSCHEDULED',
+}

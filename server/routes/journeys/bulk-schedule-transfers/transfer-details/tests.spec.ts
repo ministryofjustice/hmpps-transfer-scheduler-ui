@@ -2,7 +2,7 @@ import { test, expect, Page } from '@playwright/test'
 import { v4 as uuidV4 } from 'uuid'
 import auth from '../../../../../integration_tests/mockApis/hmppsAuth'
 import { stubComponents } from '../../../../../integration_tests/mockApis/componentsApi'
-import { stubGetPrisonerDetails, stubSearchPrisoner } from '../../../../../integration_tests/mockApis/prisonerSearchApi'
+import { stubGetPrisonerDetails } from '../../../../../integration_tests/mockApis/prisonerSearchApi'
 import { stubGetPrisonerImage } from '../../../../../integration_tests/mockApis/prisonApi'
 import { BulkScheduleTransferDetailsPage } from './test.page'
 import { login, resetStubs } from '../../../../../integration_tests/testUtils'
@@ -26,9 +26,6 @@ test.describe('/bulk-schedule-transfers/transfer-details', () => {
       auth.stubSignInPage(),
       stubComponents(),
       stubGetPrisonerImage(),
-      stubSearchPrisoner('LEI', '.+', {
-        content: [prisoner1, prisoner2],
-      }),
       stubGetPrisonerDetails(prisoner1),
       stubGetPrisonerDetails(prisoner2),
       stubGetPrisons(),
