@@ -8,7 +8,6 @@ import { ScheduleTransferRoutes } from './schedule-a-transfer/routes'
 import { UpdateTransferRoutes } from './transfers/routes'
 import { PlanTransferRoutes } from './plan-a-transfer/routes'
 import { BulkScheduleTransfersRoutes } from './bulk-schedule-transfers/routes'
-import { Feature, requireFeatureFlag } from '../../utils/featureFlag'
 import { BulkEditTransfersRoutes } from './bulk-edit-transfers/routes'
 
 export const JourneyRoutes = (services: Services) => {
@@ -29,15 +28,9 @@ export const JourneyRoutes = (services: Services) => {
   router.use(
     '/bulk-schedule-transfers',
     requirePermissions(UserPermissionLevel.MANAGE),
-    requireFeatureFlag(Feature.BULK_TRANSFERS),
     BulkScheduleTransfersRoutes(services),
   )
-  router.use(
-    '/bulk-edit-transfers',
-    requirePermissions(UserPermissionLevel.MANAGE),
-    requireFeatureFlag(Feature.BULK_TRANSFERS),
-    BulkEditTransfersRoutes(services),
-  )
+  router.use('/bulk-edit-transfers', requirePermissions(UserPermissionLevel.MANAGE), BulkEditTransfersRoutes(services))
 
   if (process.env.NODE_ENV === 'e2e-test') {
     router.get('/inject-journey-data', (req, res) => {
