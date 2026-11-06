@@ -672,6 +672,7 @@ export interface components {
       stage: string
       destinationCodes?: string[]
       logisticsCodes?: string[]
+      reasonCodes?: string[]
       statusCodes?: (
         | 'PLANNING'
         | 'READY_TO_SCHEDULE'
@@ -681,7 +682,6 @@ export interface components {
         | 'IN_TRANSIT'
         | 'COMPLETED'
       )[]
-      reasonCodes?: string[]
       /** Format: int32 */
       size: number
       sort: string
