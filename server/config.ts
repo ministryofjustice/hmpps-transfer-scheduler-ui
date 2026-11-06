@@ -192,7 +192,6 @@ export default {
     replayOnErrorSampleRate: Number(get('SENTRY_REPLAY_ON_ERROR_SAMPLE_RATE', 0.1)),
   },
   featureToggles: {
-    enableBulkTransfers: get('FEAT_BULK_TRANSFERS_PRISONS', '').split(','),
     enableDevLedFeatures: get('FEAT_DEV_LED_PRISONS', '').split(','),
   },
 }
