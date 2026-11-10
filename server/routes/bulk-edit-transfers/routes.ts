@@ -13,7 +13,12 @@ export const BulkEditTransfersSearchTransfersRoutes = ({
 
   const controller = new BulkEditTransfersSearchTransfersController(transferSchedulerService, prisonRegisterService)
 
-  get('/', Page.BULK_EDIT_TRANSFERS, validateOnGET(schema, '*'), controller.GET)
+  get(
+    '/',
+    Page.BULK_EDIT_TRANSFERS,
+    validateOnGET(schema, 'start', 'end', 'destination', 'reason', 'logistics'),
+    controller.GET,
+  )
   post('/', validate(schema), controller.POST)
 
   return router

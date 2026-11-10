@@ -1,5 +1,5 @@
 import { z } from 'zod'
-import { addDays, differenceInDays, format } from 'date-fns'
+import { differenceInDays } from 'date-fns'
 import { createSchema } from '../../middleware/validation/validationMiddleware'
 import { validateTransformOptionalDate } from '../../utils/validations/validateDatePicker'
 
@@ -20,33 +20,27 @@ export const schema = createSchema({
       return 1
     }),
 }).transform(({ start, end, ...otherProps }, ctx) => {
-  if (start === null && end === null) {
-    return {
-      start: format(new Date(), 'yyyy-MM-dd'),
-      end: format(addDays(new Date(), 31), 'yyyy-MM-dd'),
-      ...otherProps,
-    }
-  }
-
   if (start === null) {
     ctx.addIssue({ code: 'custom', message: 'Enter or select date from', path: ['start'] })
-    return z.NEVER
   }
 
   if (end === null) {
     ctx.addIssue({ code: 'custom', message: 'Enter or select date to', path: ['end'] })
-    return z.NEVER
   }
 
-  if (start > end) {
-    ctx.addIssue({ code: 'custom', message: 'Enter a valid date range', path: ['end'] })
-    ctx.addIssue({ code: 'custom', message: '', path: ['start'] })
-    return z.NEVER
+  if (start && end) {
+    if (start > end) {
+      ctx.addIssue({ code: 'custom', message: 'Enter a valid date range', path: ['end'] })
+      ctx.addIssue({ code: 'custom', message: '', path: ['start'] })
+    }
+
+    if (differenceInDays(end, start) > 31) {
+      ctx.addIssue({ code: 'custom', message: 'Enter a date range less than 31 days', path: ['end'] })
+      ctx.addIssue({ code: 'custom', message: '', path: ['start'] })
+    }
   }
 
-  if (differenceInDays(end, start) > 31) {
-    ctx.addIssue({ code: 'custom', message: 'Enter a date range less than 31 days', path: ['end'] })
-    ctx.addIssue({ code: 'custom', message: '', path: ['start'] })
+  if (ctx.issues.length) {
     return z.NEVER
   }
 
