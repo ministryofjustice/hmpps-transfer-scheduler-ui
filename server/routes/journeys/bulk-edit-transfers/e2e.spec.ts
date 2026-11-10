@@ -62,7 +62,7 @@ test.describe('/bulk-edit-transfers e2e ', () => {
   })
 
   test('should bulk edit scheduled transfer list', async ({ page }) => {
-    await page.goto(`/bulk-edit-transfers`)
+    await page.goto('/bulk-edit-transfers?start=01/01/2001&end=31/01/2001')
     const startPage = await new BulkEditTransfersSearchTransfersPage(page).verifyContent()
     await startPage.clickButton('Create list')
 
