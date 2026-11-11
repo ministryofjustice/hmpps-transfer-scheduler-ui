@@ -81,7 +81,9 @@ test.describe('/bulk-edit-transfers', () => {
     await testPage.clickButton('Apply')
     await testPage.link('Enter a date range less than 31 days').click()
     await expect(testPage.endDateField()).toBeFocused()
-    await expect(page.getByText('Enter a valid filter to search and view scheduled transfers.')).toBeVisible()
+    await expect(
+      page.getByText('Enter a valid filter to create a list of scheduled transfers you want to edit.'),
+    ).toBeVisible()
 
     // verify next page routing
     await testPage.endDateField().fill('31/1/2001')

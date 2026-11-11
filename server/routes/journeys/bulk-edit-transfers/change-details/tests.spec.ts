@@ -42,7 +42,7 @@ test.describe('/bulk-edit-transfers/change-details', () => {
   })
 
   const startJourney = async (page: Page) => {
-    await page.goto('/bulk-edit-transfers')
+    await page.goto('/bulk-edit-transfers?start=01/01/2001&end=31/01/2001')
     await page.getByRole('button', { name: 'Create list' }).click()
     const journeyId = (await page.url()).split('/')[3]!
     await injectJourneyData(page, journeyId, {
