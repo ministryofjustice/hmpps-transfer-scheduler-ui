@@ -98,7 +98,7 @@
         },
         {
           key: { text: "Comments (optional)" },
-          value: { text: (comments or 'Not provided') | escape | nl2br },
+          value: { html: (comments or 'Not provided') | escape | nl2br },
           actions: {
           items: [
             {

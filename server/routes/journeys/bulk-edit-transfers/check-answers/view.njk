@@ -81,7 +81,7 @@
           },
           {
             key: { text: "Comments" },
-            value: { text: (transfer.comments or 'Not provided') | escape | nl2br },
+            value: { html: (transfer.comments or 'Not provided') | escape | nl2br },
             actions: {
             items: [
               {

@@ -40,7 +40,7 @@
           },
           {
             key: { text: "Comments" },
-            value: { text: (transfer.schedule.comments or 'Not provided') | escape | nl2br }
+            value: { html: (transfer.schedule.comments or 'Not provided') | escape | nl2br }
           }
         ]
       }) }}
