@@ -101,7 +101,7 @@
               } if transfer.stage === 'PLANNING',
               {
                 key: { text: "Comments" },
-                value: { text: ((transfer.plan.comments if transfer.stage === 'PLANNING' else transfer.schedule.comments) or 'Not provided') | escape | nl2br },
+                value: { html: ((transfer.plan.comments if transfer.stage === 'PLANNING' else transfer.schedule.comments) or 'Not provided') | escape | nl2br },
                 actions: { items: [{ href: baseEditUrl + "/comments", text: "Change", visuallyHiddenText: "comments" }] }
               },
               {
@@ -112,7 +112,7 @@
                 key: { html: '<h3 class="summary-list-subheading govuk-heading-m govuk-!-static-margin-bottom-1">Previous transfer information</h3>' }
               } if transfer.stage === 'PLANNING' and transfer.schedule.comments,
               {
-                key: { text: 'Comments' }, value: { text: transfer.schedule.comments | escape | nl2br }
+                key: { text: 'Comments' }, value: { html: transfer.schedule.comments | escape | nl2br }
               } if transfer.stage === 'PLANNING' and transfer.schedule.comments,
               {
                 key: { html: '<h3 class="summary-list-subheading govuk-heading-m govuk-!-static-margin-bottom-1">Plan information</h3>' }
@@ -124,7 +124,7 @@
                 key: { text: "Priority" }, value: { text: transfer.plan.priority.description }
               } if transfer.stage === 'SCHEDULED' and transfer.plan,
               {
-                key: { text: "Comments" }, value: { text: (transfer.plan.comments or 'Not provided') | escape | nl2br }
+                key: { text: "Comments" }, value: { html: (transfer.plan.comments or 'Not provided') | escape | nl2br }
               } if transfer.stage === 'SCHEDULED' and transfer.plan
             ] | removeNullish | showChangeLinksIf(user | hasPermission('MANAGE') and editable)
           }) }
