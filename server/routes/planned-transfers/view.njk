@@ -257,7 +257,7 @@
                 <label class="govuk-label" for="size">Show results</label>
                 <select class="govuk-select hmpps-sort-selector__select" id="size" name="size" value="{{ size }}">
                   <option value="10" {{ 'selected' if size == '10' }}>10 per page</option>
-                  <option value="25" {{ 'selected' if size == '25' }}>25 page</option>
+                  <option value="25" {{ 'selected' if size == '25' }}>25 per page</option>
                   <option value="50" {{ 'selected' if size == '50' }}>50 per page</option>
                   <option value="100" {{ 'selected' if size == '100' }}>100 per page</option>
                 </select>
@@ -270,14 +270,14 @@
 
           {{ simplePagination(paginationParams) }}
 
-          {% set viewLabel = 'View and manage' if user | hasPermission('MANAGE') else 'View details'  %}
-
           {% set rows = [] %}
           {% for result in results %}
+            {% set viewLabel = 'View and manage<span class="govuk-visually-hidden"> transfer for ' + result.person | firstNameSpaceLastName + ' - ' + result.person.identifier + '</span>' if user | hasPermission('MANAGE') else 'View details<span class="govuk-visually-hidden"> of transfer for' + result.person | firstNameSpaceLastName + ' - ' + result.person.identifier + '</span>'  %}
+
             {% set rows = (rows.push(
               {
                 title: { text: result.person | firstNameSpaceLastName + ' - ' + result.person.identifier },
-                action: { text: viewLabel, href: '/transfers/' + result.id },
+                action: { html: viewLabel, href: '/transfers/' + result.id },
                 data: [
                   result.destination.name or 'Not entered',
                   result.plan.requestedOn | formatDate("d MMMM yyyy"),
