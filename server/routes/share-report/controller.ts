@@ -24,7 +24,7 @@ export class TransferShareReportController {
     }
 
     const transfer = await this.transferSchedulerService.getTransfer({ res }, shareLink.transferId)
-    if (transfer?.stage !== 'SCHEDULED') {
+    if (!transfer || !['SCHEDULED', 'PLANNING'].includes(transfer?.stage ?? '')) {
       return res.notFound()
     }
 
