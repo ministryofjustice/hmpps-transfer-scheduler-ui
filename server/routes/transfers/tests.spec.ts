@@ -174,7 +174,7 @@ test.describe('/transfers/:id', () => {
 
     await expect(testPage.button('Schedule this plan')).toHaveCount(0)
     await expect(testPage.button('Cancel this plan')).toBeVisible()
-    await expect(testPage.link('Create transfer report')).toHaveCount(0)
+    await expect(testPage.link('Create transfer report')).toBeVisible()
   })
 
   test('should show planned transfer details (ready to schedule) and edit links', async ({ page }) => {
@@ -213,7 +213,7 @@ test.describe('/transfers/:id', () => {
 
     await expect(testPage.button('Schedule this plan')).toBeVisible()
     await expect(testPage.button('Cancel this plan')).toBeVisible()
-    await expect(testPage.link('Create transfer report')).toHaveCount(0)
+    await expect(testPage.link('Create transfer report')).toBeVisible()
   })
 
   test('should show planned transfer with an expired transfer date', async ({ page }) => {
@@ -235,7 +235,7 @@ test.describe('/transfers/:id', () => {
 
     await expect(testPage.button('Schedule this plan')).toHaveCount(0)
     await expect(testPage.button('Cancel this plan')).toBeVisible()
-    await expect(testPage.link('Create transfer report')).toHaveCount(0)
+    await expect(testPage.link('Create transfer report')).toBeVisible()
     await expect(page.getByText('Transfer date and time must be in the future.')).toBeVisible()
   })
 })
