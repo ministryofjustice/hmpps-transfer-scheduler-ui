@@ -20,6 +20,14 @@
         <span id="share-link">{{ ingressUrl }}/share-report/{{ shareLink }}</span>
         <button class="govuk-button govuk-button--secondary copy-button" id="copy-share-link">Copy</button>
       </p>
+    {% elseif not transfer.destination %}
+      <p>
+        You must have a destination prison to create a report link to share. This link will expire in 7 days.
+      </p>
+      {{ govukButton({
+        text: "Create report link",
+        disabled: true
+      }) }}
     {% else %}
       <p>
         Create a report link to share. This link will expire in 7 days.

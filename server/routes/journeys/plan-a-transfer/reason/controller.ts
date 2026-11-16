@@ -1,5 +1,5 @@
 import { Request, Response } from 'express'
-import { SchemaType } from '../../schedule-a-transfer/reason/schema'
+import { SchemaType } from '../../transfers/edit/reason/schema'
 import TransferSchedulerService from '../../../../services/apis/transferSchedulerService'
 
 export class PlanTransferReasonController {
