@@ -220,6 +220,7 @@
                   result.schedule.start | formatDate("HH:mm"),
                   result.reason.description,
                   result.logistics.description,
+                  result.person.cellLocation or 'No data',
                   { html: statusTag(result, 'float-right shift-right-20') }
                 ]
               }
@@ -235,7 +236,8 @@
               ],
               [
                 { text: 'Reason', width: 35 },
-                { text: 'Escort details', width: 45 },
+                { text: 'Escort details', width: 30 },
+                { text: 'Location', width: 15 },
                 { text: '', width: 20 }
               ]
             ],
