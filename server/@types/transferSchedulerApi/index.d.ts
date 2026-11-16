@@ -384,11 +384,11 @@ export interface components {
       type: 'MakeUnscheduled'
     } & Omit<components['schemas']['TransferAction'], 'type'>
     MovementRequest: {
-      destinationCode: string
-      logisticsCode: string
       reasonCode: string
       /** Format: date-time */
       occurredAt: string
+      destinationCode: string
+      logisticsCode: string
       comments?: string | null
     }
     PlanTransfer: {
@@ -600,6 +600,7 @@ export interface components {
       identifier: string
       firstName: string
       lastName: string
+      cellLocation?: string | null
     }
     Plan: {
       /** Format: date */
@@ -672,7 +673,6 @@ export interface components {
       stage: string
       destinationCodes?: string[]
       logisticsCodes?: string[]
-      reasonCodes?: string[]
       statusCodes?: (
         | 'PLANNING'
         | 'READY_TO_SCHEDULE'
@@ -682,15 +682,16 @@ export interface components {
         | 'IN_TRANSIT'
         | 'COMPLETED'
       )[]
+      reasonCodes?: string[]
       /** Format: int32 */
       size: number
       sort: string
       /** Format: int32 */
       page: number
       /** Format: date */
-      end?: string | null
-      /** Format: date */
       start?: string | null
+      /** Format: date */
+      end?: string | null
     }
     ScheduledSearchRequest: Omit<
       WithRequired<

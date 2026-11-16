@@ -33,6 +33,7 @@ test.describe('/scheduled-transfers', () => {
               identifier: 'A9965EA',
               firstName: 'PRISONER-NAME',
               lastName: 'PRISONER-SURNAME',
+              cellLocation: '1-2-34',
             },
             prison: {
               code: 'LEI',
@@ -81,6 +82,7 @@ test.describe('/scheduled-transfers', () => {
     await expect(page.locator('strong', { hasText: 'Time' }).locator('..')).toContainText('10:00')
     await expect(page.locator('strong', { hasText: 'Reason' }).locator('..')).toContainText('Reason One')
     await expect(page.locator('strong', { hasText: 'Escort details' }).locator('..')).toContainText('Logistics One')
+    await expect(page.locator('strong', { hasText: 'Location' }).locator('..')).toContainText('1-2-34')
     await expect(
       testPage.link('View and manage transfer for Prisoner-Name Prisoner-Surname - A9965EA'),
     ).toHaveAttribute('href', /\/transfers\/transfer-1/)
