@@ -1,4 +1,3 @@
-import { Request } from 'express'
 import { Services } from '../../../services'
 import { BaseRouter } from '../../common/routes'
 import { Page } from '../../../services/auditService'
@@ -6,20 +5,15 @@ import { toPrisonerDetails } from '../../../middleware/populatePrisonerDetails'
 import preventNavigationToExpiredJourneys from '../../../middleware/journey/preventNavigationToExpiredJourneys'
 import journeyStateGuard from '../../../middleware/journey/journeyStateGuard'
 import redirectCheckAnswersMiddleware from '../../../middleware/journey/redirectCheckAnswersMiddleware'
-import { ScheduleTransferDateTimeRoutes } from './date-and-time/routes'
-import { ScheduleTransferDestinationRoutes } from './destination/routes'
-import { ScheduleTransferReasonRoutes } from './reason/routes'
-import { ScheduleTransferLogisticsRoutes } from './logistics/routes'
-import { ScheduleTransferCommentsRoutes } from './comments/routes'
 import { ScheduleTransferCheckAnswersRoutes } from './check-answers/routes'
 import { ScheduleTransferConfirmationRoutes } from './confirmation/routes'
-import { ScheduleTransferNonAssociationsRoutes } from './non-associations/routes'
-import { ScheduleTransferClashesRoutes } from './clashes/routes'
+import { ScheduleTransferDetailsRoutes } from './transfer-details/routes'
+import { ScheduleTransferConflictsRoutes } from './conflicts/routes'
 
 export const ScheduleTransferRoutes = (services: Services) => {
   const { router, get } = BaseRouter()
 
-  router.use(redirectCheckAnswersMiddleware([/check-answers/, /confirmation/], [/clashes/]))
+  router.use(redirectCheckAnswersMiddleware([/check-answers/, /confirmation/], [/conflicts/]))
 
   const START_ENTRY_PAGES: string[] = [Page.SEARCH_PRISONER]
 
@@ -35,7 +29,7 @@ export const ScheduleTransferRoutes = (services: Services) => {
             : `${res.locals.prisonerProfileUrl}/prisoner/${req.journeyData.prisonerDetails.prisonerNumber}`,
         historyQuery: encodeURIComponent(String(req.query['history'])),
       }
-      res.redirect('../date-and-time')
+      res.redirect('../transfer-details')
     } else {
       res.notFound()
     }
@@ -51,25 +45,11 @@ export const ScheduleTransferRoutes = (services: Services) => {
       next()
     },
     preventNavigationToExpiredJourneys(),
-    journeyStateGuard({
-      'non-associations': (req: Request) => {
-        const { destinationWithNonAssociation, destination } = req.journeyData.scheduleTransfer!
-        if (!destinationWithNonAssociation) {
-          if (destination) return 'reason'
-          return 'destination'
-        }
-        return undefined
-      },
-    }),
+    journeyStateGuard({}),
   )
 
-  router.use('/date-and-time', ScheduleTransferDateTimeRoutes(services))
-  router.use('/clashes', ScheduleTransferClashesRoutes())
-  router.use('/destination', ScheduleTransferDestinationRoutes(services))
-  router.use('/non-associations', ScheduleTransferNonAssociationsRoutes())
-  router.use('/reason', ScheduleTransferReasonRoutes(services))
-  router.use('/logistics', ScheduleTransferLogisticsRoutes(services))
-  router.use('/comments', ScheduleTransferCommentsRoutes())
+  router.use('/transfer-details', ScheduleTransferDetailsRoutes(services))
+  router.use('/conflicts', ScheduleTransferConflictsRoutes())
   router.use('/check-answers', ScheduleTransferCheckAnswersRoutes(services))
   router.use('/confirmation', ScheduleTransferConfirmationRoutes())
 

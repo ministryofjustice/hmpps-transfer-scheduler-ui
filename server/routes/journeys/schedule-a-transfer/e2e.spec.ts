@@ -7,20 +7,16 @@ import { stubGetPrisonerDetails } from '../../../../integration_tests/mockApis/p
 import { login } from '../../../../integration_tests/testUtils'
 import { getApiBody, resetStubs } from '../../../../integration_tests/mockApis/wiremock'
 import { testPrisonerDetails } from '../../../../integration_tests/data/testData'
-import { ScheduleTransferDateTimePage } from './date-and-time/test.page'
 import { stubGetPrisons } from '../../../../integration_tests/mockApis/prisonRegisterApi'
 import { stubGetNonAssociations } from '../../../../integration_tests/mockApis/nonAssociationsApi'
-import { ScheduleTransferDestinationPage } from './destination/test.page'
 import {
   stubGetLogistics,
   stubGetReasons,
   stubPostScheduledTransfer,
 } from '../../../../integration_tests/mockApis/transferSchedulerApi'
-import { ScheduleTransferReasonPage } from './reason/test.page'
-import { ScheduleTransferLogisticsPage } from './logistics/test.page'
-import { ScheduleTransferCommentsPage } from './comments/test.page'
 import { ScheduleTransferCheckAnswersPage } from './check-answers/test.page'
 import { ScheduleTransferConfirmationPage } from './confirmation/test.page'
+import { ScheduleTransferDetailsPage } from './transfer-details/test.page'
 
 test.describe('/schedule-a-transfer e2e ', () => {
   test.beforeEach(async ({ page }) => {
@@ -54,29 +50,17 @@ test.describe('/schedule-a-transfer e2e ', () => {
     await page.goto(`/${journeyId}/schedule-a-transfer/start/${testPrisonerDetails.prisonerNumber}`)
 
     // fill in all pages
-    const dateTimePage = await new ScheduleTransferDateTimePage(page).verifyContent()
-    await dateTimePage.dateField().fill('31/12/2047')
-    await dateTimePage.hourField().fill('10')
-    await dateTimePage.minuteField().fill('00')
-    await dateTimePage.clickContinue()
-
-    const destinationPage = await new ScheduleTransferDestinationPage(page).verifyContent()
-    await destinationPage.destinationInput().click()
+    const detailsPage = await new ScheduleTransferDetailsPage(page).verifyContent()
+    await detailsPage.dateField().fill('31/12/2047')
+    await detailsPage.hourField().fill('10')
+    await detailsPage.minuteField().fill('00')
+    await detailsPage.destinationInput().click()
     await page.getByText('Prison One').first().click()
-    await destinationPage.clickContinue()
-
-    const reasonPage = await new ScheduleTransferReasonPage(page).verifyContent()
-    await reasonPage.reasonInput().click()
+    await detailsPage.reasonInput().click()
     await page.getByText('Reason One').first().click()
-    await reasonPage.clickContinue()
-
-    const logisticsPage = await new ScheduleTransferLogisticsPage(page).verifyContent()
-    await logisticsPage.logisticsInput().click()
+    await detailsPage.logisticsInput().click()
     await page.getByText('Logistics One').first().click()
-    await logisticsPage.clickContinue()
-
-    const commentsPage = await new ScheduleTransferCommentsPage(page).verifyContent()
-    await commentsPage.clickContinue()
+    await detailsPage.clickContinue()
 
     const checkAnswersPage = await new ScheduleTransferCheckAnswersPage(page).verifyContent()
     await checkAnswersPage.verifyAnswer('Date', '31 December 2047')
@@ -88,40 +72,40 @@ test.describe('/schedule-a-transfer e2e ', () => {
 
     // verify changing answers
     await checkAnswersPage.clickLink('Change date')
-    await dateTimePage.dateField().fill('30/12/2047')
-    await dateTimePage.clickContinue()
+    await detailsPage.dateField().fill('30/12/2047')
+    await detailsPage.clickContinue()
     await checkAnswersPage.verifyAnswer('Date', '30 December 2047')
 
     await checkAnswersPage.clickLink('Change time')
-    await dateTimePage.hourField().fill('11')
-    await dateTimePage.minuteField().fill('30')
-    await dateTimePage.clickContinue()
+    await detailsPage.hourField().fill('11')
+    await detailsPage.minuteField().fill('30')
+    await detailsPage.clickContinue()
     await checkAnswersPage.verifyAnswer('Time', '11:30')
 
     await checkAnswersPage.clickLink('Change destination')
-    await destinationPage.destinationInput().clear()
-    await destinationPage.destinationInput().click()
+    await detailsPage.destinationInput().clear()
+    await detailsPage.destinationInput().click()
     await page.getByText('Prison Two').first().click()
-    await destinationPage.clickContinue()
+    await detailsPage.clickContinue()
     await checkAnswersPage.verifyAnswer('Destination', 'Prison Two')
 
     await checkAnswersPage.clickLink('Change reason')
-    await reasonPage.reasonInput().clear()
-    await reasonPage.reasonInput().click()
+    await detailsPage.reasonInput().clear()
+    await detailsPage.reasonInput().click()
     await page.getByText('Reason Two').first().click()
-    await reasonPage.clickContinue()
+    await detailsPage.clickContinue()
     await checkAnswersPage.verifyAnswer('Reason', 'Reason Two')
 
     await checkAnswersPage.clickLink('Change escort details')
-    await logisticsPage.logisticsInput().clear()
-    await logisticsPage.logisticsInput().click()
+    await detailsPage.logisticsInput().clear()
+    await detailsPage.logisticsInput().click()
     await page.getByText('Logistics Two').first().click()
-    await logisticsPage.clickContinue()
+    await detailsPage.clickContinue()
     await checkAnswersPage.verifyAnswer('Escort details', 'Logistics Two')
 
     await checkAnswersPage.clickLink('Change comments')
-    await commentsPage.commentsField().fill('Lorem ipsum')
-    await commentsPage.clickContinue()
+    await detailsPage.commentsField().fill('Lorem ipsum')
+    await detailsPage.clickContinue()
     await checkAnswersPage.verifyAnswer('Comments', 'Lorem ipsum')
 
     // proceed to confirmation

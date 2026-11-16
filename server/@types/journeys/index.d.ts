@@ -46,6 +46,8 @@ type ScheduleTransferJourney = {
 } & Partial<{
   startDate: string
   startTime: string
+  startDateWithClash: string
+  startTimeWithClash: string
   clashes: Clash[] | null
   destination: CodedDescription
   destinationWithNonAssociation: CodedDescription

@@ -1,5 +1,5 @@
 import { NextFunction, Request, Response } from 'express'
-import { SchemaType } from '../../../schedule-a-transfer/reason/schema'
+import { SchemaType } from './schema'
 import TransferSchedulerService from '../../../../../services/apis/transferSchedulerService'
 import { FLASH_KEY__SUCCESS_BANNER } from '../../../../../utils/constants'
 
