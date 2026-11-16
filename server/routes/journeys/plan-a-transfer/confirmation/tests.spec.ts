@@ -68,7 +68,7 @@ test.describe('/plan-a-transfer/confirmation', () => {
     await testPage.verifyAnswer('Escort details (optional)', 'Logistics One')
     await testPage.verifyAnswer('Comments (optional)', 'Lorem ipsum')
 
-    await testPage.verifyLink('Plan another transfer', /plan-a-transfers/)
+    await testPage.verifyLink('Plan another transfer', /search-prisoner\/plan-a-transfer/)
     await testPage.verifyLink('View and manage this planned transfer', /transfers\/transfer-id/)
     await testPage.verifyLink('View and manage planned transfers', /planned-transfers/)
     await testPage.verifyLink('View and manage scheduled transfers', /scheduled-transfers/)
