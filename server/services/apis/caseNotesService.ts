@@ -34,7 +34,7 @@ export default class CaseNotesService {
         page: 1,
         size: 2000,
         sort: 'createdAt,DESC',
-        occurredFrom: `${format(subMonths(new Date(), 1), 'yyyy-MM-dd')}T00:00:00`,
+        occurredFrom: `${format(subMonths(new Date(), 6), 'yyyy-MM-dd')}T00:00:00`,
       },
     })
   }
