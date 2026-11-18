@@ -67,7 +67,7 @@ test.describe('/plan-a-transfer/non-associations', () => {
     const testPage = await new PlanTransferNonAssociationPage(page).verifyContent()
 
     await expect(testPage.link('Go back')).toBeVisible()
-    await expect(testPage.link('Go back')).toHaveAttribute('href', /destination/)
+    await expect(testPage.link('Go back')).toHaveAttribute('href', /plan-details/)
     await expect(testPage.button('Continue')).toBeVisible()
 
     await expect(
@@ -77,6 +77,6 @@ test.describe('/plan-a-transfer/non-associations', () => {
 
     // verify next page routing
     await testPage.clickContinue()
-    expect(page.url()).toMatch(/\/plan-a-transfer\/logistics/)
+    expect(page.url()).toMatch(/\/plan-a-transfer\/check-answers/)
   })
 })
