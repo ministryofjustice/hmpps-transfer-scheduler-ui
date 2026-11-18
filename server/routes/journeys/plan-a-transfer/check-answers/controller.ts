@@ -26,7 +26,7 @@ export class PlanTransferCheckAnswersController {
 
   BACK = async (req: Request, res: Response) => {
     delete req.journeyData.isCheckAnswers
-    res.redirect('../comments')
+    res.redirect('../plan-details')
   }
 
   submitToApi = async (req: Request, res: Response, next: NextFunction) => {

@@ -6,21 +6,15 @@ import { toPrisonerDetails } from '../../../middleware/populatePrisonerDetails'
 import preventNavigationToExpiredJourneys from '../../../middleware/journey/preventNavigationToExpiredJourneys'
 import journeyStateGuard from '../../../middleware/journey/journeyStateGuard'
 import redirectCheckAnswersMiddleware from '../../../middleware/journey/redirectCheckAnswersMiddleware'
-import { PlanTransferRequestDateRoutes } from './request-date/routes'
-import { PlanTransferReasonRoutes } from './reason/routes'
-import { PlanTransferPriorityRoutes } from './priority/routes'
-import { PlanTransferDateTimeRoutes } from './date-and-time/routes'
-import { PlanTransferDestinationRoutes } from './destination/routes'
-import { PlanTransferLogisticsRoutes } from './logistics/routes'
-import { PlanTransferCommentsRoutes } from './comments/routes'
 import { PlanTransferCheckAnswersRoutes } from './check-answers/routes'
 import { PlanTransferConfirmationRoutes } from './confirmation/routes'
 import { PlanTransferNonAssociationsRoutes } from './non-associations/routes'
+import { PlanTransferDetailsRoutes } from './plan-details/routes'
 
 export const PlanTransferRoutes = (services: Services) => {
   const { router, get } = BaseRouter()
 
-  router.use(redirectCheckAnswersMiddleware([/check-answers/, /confirmation/]))
+  router.use(redirectCheckAnswersMiddleware([/check-answers/, /confirmation/], [/non-associations/]))
 
   const START_ENTRY_PAGES: string[] = [Page.SEARCH_PRISONER]
 
@@ -36,7 +30,7 @@ export const PlanTransferRoutes = (services: Services) => {
             : `${res.locals.prisonerProfileUrl}/prisoner/${req.journeyData.prisonerDetails.prisonerNumber}`,
         historyQuery: encodeURIComponent(String(req.query['history'])),
       }
-      res.redirect('../request-date')
+      res.redirect('../plan-details')
     } else {
       res.notFound()
     }
@@ -64,14 +58,8 @@ export const PlanTransferRoutes = (services: Services) => {
     }),
   )
 
-  router.use('/request-date', PlanTransferRequestDateRoutes())
-  router.use('/reason', PlanTransferReasonRoutes(services))
-  router.use('/priority', PlanTransferPriorityRoutes(services))
-  router.use('/date-and-time', PlanTransferDateTimeRoutes())
-  router.use('/destination', PlanTransferDestinationRoutes(services))
+  router.use('/plan-details', PlanTransferDetailsRoutes(services))
   router.use('/non-associations', PlanTransferNonAssociationsRoutes())
-  router.use('/logistics', PlanTransferLogisticsRoutes(services))
-  router.use('/comments', PlanTransferCommentsRoutes())
   router.use('/check-answers', PlanTransferCheckAnswersRoutes(services))
   router.use('/confirmation', PlanTransferConfirmationRoutes())
 

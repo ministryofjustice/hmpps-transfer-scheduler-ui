@@ -66,13 +66,13 @@ test.describe('/plan-a-transfer/check-answers', () => {
     await testPage.verifyAnswer('Escort details (optional)', 'Logistics One')
     await testPage.verifyAnswer('Comments (optional)', 'Lorem ipsum')
 
-    await testPage.verifyLink('Change request date', /request-date/)
-    await testPage.verifyLink('Change reason', /reason/)
-    await testPage.verifyLink('Change priority', /priority/)
-    await testPage.verifyLink('Change date and time', /date-and-time/)
-    await testPage.verifyLink('Change destination', /destination/)
-    await testPage.verifyLink('Change escort details', /logistics/)
-    await testPage.verifyLink('Change comments', /comments/)
+    await testPage.verifyLink('Change request date', /plan-details#requestedOn/)
+    await testPage.verifyLink('Change reason', /plan-details#reason/)
+    await testPage.verifyLink('Change priority', /plan-details#priority/)
+    await testPage.verifyLink('Change date and time', /plan-details#startDate/)
+    await testPage.verifyLink('Change destination', /plan-details#destination/)
+    await testPage.verifyLink('Change escort details', /plan-details#logistics/)
+    await testPage.verifyLink('Change comments', /plan-details#comments/)
 
     await expect(testPage.button('Confirm plan')).toBeVisible()
 
