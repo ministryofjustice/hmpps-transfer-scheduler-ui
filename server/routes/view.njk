@@ -87,6 +87,17 @@
               </div>
             {% endif %}
 
+            {% if user | featureEnabled('DEV_LED') %}
+              <div class="govuk-grid-column-one-third card-group__item">
+                <div class="card card--clickable">
+                  <h2 class="govuk-heading-m card__heading">
+                    <a class="govuk-link govuk-link--no-visited-state card__link" href="/search-prisoner/generate-transfer-report">Create transfer report link</a>
+                  </h2>
+                  <p class="govuk-body card__description">Create a transfer report from a planned or scheduled transfer, or create one without a transfer.</p>
+                </div>
+              </div>
+            {% endif %}
+
             <div class="govuk-grid-column-one-third card-group__item">
               <div class="card card--clickable">
                 <h2 class="govuk-heading-m card__heading">

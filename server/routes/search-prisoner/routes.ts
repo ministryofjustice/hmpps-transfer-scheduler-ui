@@ -6,6 +6,7 @@ import { schema } from './schema'
 import { Page } from '../../services/auditService'
 import { requirePermissions } from '../../middleware/permissions/requirePermissions'
 import { UserPermissionLevel } from '../../interfaces/hmppsUser'
+import { Feature, requireFeatureFlag } from '../../utils/featureFlag'
 
 export const SearchPrisonerRoutes = ({ prisonerSearchService, populateDocumentTemplateMiddleware }: Services) => {
   const { router, get } = BaseRouter()
@@ -34,6 +35,20 @@ export const SearchPrisonerRoutes = ({ prisonerSearchService, populateDocumentTe
       action: {
         label: 'Plan a transfer',
         url: '/plan-a-transfer/start/',
+      },
+    }).GET,
+  )
+
+  get(
+    '/generate-transfer-report',
+    Page.SEARCH_PRISONER,
+    requireFeatureFlag(Feature.DEV_LED),
+    validateOnGET(schema, 'searchTerm'),
+    new SearchPrisonerController(prisonerSearchService, {
+      caption: 'Create a transfer report',
+      action: {
+        label: 'Create a transfer report',
+        url: '/create-transfer-report/start/',
       },
     }).GET,
   )

@@ -60,6 +60,19 @@ export default class TransferSchedulerService {
       })
   }
 
+  searchTransfersByPerson(
+    context: ApiRequestContext,
+    prisonNumber: string,
+    request: components['schemas']['PersonTransferSearchRequest'],
+  ) {
+    return this.apiClient
+      .withContext({ ...context, readOnly: true })
+      .post<components['schemas']['TransferSearchResponse']>({
+        path: `/search/people/${prisonNumber}/transfers`,
+        data: request,
+      })
+  }
+
   async getTransfer(context: ApiRequestContext, transferId: string) {
     try {
       return await this.apiClient.withContext(context).get<components['schemas']['Transfer']>({

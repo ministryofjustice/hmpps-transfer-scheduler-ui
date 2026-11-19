@@ -1,3 +1,5 @@
 export interface ShareLink {
-  transferId: string
+  transferId?: string
+  prisonNumber?: string
+  destination?: string
 }

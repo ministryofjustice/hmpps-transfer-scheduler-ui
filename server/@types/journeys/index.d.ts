@@ -32,6 +32,7 @@ export type JourneyData = {
   moveTransferToPlanning?: MoveTransferToPlanningJourney
   bulkScheduleTransfer?: BulkScheduleTransferJourney
   bulkEditTransfer?: BulkEditTransferJourney
+  createTransferReport?: CreateTransferReportJourney
 }
 
 type CodedDescription = {
@@ -137,4 +138,12 @@ type MoveTransferToPlanningJourney = {
   requestedOn: string
   priority: CodedDescription
   result: components['schemas']['Transfer']
+}>
+
+type CreateTransferReportJourney = {
+  backUrl: string
+  historyQuery: string
+} & Partial<{
+  destination: CodedDescription
+  linkId: string
 }>

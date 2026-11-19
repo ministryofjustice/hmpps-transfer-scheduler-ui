@@ -5,70 +5,72 @@
 
 <div class="govuk-grid-row">
   <div class="govuk-grid-column-two-thirds print-full-width">
-    {{ govukSummaryList({
-      card: {
-        classes: "govuk-!-margin-bottom-7",
-        title: {
-          text: "Transfer information"
-        }
-      },
-      rows: [
-        {
-          key: { text: "Date and time" },
-          value: { text: transfer.schedule.start | formatDate("d MMMM yyyy 'at' HH:mm") or 'Not entered' }
+    {% if transfer %}
+      {{ govukSummaryList({
+        card: {
+          classes: "govuk-!-margin-bottom-7",
+          title: {
+            text: "Transfer information"
+          }
         },
-        {
-          key: { text: "Request received" },
-          value: { text: transfer.plan.requestedOn | formatDate("d MMMM yyyy") }
-        } if transfer.stage === 'PLANNING',
-        {
-          key: { text: "Transferred from" },
-          value: { text: transfer.prison.name }
-        },
-        {
-          key: { text: "Destination" },
-          value: { text: transfer.destination.name or 'Not entered' }
-        },
-        {
-          key: { text: "Reason" },
-          value: { text: transfer.reason.description }
-        },
-        {
-          key: { text: "Escort details" },
-          value: { text: transfer.logistics.description or 'Not entered' }
-        },
-        {
-          key: { text: "Priority" },
-          value: { text: transfer.plan.priority.description }
-        } if transfer.stage === 'PLANNING',
-        {
-          key: { text: "Comments" },
-          value: { html: ((transfer.plan.comments if transfer.stage === 'PLANNING' else transfer.schedule.comments) or 'Not provided') | escape | nl2br }
-        },
-        {
-          key: { text: 'Status' },
-          value: { html: statusTag(transfer) }
-        },
-        {
-          key: { html: '<h3 class="summary-list-subheading govuk-heading-m govuk-!-static-margin-bottom-1">Previous transfer information</h3>' }
-        } if transfer.stage === 'PLANNING' and transfer.schedule.comments,
-        {
-          key: { text: 'Comments' }, value: { html: transfer.schedule.comments | escape | nl2br }
-        } if transfer.stage === 'PLANNING' and transfer.schedule.comments,
-        {
-          key: { html: '<h3 class="summary-list-subheading govuk-heading-m govuk-!-static-margin-bottom-1">Plan information</h3>' }
-        } if transfer.stage === 'SCHEDULED' and transfer.plan,
-        {
-          key: { text: "Request received" }, value: { text: transfer.plan.requestedOn | formatDate("d MMMM yyyy") }
-        } if transfer.stage === 'SCHEDULED' and transfer.plan,
-        {
-          key: { text: "Priority" }, value: { text: transfer.plan.priority.description }
-        } if transfer.stage === 'SCHEDULED' and transfer.plan,
-        {
-          key: { text: "Comments" }, value: { html: (transfer.plan.comments or 'Not provided') | escape | nl2br }
-        } if transfer.stage === 'SCHEDULED' and transfer.plan
-      ] | removeNullish
-    }) }}
+        rows: [
+          {
+            key: { text: "Date and time" },
+            value: { text: transfer.schedule.start | formatDate("d MMMM yyyy 'at' HH:mm") or 'Not entered' }
+          },
+          {
+            key: { text: "Request received" },
+            value: { text: transfer.plan.requestedOn | formatDate("d MMMM yyyy") }
+          } if transfer.stage === 'PLANNING',
+          {
+            key: { text: "Transferred from" },
+            value: { text: transfer.prison.name }
+          },
+          {
+            key: { text: "Destination" },
+            value: { text: transfer.destination.name or 'Not entered' }
+          },
+          {
+            key: { text: "Reason" },
+            value: { text: transfer.reason.description }
+          },
+          {
+            key: { text: "Escort details" },
+            value: { text: transfer.logistics.description or 'Not entered' }
+          },
+          {
+            key: { text: "Priority" },
+            value: { text: transfer.plan.priority.description }
+          } if transfer.stage === 'PLANNING',
+          {
+            key: { text: "Comments" },
+            value: { html: ((transfer.plan.comments if transfer.stage === 'PLANNING' else transfer.schedule.comments) or 'Not provided') | escape | nl2br }
+          },
+          {
+            key: { text: 'Status' },
+            value: { html: statusTag(transfer) }
+          },
+          {
+            key: { html: '<h3 class="summary-list-subheading govuk-heading-m govuk-!-static-margin-bottom-1">Previous transfer information</h3>' }
+          } if transfer.stage === 'PLANNING' and transfer.schedule.comments,
+          {
+            key: { text: 'Comments' }, value: { html: transfer.schedule.comments | escape | nl2br }
+          } if transfer.stage === 'PLANNING' and transfer.schedule.comments,
+          {
+            key: { html: '<h3 class="summary-list-subheading govuk-heading-m govuk-!-static-margin-bottom-1">Plan information</h3>' }
+          } if transfer.stage === 'SCHEDULED' and transfer.plan,
+          {
+            key: { text: "Request received" }, value: { text: transfer.plan.requestedOn | formatDate("d MMMM yyyy") }
+          } if transfer.stage === 'SCHEDULED' and transfer.plan,
+          {
+            key: { text: "Priority" }, value: { text: transfer.plan.priority.description }
+          } if transfer.stage === 'SCHEDULED' and transfer.plan,
+          {
+            key: { text: "Comments" }, value: { html: (transfer.plan.comments or 'Not provided') | escape | nl2br }
+          } if transfer.stage === 'SCHEDULED' and transfer.plan
+        ] | removeNullish
+      }) }}
+    {% endif %}
 
     <h2 class="govuk-heading-m">Alerts</h2>
     {% if alerts.content.length %}
