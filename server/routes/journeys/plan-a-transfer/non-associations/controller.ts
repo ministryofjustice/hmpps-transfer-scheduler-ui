@@ -5,7 +5,7 @@ export class PlanTransferNonAssociationsController {
     const { nonAssociations, destinationWithNonAssociation } = req.journeyData.planTransfer!
 
     res.render('plan-a-transfer/non-associations/view', {
-      goBackUrl: 'destination',
+      goBackUrl: 'plan-details',
       destination: destinationWithNonAssociation,
       nonAssociations,
     })
@@ -16,6 +16,6 @@ export class PlanTransferNonAssociationsController {
       req.journeyData.planTransfer!.destination = req.journeyData.planTransfer!.destinationWithNonAssociation
       delete req.journeyData.planTransfer!.destinationWithNonAssociation
     }
-    res.redirect('logistics')
+    res.redirect('check-answers')
   }
 }
