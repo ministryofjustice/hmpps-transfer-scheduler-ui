@@ -1,0 +1,96 @@
+{% extends "partials/layout.njk" %}
+{% from "govuk/components/table/macro.njk" import govukTable %}
+{% from "partials/statusTag/macro.njk" import statusTag %}
+{% from "partials/simplePagination/macro.njk" import simplePagination %}
+{% from "govuk/components/button/macro.njk" import govukButton %}
+
+{% set fullWidth = true %}
+{% set pageTitle = 'Select transfer - Create a transfer report' %}
+{% set mainClasses = "app-container govuk-body" %}
+
+{% block innerContent %}
+  <div class="govuk-width-container placeholder-background">
+    <span class="govuk-caption-l">Create a transfer report</span>
+    <h1 class="govuk-heading-l govuk-!-margin-bottom-7">Select which transfer you want to use</h1>
+
+    <form method="post">
+      <input type="hidden" name="_csrf" value="{{ csrfToken }}" />
+      {% if not results.length %}
+        <div class="govuk-grid-row">
+          <div class="govuk-grid-column-two-thirds">
+            <p><strong>No transfers found for this prisoner.</strong></p>
+
+            <p class="govuk-!-margin-bottom-6">You can continue without selecting a transfer. On the next screen, you can select a destination prison.</p>
+
+            {{ govukButton({
+              text: "Continue without a transfer",
+              preventDoubleClick: true
+            }) }}
+          </div>
+        </div>
+      {% else %}
+        {% set rows = [] %}
+        {% for transfer in results %}
+          {% set rows = (rows.push([
+            {
+              text: (transfer.schedule.start | formatDate("d MMMM yyyy 'at' HH:mm")) if transfer.schedule.start else 'Not provided'
+            },
+            {
+              text: transfer.destination.name or 'Not provided'
+            },
+            {
+              text: transfer.reason.description or 'Not provided'
+            },
+            {
+              text: transfer.logistics.description or 'Not provided'
+            },
+            {
+              html: statusTag(transfer)
+            },
+            {
+              html: '<a class="govuk-link govuk-link--no-visited-state action-150px" href="/transfers/' + transfer.id + '/report">Select transfer<span class="govuk-visually-hidden"> ' + ('dated on ' + transfer.schedule.start | formatDate if transfer.schedule.start else ('requested on ' + transfer.plan.requestedOn | formatDate))  + '</span></a>',
+              format: "numeric"
+            }
+          ]), rows) %}
+        {% endfor %}
+
+        {{ simplePagination(paginationParams) }}
+
+        {{ govukTable({
+          firstCellIsHeader: false,
+          classes: 'table-vertical-align-middle govuk-!-margin-top-6',
+          head: [
+            {
+              text: "Date and time"
+            },
+            {
+              text: "Destination"
+            },
+            {
+              text: "Reason"
+            },
+            {
+              text: 'Escort details'
+            },
+            {
+              text: 'Status'
+            },
+            {
+              text: "Action",
+              format: "numeric"
+            }
+          ],
+          rows: rows
+        }) }}
+
+        {{ simplePagination(paginationParams) }}
+
+        {{ govukButton({
+          classes: "govuk-button--secondary govuk-!-margin-top-6",
+          text: "Continue without a transfer",
+          preventDoubleClick: true
+        }) }}
+      {% endif %}
+    </form>
+  </div>
+{% endblock %}

@@ -6,6 +6,7 @@ import CacheInterface from '../../../data/cache/cacheInterface'
 import { ShareLink } from '../../../interfaces/shareLink'
 import PrisonerAlertsService from '../../../services/apis/prisonerAlertsService'
 import CaseNotesService from '../../../services/apis/caseNotesService'
+import { randomString } from '../../../utils/utils'
 
 export class TransferReportController {
   constructor(
@@ -30,15 +31,9 @@ export class TransferReportController {
   }
 
   POST = async (req: Request, res: Response) => {
-    const linkId = this.randomString(8)
+    const linkId = randomString(8)
     await this.shareLinkStore.set(linkId, { transferId: req.middleware!.transfer!.id }, 7 * 24 * 3600)
     req.flash(FLASH_KEY__SHARE_LINK, linkId)
     res.redirect(req.originalUrl)
-  }
-
-  private randomString = (length: number, chars = '0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ') => {
-    let result = ''
-    for (let i = length; i > 0; i -= 1) result += chars[Math.floor(Math.random() * chars.length)]
-    return result
   }
 }

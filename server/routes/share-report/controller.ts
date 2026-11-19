@@ -6,6 +6,8 @@ import TransferSchedulerService from '../../services/apis/transferSchedulerServi
 import PrisonerSearchApiService from '../../services/apis/prisonerSearchService'
 import PrisonerAlertsService from '../../services/apis/prisonerAlertsService'
 import CaseNotesService from '../../services/apis/caseNotesService'
+import { components } from '../../@types/transferSchedulerApi'
+import Prisoner from '../../services/apis/model/prisoner'
 
 export class TransferShareReportController {
   constructor(
@@ -19,27 +21,50 @@ export class TransferShareReportController {
 
   GET = async (req: Request<{ id: string }>, res: Response) => {
     const shareLink = await this.shareLinkStore.get(req.params.id)
-    if (!shareLink?.transferId) {
+
+    let transfer: components['schemas']['Transfer'] | undefined | null
+    let prisoner: Prisoner | undefined | null
+
+    if (shareLink?.transferId) {
+      transfer = await this.transferSchedulerService.getTransfer({ res }, shareLink.transferId)
+
+      if (!transfer || !['SCHEDULED', 'PLANNING'].includes(transfer?.stage ?? '')) {
+        return res.notFound()
+      }
+
+      if (
+        !res.locals.user.caseLoads?.find(
+          ({ caseLoadId }) => caseLoadId === transfer!.destination?.code || caseLoadId === transfer!.prison.code,
+        )
+      ) {
+        return res.notAuthorised()
+      }
+
+      prisoner = await this.prisonerSearchService.getPrisonerDetails({ res }, transfer.person.identifier)
+
+      if (!prisoner) {
+        return res.notFound()
+      }
+    } else if (shareLink?.prisonNumber && shareLink?.destination) {
+      prisoner = await this.prisonerSearchService.getPrisonerDetails({ res }, shareLink.prisonNumber)
+
+      if (!prisoner) {
+        return res.notFound()
+      }
+
+      if (
+        !res.locals.user.caseLoads?.find(
+          ({ caseLoadId }) => caseLoadId === prisoner!.prisonId || caseLoadId === shareLink.destination,
+        )
+      ) {
+        return res.notAuthorised()
+      }
+    } else {
       return res.notFound()
     }
-
-    const transfer = await this.transferSchedulerService.getTransfer({ res }, shareLink.transferId)
-    if (!transfer || !['SCHEDULED', 'PLANNING'].includes(transfer?.stage ?? '')) {
-      return res.notFound()
-    }
-
-    if (
-      !res.locals.user.caseLoads?.find(
-        ({ caseLoadId }) => caseLoadId === transfer.destination?.code || caseLoadId === transfer.prison.code,
-      )
-    ) {
-      return res.notAuthorised()
-    }
-
-    const prisoner = await this.prisonerSearchService.getPrisonerDetails({ res }, transfer.person.identifier)
 
     return res.render('share-report/view', {
-      transfer: {
+      transfer: transfer && {
         ...transfer,
         label: transfer.stage === 'SCHEDULED' ? 'scheduled transfer' : 'planned transfer',
       },

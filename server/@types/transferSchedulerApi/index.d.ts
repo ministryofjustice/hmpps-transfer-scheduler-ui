@@ -168,6 +168,26 @@ export interface paths {
     patch?: never
     trace?: never
   }
+  '/search/people/{personIdentifier}/transfers': {
+    parameters: {
+      query?: never
+      header?: never
+      path?: never
+      cookie?: never
+    }
+    get?: never
+    put?: never
+    /**
+     * @description Requires one of the following roles:
+     *     * ROLE_TRANSFERS__TRANSFER_SCHEDULER_UI
+     */
+    post: operations['findTransfersForPerson']
+    delete?: never
+    options?: never
+    head?: never
+    patch?: never
+    trace?: never
+  }
   '/search/people/clashes': {
     parameters: {
       query?: never
@@ -384,11 +404,11 @@ export interface components {
       type: 'MakeUnscheduled'
     } & Omit<components['schemas']['TransferAction'], 'type'>
     MovementRequest: {
+      destinationCode: string
+      logisticsCode: string
       reasonCode: string
       /** Format: date-time */
       occurredAt: string
-      destinationCode: string
-      logisticsCode: string
       comments?: string | null
     }
     PlanTransfer: {
@@ -689,9 +709,10 @@ export interface components {
       /** Format: int32 */
       page: number
       /** Format: date */
-      start?: string | null
-      /** Format: date */
       end?: string | null
+      /** Format: date */
+      start?: string | null
+      query?: string | null
     }
     ScheduledSearchRequest: Omit<
       WithRequired<
@@ -715,6 +736,23 @@ export interface components {
     TransferSearchResponse: {
       content: components['schemas']['Transfer'][]
       metadata: components['schemas']['PageMetadata']
+    }
+    PersonTransferSearchRequest: {
+      statusCodes?: (
+        | 'PLANNING'
+        | 'READY_TO_SCHEDULE'
+        | 'SCHEDULED'
+        | 'CANCELLED'
+        | 'EXPIRED'
+        | 'IN_TRANSIT'
+        | 'COMPLETED'
+      )[]
+      reasonCodes?: string[]
+      /** Format: int32 */
+      page: number
+      /** Format: int32 */
+      size: number
+      sort: string
     }
     ClashPersonIdentifier: {
       /** @enum {string} */
@@ -1039,6 +1077,32 @@ export interface operations {
         'application/json':
           | components['schemas']['PlanningSearchRequest']
           | components['schemas']['ScheduledSearchRequest']
+      }
+    }
+    responses: {
+      /** @description OK */
+      200: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          '*/*': components['schemas']['TransferSearchResponse']
+        }
+      }
+    }
+  }
+  findTransfersForPerson: {
+    parameters: {
+      query?: never
+      header?: never
+      path: {
+        personIdentifier: string
+      }
+      cookie?: never
+    }
+    requestBody: {
+      content: {
+        'application/json': components['schemas']['PersonTransferSearchRequest']
       }
     }
     responses: {

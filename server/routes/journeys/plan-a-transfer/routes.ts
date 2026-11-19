@@ -1,4 +1,3 @@
-import { Request } from 'express'
 import { Services } from '../../../services'
 import { BaseRouter } from '../../common/routes'
 import { Page } from '../../../services/auditService'
@@ -46,16 +45,7 @@ export const PlanTransferRoutes = (services: Services) => {
       next()
     },
     preventNavigationToExpiredJourneys(),
-    journeyStateGuard({
-      'non-associations': (req: Request) => {
-        const { destinationWithNonAssociation, destination } = req.journeyData.planTransfer!
-        if (!destinationWithNonAssociation) {
-          if (destination) return 'logistics'
-          return 'destination'
-        }
-        return undefined
-      },
-    }),
+    journeyStateGuard({}),
   )
 
   router.use('/plan-details', PlanTransferDetailsRoutes(services))
