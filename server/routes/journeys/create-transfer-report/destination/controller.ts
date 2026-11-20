@@ -19,7 +19,10 @@ export class CreateTransferReportDestinationController {
   }
 
   POST = async (req: Request<unknown, unknown, SchemaType>, res: Response) => {
-    req.journeyData.createTransferReport!.destination = req.body.destination
+    if (req.journeyData.createTransferReport!.destination?.code !== req.body.destination?.code) {
+      req.journeyData.createTransferReport!.destination = req.body.destination
+      delete req.journeyData.createTransferReport!.linkId
+    }
     res.redirect('report')
   }
 }
