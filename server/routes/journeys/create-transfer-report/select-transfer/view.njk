@@ -5,25 +5,25 @@
 {% from "govuk/components/button/macro.njk" import govukButton %}
 
 {% set fullWidth = true %}
-{% set pageTitle = 'Select transfer - Create a transfer report' %}
+{% set pageTitle = 'Select a scheduled or planned transfer to create a report - Create a transfer report' %}
 {% set mainClasses = "app-container govuk-body" %}
 
 {% block innerContent %}
-  <div class="govuk-width-container placeholder-background">
+  <div class="govuk-width-container">
     <span class="govuk-caption-l">Create a transfer report</span>
-    <h1 class="govuk-heading-l govuk-!-margin-bottom-7">Select which transfer you want to use</h1>
+    <h1 class="govuk-heading-l govuk-!-margin-bottom-7">Select a scheduled or planned transfer to create a report</h1>
 
     <form method="post">
       <input type="hidden" name="_csrf" value="{{ csrfToken }}" />
       {% if not results.length %}
         <div class="govuk-grid-row">
           <div class="govuk-grid-column-two-thirds">
-            <p><strong>No transfers found for this prisoner.</strong></p>
+            <p><strong>There are no scheduled or planned transfers for this prisoner.</strong></p>
 
-            <p class="govuk-!-margin-bottom-6">You can continue without selecting a transfer. On the next screen, you can select a destination prison.</p>
+            <p class="govuk-!-margin-bottom-6">Continue to create a transfer report without scheduling a transfer. You will need to select a destination prison.</p>
 
             {{ govukButton({
-              text: "Continue without a transfer",
+              text: "Create report without transfer",
               preventDoubleClick: true
             }) }}
           </div>
@@ -86,8 +86,8 @@
         {{ simplePagination(paginationParams) }}
 
         {{ govukButton({
-          classes: "govuk-button--secondary govuk-!-margin-top-6",
-          text: "Continue without a transfer",
+          classes: "govuk-!-margin-top-6",
+          text: "Create report without transfer",
           preventDoubleClick: true
         }) }}
       {% endif %}

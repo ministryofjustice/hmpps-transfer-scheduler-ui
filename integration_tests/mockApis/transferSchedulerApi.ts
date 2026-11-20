@@ -104,6 +104,16 @@ export const stubSearchTransfers = (response: components['schemas']['TransferSea
     response,
   })
 
+export const stubSearchTransfersByPerson = (
+  response: components['schemas']['TransferSearchResponse'],
+  prisonNumber: string,
+) =>
+  successStub({
+    method: 'POST',
+    urlPattern: `/transfer-scheduler-api/search/people/${prisonNumber}/transfers`,
+    response,
+  })
+
 export const stubGetTransfer = (response: components['schemas']['Transfer'] = testTransfer) =>
   successStub({
     method: 'GET',

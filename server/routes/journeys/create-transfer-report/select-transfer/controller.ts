@@ -8,7 +8,7 @@ import { getApiUserErrorMessage } from '../../../../utils/utils'
 export class CreateTransferReportSelectTransferController {
   constructor(private readonly transferSchedulerService: TransferSchedulerService) {}
 
-  private PAGE_SIZE = 25
+  private PAGE_SIZE = 10
 
   GET = async (req: Request<unknown, unknown, unknown, { page?: string }>, res: Response) => {
     const page = req.query.page?.match(/^\d+$/) ? Number(req.query.page) : 1
@@ -22,6 +22,7 @@ export class CreateTransferReportSelectTransferController {
           sort: 'start,desc',
           page,
           size: this.PAGE_SIZE,
+          statusCodes: ['SCHEDULED', 'READY_TO_SCHEDULE', 'PLANNING'],
         },
       )
 
