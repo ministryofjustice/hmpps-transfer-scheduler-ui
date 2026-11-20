@@ -124,10 +124,21 @@
             value: comments
           }) }}
 
-          {{ govukButton({
-            text: "Save and next",
-            preventDoubleClick: true
-          }) }}
+          <div class="govuk-button-group">
+            {{ govukButton({
+              name: 'saveAll',
+              text: "Save details for all prisoners",
+              preventDoubleClick: true
+            }) }}
+
+            {{ govukButton({
+              name: 'save',
+              classes: 'govuk-button--secondary',
+              text: "Save and next",
+              preventDoubleClick: true
+            }) }}
+          </div>
+
         </form>
       </div>
     </div>
