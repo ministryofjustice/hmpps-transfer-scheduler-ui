@@ -134,10 +134,9 @@ test.describe('/bulk-schedule-transfers/transfer-details', () => {
     await testPage.logisticsInput().click()
     await page.getByText('Logistics One').first().click()
     await testPage.commentsField().fill('Lorem ipsum')
-    await testPage.clickButton('Save and next')
 
     // verify next page routing
-    await testPage.clickButton('Save and next')
+    await testPage.clickButton('Save details for all prisoners')
     expect(page.url()).toMatch(/\/bulk-schedule-transfers\/non-associations/)
   })
 })

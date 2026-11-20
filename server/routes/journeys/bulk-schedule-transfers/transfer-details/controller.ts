@@ -58,52 +58,64 @@ export class BulkScheduleTransfersDetailsController {
   POST = async (req: Request<{ prisonNumber: string }, unknown, SchemaType>, res: Response) => {
     const journey = req.journeyData.bulkScheduleTransfer!
 
-    const transfer = journey.transfers!.find(({ prisoner }) => prisoner.prisonerNumber === req.params.prisonNumber)!
+    if (req.body.save !== undefined) {
+      const transfer = journey.transfers!.find(({ prisoner }) => prisoner.prisonerNumber === req.params.prisonNumber)!
 
-    if (!journey.lastEnteredTransfer) {
-      journey.lastEnteredTransfer = {
-        startDate: req.body.startDate,
-        startTime: `${req.body.startTimeHour}:${req.body.startTimeMinute}`,
-        destination: req.body.destination,
-        reason: req.body.reason,
-        logistics: req.body.logistics,
-        comments: req.body.comments,
+      if (!journey.lastEnteredTransfer) {
+        journey.lastEnteredTransfer = {
+          startDate: req.body.startDate,
+          startTime: `${req.body.startTimeHour}:${req.body.startTimeMinute}`,
+          destination: req.body.destination,
+          reason: req.body.reason,
+          logistics: req.body.logistics,
+          comments: req.body.comments,
+        }
+      }
+
+      transfer.startDate = req.body.startDate!
+      transfer.startTime = `${req.body.startTimeHour}:${req.body.startTimeMinute}`
+      transfer.destination = req.body.destination!
+      transfer.reason = req.body.reason!
+      transfer.logistics = req.body.logistics!
+      transfer.comments = req.body.comments ?? null
+
+      const nextTransfer = journey.transfers!.find(({ startDate }) => !startDate)
+
+      if (nextTransfer) {
+        res.redirect(nextTransfer.prisoner.prisonerNumber)
+        return
+      }
+    } else if (req.body.saveAll !== undefined) {
+      for (const transfer of journey.transfers ?? []) {
+        transfer.startDate = req.body.startDate!
+        transfer.startTime = `${req.body.startTimeHour}:${req.body.startTimeMinute}`
+        transfer.destination = req.body.destination!
+        transfer.reason = req.body.reason!
+        transfer.logistics = req.body.logistics!
+        transfer.comments = req.body.comments ?? null
       }
     }
 
-    transfer.startDate = req.body.startDate!
-    transfer.startTime = `${req.body.startTimeHour}:${req.body.startTimeMinute}`
-    transfer.destination = req.body.destination!
-    transfer.reason = req.body.reason!
-    transfer.logistics = req.body.logistics!
-    transfer.comments = req.body.comments ?? null
+    journey.nonAssociations = (
+      await Promise.all(
+        journey.transfers!.map(({ prisoner, destination }) =>
+          this.nonAssociationsService
+            .getPrisonerNonAssociations({ res }, prisoner.prisonerNumber)
+            .then(({ nonAssociations }) => ({
+              prisoner,
+              destination: destination!.description,
+              otherPrisoners: nonAssociations
+                .map(({ otherPrisonerDetails }) => otherPrisonerDetails)
+                .filter(({ prisonId }) => prisonId === destination!.code),
+            })),
+        ),
+      )
+    ).filter(({ otherPrisoners }) => otherPrisoners.length)
 
-    const nextTransfer = journey.transfers!.find(({ startDate }) => !startDate)
-
-    if (nextTransfer) {
-      res.redirect(nextTransfer.prisoner.prisonerNumber)
+    if (journey.nonAssociations?.length) {
+      res.redirect('../non-associations')
     } else {
-      journey.nonAssociations = (
-        await Promise.all(
-          journey.transfers!.map(({ prisoner, destination }) =>
-            this.nonAssociationsService
-              .getPrisonerNonAssociations({ res }, prisoner.prisonerNumber)
-              .then(({ nonAssociations }) => ({
-                prisoner,
-                destination: destination!.description,
-                otherPrisoners: nonAssociations
-                  .map(({ otherPrisonerDetails }) => otherPrisonerDetails)
-                  .filter(({ prisonId }) => prisonId === destination!.code),
-              })),
-          ),
-        )
-      ).filter(({ otherPrisoners }) => otherPrisoners.length)
-
-      if (journey.nonAssociations?.length) {
-        res.redirect('../non-associations')
-      } else {
-        res.redirect('../check-answers')
-      }
+      res.redirect('../check-answers')
     }
   }
 }
