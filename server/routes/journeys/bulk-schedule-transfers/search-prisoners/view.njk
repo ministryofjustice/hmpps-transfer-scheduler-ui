@@ -47,6 +47,7 @@
 
   <div class="govuk-width-container govuk-grid-row">
     <div class="govuk-grid-column-two-thirds">
+      <p>Prisoners added to the Bulk transfer list will initially share transfer details. You can change them later.</p>
     {% if not searchTerm %}
       <p class="govuk-!-margin-bottom-6"><strong>Start a search to view prisoner records.</strong></p>
     {% elseif not results.length %}
@@ -108,7 +109,7 @@
                 </div>
               {% endfor %}
             {% else %}
-              <p>Prisoners in this list will initially share transfer details. You can change them later.</p>
+              <p>Select at least one prisoner to Continue.</p>
             {% endif %}
           </div>
           <form method="POST" action="search-prisoners/continue">
