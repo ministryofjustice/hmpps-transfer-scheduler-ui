@@ -70,11 +70,6 @@
             {{ hiddenInputs(query | getQueryEntries(['searchTerm','size', 'history'])) }}
             <h2 class="hmpps-side-filter__header">Filter</h2>
 
-            {{ govukButton({
-              text: "Apply",
-              preventDoubleClick: true
-            }) }}
-
             <div class="hmpps-side-filter__content">
               {{ mojDatePicker({
                 id: "start",
@@ -162,6 +157,11 @@
                 ] | setCheckedValue(status or '')
               }) }}
             </div>
+
+            {{ govukButton({
+              text: "Apply",
+              preventDoubleClick: true
+            }) }}
           </form>
         </section>
       </div>

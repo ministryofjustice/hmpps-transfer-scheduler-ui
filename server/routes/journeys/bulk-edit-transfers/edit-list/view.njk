@@ -125,7 +125,13 @@
       </div>
 
       <div class="govuk-!-width-three-quarters govuk-!-margin-top-5">
-        <p><a id="selectAll" class="govuk-link govuk-link--no-visited-state govuk-!-font-weight-bold govuk-!-display-none" href="#">Select all</a></p>
+        <div role="status" aria-live="polite" class="govuk-visually-hidden" id="selectAllStatus"></div>
+        {{ govukButton({
+          id: "selectAll",
+          classes: 'govuk-button--secondary govuk-!-margin-bottom-0 govuk-!-display-none',
+          text: "Select all",
+          preventDoubleClick: true
+        }) }}
         {% set rows = [] %}
         {% for result in transfers %}
           {% set rows = (rows.push(
@@ -170,17 +176,34 @@
 {% block pageScripts %}
   <script nonce="{{ cspNonce }}">
     window.onload = function () {
+      let allSelected = false
       const selectAll = document.getElementById('selectAll')
       selectAll.classList.remove('govuk-!-display-none')
 
+      const selectAllStatus = document.getElementById('selectAllStatus')
+
       const checkBoxes = Array.from(document.querySelectorAll('input[name=selectedTransfers]'))
+
+      const handleSelectionChange = () => {
+        allSelected = checkBoxes.reduce((acc, itm) => itm.checked && acc, true)
+        selectAll.innerHTML = allSelected ? 'Deselect all' : 'Select all'
+      }
 
       selectAll.addEventListener('click', e => {
         e.preventDefault()
+        const checked = !allSelected
         for (const checkbox of checkBoxes) {
-          checkbox.checked = true
+          checkbox.checked = checked
         }
+        selectAllStatus.innerHTML = checked? 'All prisoners selected' : 'All prisoners deselected'
+
+        handleSelectionChange()
       })
+
+      checkBoxes.forEach(checkBox => checkBox.addEventListener('change', () => {
+        handleSelectionChange()
+        selectAllStatus.innerHTML = ""
+      }))
     }
   </script>
 {% endblock %}

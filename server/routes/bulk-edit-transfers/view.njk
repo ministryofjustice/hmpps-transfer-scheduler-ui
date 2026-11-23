@@ -44,11 +44,6 @@
             {{ hiddenInputs(query | getQueryEntries(['searchTerm', 'history'])) }}
             <h2 class="hmpps-side-filter__header">Filter</h2>
 
-            {{ govukButton({
-              text: "Apply filters",
-              preventDoubleClick: true
-            }) }}
-
             <div class="hmpps-side-filter__content">
               {{ mojDatePicker({
                 id: "start",
@@ -101,6 +96,11 @@
                 errorMessage: validationErrors | findError('logistics')
               }) }}
             </div>
+
+            {{ govukButton({
+              text: "Apply filters",
+              preventDoubleClick: true
+            }) }}
           </form>
         </section>
       </div>

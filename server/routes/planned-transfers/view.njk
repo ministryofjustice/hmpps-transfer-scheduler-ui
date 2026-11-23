@@ -71,11 +71,6 @@
             {{ hiddenInputs(query | getQueryEntries(['searchTerm','size', 'history'])) }}
             <h2 class="hmpps-side-filter__header">Filter</h2>
 
-            {{ govukButton({
-              text: "Apply",
-              preventDoubleClick: true
-            }) }}
-
             {% set requestDateInputs %}
               {{ mojDatePicker({
                 id: "requestStart",
@@ -224,6 +219,11 @@
                 items: priorityOptions | fromCodedDescription | setCheckedValue(priority or '')
               }) }}
             </div>
+
+            {{ govukButton({
+              text: "Apply",
+              preventDoubleClick: true
+            }) }}
           </form>
         </section>
       </div>

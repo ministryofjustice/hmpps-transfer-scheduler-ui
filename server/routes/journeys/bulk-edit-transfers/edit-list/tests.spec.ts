@@ -98,7 +98,7 @@ test.describe('/bulk-edit-transfers/edit-list', () => {
     await testPage.logisticsInput().click()
     await page.getByText('Logistics One').first().click()
     await testPage.commentsField().fill('Lorem ipsum')
-    await testPage.link('Select all').click()
+    await testPage.button('Select all').click()
     await testPage.button('Apply edits').click()
 
     expect(page.url()).toMatch(/\/bulk-edit-transfers\/check-answers/)
@@ -130,7 +130,7 @@ test.describe('/bulk-edit-transfers/edit-list', () => {
     await testPage.dateField().fill(today)
     await testPage.hourField().fill('23')
     await testPage.minuteField().fill('59')
-    await testPage.link('Select all').click()
+    await testPage.button('Select all').click()
 
     // verify next page routing
     await testPage.button('Apply edits').click()
