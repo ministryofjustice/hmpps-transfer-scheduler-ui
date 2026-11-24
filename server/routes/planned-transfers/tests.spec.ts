@@ -78,7 +78,7 @@ test.describe('/scheduled-transfers', () => {
     await expect(testPage.logisticsInput()).toBeVisible()
     await expect(testPage.logisticsInput()).toHaveValue('')
 
-    await expect(page.getByText('Prisoner-Name Prisoner-Surname - A9965EA').first()).toBeVisible()
+    await expect(testPage.link('Prisoner-Surname, Prisoner-Name - A9965EA').first()).toBeVisible()
     await expect(page.locator('strong', { hasText: 'Destination' }).locator('..')).toContainText('Prison One')
     await expect(page.locator('strong', { hasText: 'Date' }).locator('..')).toContainText('1 January 2001')
     await expect(page.locator('strong', { hasText: 'Time' }).locator('..')).toContainText('10:00')

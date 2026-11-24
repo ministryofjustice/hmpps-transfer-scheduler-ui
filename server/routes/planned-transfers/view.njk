@@ -276,7 +276,7 @@
 
             {% set rows = (rows.push(
               {
-                title: { text: result.person | firstNameSpaceLastName + ' - ' + result.person.identifier },
+                title: { html: '<a class="govuk-link govuk-link--no-visited-state govuk-!-font-weight-bold" href="' + prisonerProfileBacklink(originalUrl, result.person.identifier) + '">' + result.person | lastNameCommaFirstName + ' - ' + result.person.identifier + '</a>' },
                 action: { html: viewLabel, href: '/transfers/' + result.id },
                 data: [
                   result.destination.name or 'Not entered',
