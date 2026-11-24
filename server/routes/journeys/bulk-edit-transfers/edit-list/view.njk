@@ -136,7 +136,7 @@
         {% for result in transfers %}
           {% set rows = (rows.push(
             {
-              title: { text: result.prisoner | firstNameSpaceLastName + ' - ' + result.prisoner.identifier },
+              title: { html: '<a class="govuk-link govuk-link--no-visited-state govuk-!-font-weight-bold" href="' + prisonerProfileBacklink(originalUrl, result.prisoner.identifier) + '">' + result.prisoner | lastNameCommaFirstName + ' - ' + result.prisoner.identifier + '</a>' },
               checkboxValue: result.prisoner.identifier,
               checkboxLabel: result.prisoner | firstNameSpaceLastName,
               data: [

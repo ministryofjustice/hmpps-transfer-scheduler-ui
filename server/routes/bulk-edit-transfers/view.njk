@@ -152,7 +152,7 @@
           {% for result in results %}
             {% set rows = (rows.push(
               {
-                title: { text: result.person | firstNameSpaceLastName + ' - ' + result.person.identifier },
+                title: { html: '<a class="govuk-link govuk-link--no-visited-state govuk-!-font-weight-bold" href="' + prisonerProfileBacklink(originalUrl, result.person.identifier) + '">' + result.person | lastNameCommaFirstName + ' - ' + result.person.identifier + '</a>' },
                 data: [
                   result.destination.name,
                   result.schedule.start | formatDate("d MMMM yyyy"),
