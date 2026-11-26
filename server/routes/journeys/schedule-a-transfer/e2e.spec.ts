@@ -17,6 +17,7 @@ import {
 import { ScheduleTransferCheckAnswersPage } from './check-answers/test.page'
 import { ScheduleTransferConfirmationPage } from './confirmation/test.page'
 import { ScheduleTransferDetailsPage } from './transfer-details/test.page'
+import { verifyAuditEvents } from '../../../../integration_tests/steps/verifyAuditEvents'
 
 test.describe('/schedule-a-transfer e2e ', () => {
   test.beforeEach(async ({ page }) => {
@@ -119,5 +120,17 @@ test.describe('/schedule-a-transfer e2e ', () => {
       reasonCode: 'R2',
       logisticsCode: 'L2',
     })
+
+    await verifyAuditEvents([
+      {
+        what: 'API_CALL_SUCCESS',
+        subjectType: 'NOT_APPLICABLE',
+        details: `{"apiUrl":"POST /transfers/${testPrisonerDetails.prisonerNumber}","activeCaseLoadId":"LEI"}`,
+        service: 'hmpps-transfer-scheduler-ui',
+        who: 'USER1',
+        correlationId: expect.any(String),
+        when: expect.any(String),
+      },
+    ])
   })
 })

@@ -15,7 +15,7 @@ export default class TransferSchedulerService {
       config.apis.transferSchedulerApi,
       logger,
       authenticationClient,
-      false,
+      true,
       (retry?: boolean) => (err: Error, res: SuperAgentResponse) => {
         if (!retry) return false
         if (err) return true
